@@ -1,16 +1,23 @@
 .site-header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 72px;
-
+  z-index: 9999;
+  overflow: visible;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(14px);
-
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 1000;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 
 
 .header-inner {
@@ -23,6 +30,13 @@
   align-items: center;
   justify-content: space-between;
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px; /* nav ↔ buttons spacing */
+}
+
+
 
 .logo {
   font-size: 26px;
@@ -31,7 +45,7 @@
 }
 
 .nav-items a {
-  margin: 0 14px;
+  margin: 0 10px;
   text-decoration: none;
   color: #475569;
   font-weight: 500;
@@ -43,14 +57,198 @@
 
 .header-btn {
   padding: 10px 22px;
-  background: #635bff;
+  background: #7bae9e;          /* SAME as Talk to a doctor */
   color: white;
-  border-radius: 8px;
+  border-radius: 999px;         /* softer, matches hero CTA */
   border: none;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.2s ease;
+  text-decoration: none;
 }
 
 .header-btn:hover {
-  background: #4f46e5;
+  background: #5f8f82;          /* hover state match */
+}
+.header-btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 42px;
+  padding: 0 20px;
+
+  background: transparent;
+  color: #7bae9e;
+  border: 2px solid #7bae9e;
+  border-radius: 999px;
+
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.header-btn-outline:hover {
+  background: rgba(123, 174, 158, 0.12);
+}
+
+.user-menu {
+  position: relative;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 52px;
+  min-width: 160px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  z-index: 1001;
+}
+
+.user-dropdown button {
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.user-dropdown button:hover {
+  background: rgba(123, 174, 158, 0.12);
+}
+
+.user-dropdown .logout {
+  color: #b91c1c;
+}
+
+/* ===== DEPARTMENT BAR ===== */
+.department-bar {
+  position: sticky;
+  top: 72px;
+  z-index: 999;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Horizontal scroll container */
+.department-scroll {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  gap: 26px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.department-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual department */
+.dept-wrapper {
+  position: relative;
+}
+
+.dept-item {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 2px;
+  position: relative;
+}
+
+.dept-item:hover {
+  color: #0f766e;
+}
+
+.dept-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0%;
+  height: 2px;
+  background: #0f766e;
+  transition: width 0.25s ease;
+}
+
+.dept-item:hover::after {
+  width: 100%;
+}
+
+/* ===== DROPDOWN PANEL ===== */
+.dept-dropdown {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  min-width: 240px;
+  max-height: 420px;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  z-index: 9999;
+}
+
+/* scrollbar */
+.dept-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+.dept-dropdown::-webkit-scrollbar-thumb {
+  background: #c7c7c7;
+  border-radius: 10px;
+}
+
+/* Dropdown items */
+.dept-item-child {
+  padding: 10px 18px;
+  font-size: 14px;
+  color: #1f2937;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.dept-item-child:hover {
+  background: #f3f4f6;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.site-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
 }

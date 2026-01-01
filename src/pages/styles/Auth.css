@@ -1,0 +1,132 @@
+/* ================= AUTH PAGE ================= */
+
+.auth-page {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Match Home background */
+  background: var(--bg-main);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+/* ================= CARD ================= */
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+
+  /* Softer, warm card */
+  background: #ffffff;
+  padding: 36px;
+  border-radius: 20px;
+
+  /* Remove harsh shadow, keep premium */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+
+  border: 1px solid var(--border-soft);
+}
+
+/* ================= TEXT ================= */
+
+.auth-card h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 8px;
+
+  /* Apple-like heading tone */
+  color: #1d1d1f;
+}
+
+.auth-card p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ================= FORM ================= */
+
+.auth-card label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  margin-top: 16px;
+  color: var(--text-main);
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 12px 14px;
+
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+
+  font-size: 15px;
+  background: #fff;
+  color: var(--text-main);
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(123, 174, 158, 0.18);
+}
+
+/* ================= BUTTON ================= */
+
+.auth-btn {
+  margin-top: 24px;
+  width: 100%;
+  padding: 14px;
+
+  border-radius: 999px;
+
+  /* SAME as Talk to a doctor */
+  background: var(--accent);
+  color: white;
+
+  font-weight: 500;
+  font-size: 15px;
+
+  border: none;
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.auth-btn:hover {
+  background: var(--accent-dark);
+}
+
+/* ================= LINK ================= */
+
+.auth-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.auth-link a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 22px;
+    border-radius: 18px;
+  }
+}
