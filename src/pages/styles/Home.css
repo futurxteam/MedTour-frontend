@@ -26,7 +26,29 @@
 .hero-section {
   padding: 120px 0 120px;
   overflow: hidden;
+   position: relative;
+  z-index: 2;
 }
+.hero-section::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 160px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.35) 40%,
+    rgba(0, 0, 0, 0.75) 70%,
+    rgba(0, 0, 0, 1) 100%
+  );
+
+  pointer-events: none;
+  z-index: 3;
+}
+
 
 .hero-grid {
   display: grid;
@@ -34,6 +56,13 @@
   align-items: center;
   gap: 60px;
 }
+.hero-text {
+  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.15);
+  padding: 32px;
+  border-radius: 18px;
+}
+
 
 .hero-text h1 {
   font-family: "Merriweather", serif;
@@ -288,6 +317,106 @@
   font-size: 15px;
   color: #555;
 }
+.kerala-hero {
+  position: relative;
+  background:
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0.45),
+      rgba(0, 0, 0, 0.15)
+    ),
+    url("/kerala-hero.jpg") center / cover no-repeat;
+  padding: 160px 0;
+  color: #ffffff;
+}
+
+
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.55),
+    rgba(0,0,0,0.1)
+  );
+}
+
+.hero-text h1 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+}
+
+
+.hero-text p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 520px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+
+.hero-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 18px;
+}
+
+.secondary-btn {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+  padding: 14px 28px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+/* === Kerala Background Layer === */
+.specialities-section {
+  position: relative;
+  background: url("/kadhakali.jpg") center / cover no-repeat;
+  padding: 120px 0;
+  overflow: hidden;
+    margin-top: -120px;
+  padding-top: 180px;
+
+}
+
+/* Dark overlay for readability */
+.specialities-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.65),
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.15)
+  );
+  z-index: 1;
+}
+
+/* Content above overlay */
+.specialities-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Card polish */
+.specialities-section .dept-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 18px;
+  transition: 0.3s ease;
+}
+
+.specialities-section .dept-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
 
 
 

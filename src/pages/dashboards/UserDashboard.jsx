@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "../styles/Dashboard.css";
-import Avatar from "../../components/Avatar";
-
+import { useNavigate } from "react-router-dom";
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="dashboard">
-
+      {/* Top Bar */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
           <h2>Welcome Back</h2>
@@ -25,41 +25,43 @@ export default function UserDashboard() {
           {open && (
             <div className="profile-dropdown">
               <button>My Profile</button>
-              <button>Appointments</button>
+              <button onClick={() => navigate("/appointments")}>
+                Appointments
+              </button>
               <button className="logout-btn">Logout</button>
             </div>
           )}
         </div>
       </div>
 
-      <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}>
-  <Avatar
-    onSelect={(part) => {
-      console.log("Selected body part:", part);
-      // later → route to disease info / modal / API call
-    }}
-  />
-</div>
-
+      {/* Main Cards */}
       <div className="dashboard-container">
         <div className="dashboard-grid">
-          <div className="dashboard-card">
+
+          {/* Book Procedure */}
+          <div
+            className="dashboard-card"
+            onClick={() => navigate("/services")}
+            style={{ cursor: "pointer" }}
+          >
             <h3>Book a Procedure</h3>
             <p>Explore surgeries, treatments, and medical services.</p>
             <span className="dashboard-btn">Explore</span>
           </div>
 
-          <div className="dashboard-card">
+          {/* My Appointments */}
+          <div
+            className="dashboard-card"
+            onClick={() => navigate("/appointments")}
+            style={{ cursor: "pointer" }}
+          >
             <h3>My Appointments</h3>
-            <p>View and manage upcoming consultations.</p>
+            <p>View and manage upcoming consultations and surgery plans.</p>
             <span className="dashboard-btn">View</span>
           </div>
 
-          <div className="dashboard-card">
-            <h3>Travel & Stay</h3>
-            <p>Manage accommodation and travel arrangements.</p>
-            <span className="dashboard-btn">Details</span>
-          </div>
+         
+
         </div>
       </div>
     </div>

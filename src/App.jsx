@@ -10,11 +10,19 @@ import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
+import ServiceDetails from "./pages/serviceDetails";
+import DoctorDetails from "./pages/doctorDetails";
+import MyAppointments from "./pages/dashboards/myAppointments";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/appointments" element={<MyAppointments />} />
+
+        <Route path="/doctor/:doctorId" element={<DoctorDetails />} />
+        <Route path="/surgery/:id" element={<ServiceDetails />} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
