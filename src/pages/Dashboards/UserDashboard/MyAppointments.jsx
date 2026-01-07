@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/Dashboard.css"; // Assuming you have shared styles
+import "../../styles/Dashboard.css";
 
 const steps = [
   {

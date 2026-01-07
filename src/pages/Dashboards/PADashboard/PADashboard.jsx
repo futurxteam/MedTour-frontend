@@ -1,5 +1,10 @@
-import React, { useState } from "react";
-import "../styles/Dashboard.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../styles/Dashboard.css";
+import { getAuthUser, logout } from "../../../utils/auth";
+
+
+
 
 /* ---------------- DUMMY DATA ---------------- */
 const patients = [
@@ -110,6 +115,8 @@ const notificationTemplates = [
 
 /* ---------------- COMPONENT ---------------- */
 export default function PADashboard() {
+  const navigate = useNavigate();
+
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -153,7 +160,9 @@ export default function PADashboard() {
           {open && (
             <div className="profile-dropdown">
               <button>Profile</button>
-              <button className="logout-btn">Logout</button>
+<button className="logout-btn" onClick={() => logout(navigate)}>
+  Logout
+</button>
             </div>
           )}
         </div>

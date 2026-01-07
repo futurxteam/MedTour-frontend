@@ -25,3 +25,24 @@
 .footer-links a:hover {
   color: #635bff;
 }
+.footer-logins {
+  margin-top: 16px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer-login-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.footer-login-btn:hover {
+  background: #2563eb;
+  color: #fff;
+}

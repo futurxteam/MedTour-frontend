@@ -1,8 +1,14 @@
-import React, { useState } from "react";
-import "../styles/Dashboard.css";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../styles/Dashboard.css";
+import { logout } from "../../../utils/auth";
+
+
 
 export default function DoctorDashboard() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   return (
     <div className="dashboard">
@@ -25,7 +31,9 @@ export default function DoctorDashboard() {
             <div className="profile-dropdown">
               <button>My Profile</button>
               <button>Settings</button>
-              <button className="logout-btn">Logout</button>
+<button className="logout-btn" onClick={() => logout(navigate)}>
+  Logout
+</button>
             </div>
           )}
         </div>

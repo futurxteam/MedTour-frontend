@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import "../styles/Dashboard.css";
+import React, { useState, useEffect } from "react";
+import "../../styles/Dashboard.css";
+import { getAuthUser, logout } from "../../../utils/auth";
+
+
 
 const users = [
   { id: 1, name: "John Doe", role: "Patient", active: true },
@@ -37,6 +40,8 @@ export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
   const [requests, setRequests] = useState(consultations);
+  const navigate = useNavigate();
+  
 
   const assignPA = (id, pa) => {
     setRequests((prev) =>
@@ -69,7 +74,9 @@ export default function AdminDashboard() {
             <div className="profile-dropdown">
               <button>Profile</button>
               <button>Settings</button>
-              <button className="logout-btn">Logout</button>
+<button className="logout-btn" onClick={() => logout(navigate)}>
+  Logout
+</button>
             </div>
           )}
         </div>

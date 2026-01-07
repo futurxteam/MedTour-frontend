@@ -3,8 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import "../pages/styles/Header.css";
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const [open, setOpen] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setOpen(false);
+    navigate("/login");
+  };
 
   return (
     <header className="site-header">
@@ -23,8 +30,8 @@ const Header = () => {
           <Link to="/contact">Contact</Link>
         </nav>
 
-        {/* AUTH BUTTONS */}
-        {!isLoggedIn ? (
+        {/* AUTH / PROFILE */}
+        {!token ? (
           <div className="header-actions">
             <Link to="/login" className="header-btn-outline">
               Login
@@ -34,8 +41,33 @@ const Header = () => {
             </Link>
           </div>
         ) : (
-          <div className="header-btn" onClick={() => navigate("/profile")}>
-            My Account
+          <div className="profile-wrapper">
+            <div
+              className="profile-avatar"
+              onClick={() => setOpen(!open)}
+            >
+              U
+            </div>
+
+            {open && (
+              <div className="profile-dropdown">
+                <div
+                  className="dropdown-item"
+                  onClick={() => {
+                    setOpen(false);
+                    navigate("/profile");
+                  }}
+                >
+                  Profile
+                </div>
+                <div
+                  className="dropdown-item logout"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

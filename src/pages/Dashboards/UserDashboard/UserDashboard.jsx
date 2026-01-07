@@ -1,10 +1,24 @@
-import React, { useState } from "react";
-import "../styles/Dashboard.css";
+import React, { useState, useEffect } from "react";
+import "../../styles/Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import { getAuthUser, logout } from "../../../utils/auth";
 
 export default function UserDashboard() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  /* ================== ADDED: AUTH GUARD ================== */
+  useEffect(() => {
+    const user = getAuthUser();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (user.role !== "user") {
+      navigate(`/login/${user.role}`);
+    }
+  }, [navigate]);
+  /* ====================================================== */
 
   return (
     <div className="dashboard">
@@ -28,7 +42,15 @@ export default function UserDashboard() {
               <button onClick={() => navigate("/appointments")}>
                 Appointments
               </button>
-              <button className="logout-btn">Logout</button>
+
+              {/* ===== ADDED: LOGOUT ===== */}
+              <button
+                className="logout-btn"
+                onClick={() => logout(navigate)}
+              >
+                Logout
+              </button>
+              {/* ======================== */}
             </div>
           )}
         </div>
@@ -37,7 +59,6 @@ export default function UserDashboard() {
       {/* Main Cards */}
       <div className="dashboard-container">
         <div className="dashboard-grid">
-
           {/* Book Procedure */}
           <div
             className="dashboard-card"
@@ -56,12 +77,11 @@ export default function UserDashboard() {
             style={{ cursor: "pointer" }}
           >
             <h3>My Appointments</h3>
-            <p>View and manage upcoming consultations and surgery plans.</p>
+            <p>
+              View and manage upcoming consultations and surgery plans.
+            </p>
             <span className="dashboard-btn">View</span>
           </div>
-
-         
-
         </div>
       </div>
     </div>
