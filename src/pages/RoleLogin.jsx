@@ -24,21 +24,56 @@ const RoleLogin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Validate role param
+  if (!role || !dashboardMap[role]) {
+    console.warn(`Invalid role param: ${role}`);
+  }
+
   const handleLogin = async () => {
     setError("");
     setLoading(true);
 
+    // Basic form validation
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      setLoading(false);
+      console.warn("Login failed — missing email or password");
+      return;
+    }
+
     try {
-      // ✅ SEND ROLE TO BACKEND
+      console.log(`Attempting login for role: ${role}, email: ${email}`);
+
+      // Call login API
       const res = await loginUser({ email, password, role });
 
-      // ✅ STORE TOKEN ONLY
-      localStorage.setItem("token", res.token);
+      // If no token in response — treat as fail
+      if (!res.token) {
+        throw new Error("Login did not return a token");
+      }
 
-      // ✅ REDIRECT TO CORRECT DASHBOARD
-      navigate(dashboardMap[role]);
+      // Store the token
+      localStorage.setItem("token", res.token);
+      console.log("Login successful! Token saved.");
+
+      // Redirect to the correct dashboard
+      const targetPath = dashboardMap[role];
+      if (targetPath) {
+        console.log(`Redirecting to dashboard: ${targetPath}`);
+        navigate(targetPath, { replace: true });
+      } else {
+        console.error(`No dashboard mapping for role: ${role}`);
+        setError("Login succeeded but no dashboard available for your role");
+      }
     } catch (err) {
-      setError(err.message || "Login failed");
+      console.error("Login failed:", err);
+
+      // Show friendly error message
+      let msg = err.message || "Login failed";
+      if (msg.toLowerCase().includes("invalid credentials")) {
+        msg = "Password incorrect or user not found";
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -47,7 +82,7 @@ const RoleLogin = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>{roleTitles[role]}</h1>
+        <h1>{roleTitles[role] || "Login"}</h1>
         <p>Login to continue to Medtour</p>
 
         <label>Email</label>

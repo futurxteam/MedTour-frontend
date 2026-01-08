@@ -1,6 +1,11 @@
+console.log("AdminDashboard render:", getAuthUser());
+console.log(localStorage.getItem("token"));
+
 import React, { useState, useEffect } from "react";
 import "../../styles/Dashboard.css";
 import { getAuthUser, logout } from "../../../utils/auth";
+import { useNavigate } from "react-router-dom";
+
 
 
 

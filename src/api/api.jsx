@@ -56,3 +56,22 @@ export const googleAuth = async (data) => {
 
   return result;
 };
+export const createAdmin = async ({ name, email, password }) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(
+    "http://localhost:5000/api/auth/create-admin",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name, email, password }),
+    }
+  );
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message);
+  return data;
+};

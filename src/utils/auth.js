@@ -9,14 +9,21 @@ export const getAuthUser = () => {
   if (!token) return null;
 
   try {
-    return jwtDecode(token); // contains id, role, iat, exp
+    const decoded = jwtDecode(token);
+
+    return {
+      token,              // ✅ ADD THIS
+      id: decoded.id,
+      role: decoded.role,
+      iat: decoded.iat,
+      exp: decoded.exp,
+    };
   } catch (error) {
-    // Token is invalid or corrupted
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
     return null;
   }
 };
+
 
 /**
  * Logout helper – clears auth and redirects
