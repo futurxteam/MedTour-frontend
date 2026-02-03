@@ -1,0 +1,10 @@
+/* UserDashboard Component Styles */
+
+.user-dashboard-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.user-dashboard-card:hover {
+  transform: translateY(-2px);
+}

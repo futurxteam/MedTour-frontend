@@ -1,0 +1,33 @@
+.doctor-profile-area {
+    cursor: pointer;
+    position: relative;
+}
+
+.doctor-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.doctor-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.doctor-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doctor-avatar-placeholder {
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+}

@@ -1,26 +1,9 @@
-console.log("AdminDashboard render:", getAuthUser());
-console.log(localStorage.getItem("token"));
-
 import React, { useState, useEffect } from "react";
 import "../../styles/Dashboard.css";
-import { getAuthUser, logout } from "../../../utils/auth";
+import { logout } from "../../../utils/auth";
 import { useNavigate } from "react-router-dom";
-
-
-
-
-const users = [
-  { id: 1, name: "John Doe", role: "Patient", active: true },
-  { id: 2, name: "Fatima Ali", role: "Patient", active: false },
-  { id: 3, name: "Dr. Neha Kapoor", role: "Doctor", active: true },
-];
-
-const doctors = [
-  { id: 1, name: "Dr. Arjun Patel", specialization: "Urology" },
-  { id: 2, name: "Dr. Meera Shah", specialization: "Cosmetic Surgery" },
-];
-
-const assistants = ["Rahul Menon", "Anjali Nair", "Suresh Kumar"];
+import UserManagement from "./UserManagement";
+import api from "@/api/api";
 
 const consultations = [
   {
@@ -45,8 +28,48 @@ export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
   const [requests, setRequests] = useState(consultations);
+
+  /* 🔥 REQUIRED STATE (MOVED INSIDE COMPONENT) */
+  const [pendingHospitals, setPendingHospitals] = useState([]);
+  const [approvedHospitals, setApprovedHospitals] = useState([]);
+  const [hospitals, setHospitals] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("pending");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
-  
+
+  /* 🔥 REQUIRED FETCH (MOVED INSIDE COMPONENT) */
+  const fetchPendingHospitals = async () => {
+    const res = await api.get("/admin/pending-hospitals");
+    setPendingHospitals(res.data);
+  };
+  const fetchApprovedHospitals = async () => {
+  const res = await api.get("/admin/approved-hospitals");
+  setApprovedHospitals(res.data);
+};
+const fetchHospitals = async () => {
+  const res = await api.get(
+    `/admin/hospitals?status=${statusFilter}&search=${search}&page=${page}&limit=${limit}`
+  );
+
+  setHospitals(res.data.hospitals);
+  setTotalPages(res.data.pagination.totalPages);
+};
+
+
+
+  /* 🔥 FETCH ONLY WHEN VIEW IS HOSPITALS */
+  useEffect(() => {
+    if (view === "hospitals") {
+      fetchPendingHospitals();
+      fetchApprovedHospitals(); // 🔥 ADD
+      fetchHospitals();
+
+    }
+}, [view, statusFilter, search,page]);
+ 
 
   const assignPA = (id, pa) => {
     setRequests((prev) =>
@@ -58,9 +81,20 @@ export default function AdminDashboard() {
     );
   };
 
+ const approveHospital = async (id) => {
+  await api.patch(`/admin/approve-hospital/${id}`);
+  fetchHospitals();
+};
+
+const rejectHospital = async (id) => {
+  if (!window.confirm("Reject this hospital?")) return;
+  await api.patch(`/admin/reject-hospital/${id}`);
+  fetchHospitals();
+};
+
+
   return (
     <div className="dashboard">
-
       {/* Top Header */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
@@ -77,146 +111,180 @@ export default function AdminDashboard() {
 
           {open && (
             <div className="profile-dropdown">
-              <button>Profile</button>
+              <button onClick={() => { setOpen(false); navigate('/dashboard/admin'); }}>
+                Dashboard
+              </button>
+              <button onClick={() => { setOpen(false); navigate('/profile'); }}>
+                Profile
+              </button>
               <button>Settings</button>
-<button className="logout-btn" onClick={() => logout(navigate)}>
-  Logout
-</button>
+              <button
+                className="logout-btn"
+                onClick={() => logout(navigate)}
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>
       </div>
 
-      <div className="dashboard-container">
+      <div className="dashboard-layout">
+        {/* Sidebar */}
+        <aside className="dashboard-sidebar">
+          <h3 className="sidebar-title">Tasks</h3>
 
-        {/* MAIN CARDS */}
-        {!view && (
-          <div className="dashboard-grid">
-            <div className="dashboard-card" onClick={() => setView("users")}>
-              <h3>User Management</h3>
-              <p>Create, update, or deactivate users.</p>
-              <span className="dashboard-btn">Manage</span>
-            </div>
+          <nav className="sidebar-nav">
+            <button
+              className={view === null ? "active" : ""}
+              onClick={() => setView(null)}
+            >
+              Dashboard
+            </button>
 
-            <div className="dashboard-card" onClick={() => setView("doctors")}>
-              <h3>Doctor Verification</h3>
-              <p>Approve and review doctors.</p>
-              <span className="dashboard-btn">Review</span>
-            </div>
+            <button
+              className={view === "users" ? "active" : ""}
+              onClick={() => setView("users")}
+            >
+              User Management
+            </button>
 
-            <div className="dashboard-card" onClick={() => setView("analytics")}>
-              <h3>System Analytics</h3>
-              <p>Platform usage overview.</p>
-              <span className="dashboard-btn">View</span>
-            </div>
+            <button
+              className={view === "hospitals" ? "active" : ""}
+              onClick={() => setView("hospitals")}
+            >
+              Hospital Verification
+            </button>
 
-            <div className="dashboard-card" onClick={() => setView("requests")}>
-              <h3>Consultation Requests</h3>
-              <p>Assign care assistants.</p>
-              <span className="dashboard-btn">Open</span>
-            </div>
-          </div>
+            <button
+              className={view === "analytics" ? "active" : ""}
+              onClick={() => setView("analytics")}
+            >
+              System Analytics
+            </button>
+
+            <button
+              className={view === "requests" ? "active" : ""}
+              onClick={() => setView("requests")}
+            >
+              Consultation Requests
+            </button>
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <main className="dashboard-container">
+          {view === "users" && <UserManagement />}
+
+          {view === "hospitals" && (
+  <>
+    <h3>Hospital Verification</h3>
+
+    {/* 🔍 Search + Filter */}
+    <div className="hospital-filters">
+      <input
+        placeholder="Search hospital"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          setPage(1);
+        }}
+      />
+
+      <select
+        value={statusFilter}
+        onChange={(e) => {
+          setStatusFilter(e.target.value);
+          setPage(1);
+        }}
+      >
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    {hospitals.length === 0 && <p>No hospitals found</p>}
+
+    {/* 🏥 HOSPITAL CARDS */}
+    {hospitals.map((h) => (
+      <div key={h._id} className="dashboard-card">
+        <b>{h.name}</b>
+        <p>{h.email}</p>
+
+        {h.hospitalStatus === "pending" && (
+          <>
+            <button
+              className="user-btn enable"
+              onClick={() => approveHospital(h._id)}
+            >
+              Approve
+            </button>
+
+            <button
+              className="user-btn disable"
+              onClick={() => rejectHospital(h._id)}
+            >
+              Reject
+            </button>
+          </>
         )}
 
-        {/* USER MANAGEMENT */}
-        {view === "users" && (
-          <div>
-            <h3>User Management</h3>
-            {users.map((u) => (
-              <div key={u.id} className="dashboard-card">
-                <p><b>{u.name}</b> ({u.role})</p>
-                <p>Status: {u.active ? "Active" : "Inactive"}</p>
-                <button className="dashboard-btn">
-                  {u.active ? "Deactivate" : "Activate"}
-                </button>
-              </div>
-            ))}
-          </div>
+        {h.hospitalStatus === "approved" && (
+          <span className="user-status active">Approved</span>
         )}
 
-        {/* DOCTOR VERIFICATION */}
-        {view === "doctors" && (
-          <div>
-            <h3>Doctor Verification</h3>
-            {doctors.map((d) => (
-              <div key={d.id} className="dashboard-card">
-                <p><b>{d.name}</b></p>
-                <p>{d.specialization}</p>
-                <button className="dashboard-btn">Approve</button>
-                <button className="dashboard-btn" style={{ marginLeft: "10px" }}>
-                  Reject
-                </button>
-              </div>
-            ))}
-          </div>
+        {h.hospitalStatus === "rejected" && (
+          <span className="user-status disabled">Rejected</span>
         )}
+      </div>
+    ))}
 
-        {/* ANALYTICS */}
-        {view === "analytics" && (
-          <div className="dashboard-grid">
-            <div className="dashboard-card">
-              <h3>Total Users</h3>
-              <p>128</p>
-            </div>
-            <div className="dashboard-card">
-              <h3>Doctors</h3>
-              <p>42</p>
-            </div>
-            <div className="dashboard-card">
-              <h3>Appointments</h3>
-              <p>67</p>
-            </div>
-          </div>
-        )}
+    {/* ✅ PAGINATION – OUTSIDE THE MAP */}
+    {totalPages > 1 && (
+      <div className="pagination">
+        <button
+          className="pagination-btn"
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+        >
+          Prev
+        </button>
 
-        {/* CONSULTATION REQUESTS */}
-        {view === "requests" && (
-          <div>
-            <h3>Consultation Requests</h3>
-
-            {requests.map((r) => (
-              <div key={r.id} className="dashboard-card">
-                <p><b>Patient:</b> {r.patient}</p>
-                <p><b>Doctor:</b> {r.doctor}</p>
-                <p><b>Surgery:</b> {r.surgery}</p>
-                <p><b>Status:</b> {r.status}</p>
-
-                {!r.assignedPA && (
-                  <select
-                    onChange={(e) => assignPA(r.id, e.target.value)}
-                    defaultValue=""
-                    style={{ marginTop: "10px" }}
-                  >
-                    <option value="" disabled>
-                      Assign Care Assistant
-                    </option>
-                    {assistants.map((a) => (
-                      <option key={a} value={a}>
-                        {a}
-                      </option>
-                    ))}
-                  </select>
-                )}
-
-                {r.assignedPA && (
-                  <p><b>Assigned PA:</b> {r.assignedPA}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* BACK */}
-        {view && (
+        {[...Array(totalPages)].map((_, i) => (
           <button
-            className="dashboard-btn"
-            style={{ marginTop: "20px" }}
-            onClick={() => setView(null)}
+            key={i}
+            className={`pagination-btn ${
+              page === i + 1 ? "active" : ""
+            }`}
+            onClick={() => setPage(i + 1)}
           >
-            Back to Dashboard
+            {i + 1}
           </button>
-        )}
+        ))}
 
+        <button
+          className="pagination-btn"
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
+    )}
+  </>
+)}
+
+
+
+
+          {view === "analytics" && <h3>System Analytics</h3>}
+
+          {view === "requests" && <h3>Consultation Requests</h3>}
+
+          {!view && <p>Select a task from the sidebar</p>}
+        </main>
       </div>
     </div>
   );

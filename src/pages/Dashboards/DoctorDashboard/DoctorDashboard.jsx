@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "../../styles/DoctorDashboard.css";
 import "../../styles/Dashboard.css";
 import { logout } from "../../../utils/auth";
 
@@ -9,6 +10,9 @@ export default function DoctorDashboard() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
+  const userName = user?.name || "Doctor";
+  const avatarUrl = user?.profile?.avatar || user?.photo || null;
 
   return (
     <div className="dashboard">
@@ -19,21 +23,31 @@ export default function DoctorDashboard() {
           <h2>Doctor Dashboard</h2>
         </div>
 
-        <div className="profile-area" onClick={() => setOpen(!open)}>
-          <img
-            src="https://i.pravatar.cc/40?img=12"
-            alt="profile"
-            className="profile-avatar"
-          />
-          <span className="profile-name">Dr. John Doe</span>
+        <div className="profile-area doctor-profile-area" onClick={() => setOpen(!open)}>
+          <div className="doctor-profile-info">
+            <div className="profile-avatar doctor-avatar-circle">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt="profile"
+                  className="doctor-avatar-img"
+                />
+              ) : (
+                <span className="doctor-avatar-placeholder">
+                  {userName.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <span className="profile-name">{userName}</span>
+          </div>
 
           {open && (
             <div className="profile-dropdown">
-              <button>My Profile</button>
+              <button onClick={() => navigate("/dashboard/doctor/profile")}>My Profile</button>
               <button>Settings</button>
-<button className="logout-btn" onClick={() => logout(navigate)}>
-  Logout
-</button>
+              <button className="logout-btn" onClick={() => logout(navigate)}>
+                Logout
+              </button>
             </div>
           )}
         </div>
@@ -45,7 +59,7 @@ export default function DoctorDashboard() {
           <div className="dashboard-card">
             <h3>My Profile</h3>
             <p>Edit experience, specialization, and availability.</p>
-            <span className="dashboard-btn">Edit</span>
+            <span className="dashboard-btn" onClick={() => navigate("/dashboard/doctor/profile")}>Edit</span>
           </div>
 
           <div className="dashboard-card">

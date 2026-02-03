@@ -1,7 +1,11 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../pages/styles/Footer.css";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
@@ -11,19 +15,16 @@ const Footer = () => {
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms of Use</a>
           <a href="/contact">Contact Us</a>
-        </div>
 
-        {/* ROLE LOGIN BUTTONS */}
-        <div className="footer-logins">
-          <a href="/login/doctor" className="footer-login-btn">
-            Doctor Login
-          </a>
-          <a href="/login/assistant" className="footer-login-btn">
-            Care Assistant Login
-          </a>
-          <a href="/login/admin" className="footer-login-btn">
-            Admin Login
-          </a>
+          {/* Show Register as Hospital button only on homepage */}
+          {location.pathname === "/" && (
+            <button
+              className="footer-cta"
+              onClick={() => navigate("/register-hospital")}
+            >
+              Register as Hospital
+            </button>
+          )}
         </div>
       </div>
     </footer>

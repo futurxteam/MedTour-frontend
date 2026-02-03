@@ -10,17 +10,23 @@ import Contact from "./pages/Contact";
 
 import ServiceDetails from "./pages/serviceDetails";
 import DoctorDetails from "./pages/doctorDetails";
-
+import HospitalDashboard from "./pages/Dashboards/HospitalDashboard/HospitalDashboard.jsx";
 import UserDashboard from "./pages/Dashboards/UserDashboard/UserDashboard.jsx";
 import DoctorDashboard from "./pages/Dashboards/DoctorDashboard/DoctorDashboard.jsx";
 import PADashboard from "./pages/Dashboards/PADashboard/PADashboard.jsx";
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard.jsx";
-
+import RegisterHospital from "@/pages/Dashboards/HospitalDashboard/RegisterHospital";
 import MyAppointments from "./pages/Dashboards/UserDashboard/MyAppointments.jsx";
 
-import PublicRoute from "./routes/PublicRoute";
+import DoctorProfile from "./pages/Dashboards/DoctorDashboard/DoctorProfile";
+import PatientProfile from "./pages/Dashboards/UserDashboard/PatientProfile.jsx";
+import HospitalProfile from "./pages/Dashboards/HospitalDashboard/HospitalProfile.jsx";
+import AddDoctor from "./pages/Dashboards/HospitalDashboard/AddDoctor.jsx";
+import HospitalDoctors from "./pages/Dashboards/HospitalDashboard/HospitalDoctors.jsx";
+import AddSurgery from "./pages/Dashboards/HospitalDashboard/AddSurgery.jsx";
+import HospitalSurgeries from "./pages/Dashboards/HospitalDashboard/HospitalSurgeries.jsx";
 
-import RoleLogin from "./pages/RoleLogin";
+import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
@@ -34,8 +40,13 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/doctor/:doctorId" element={<DoctorDetails />} />
         <Route path="/surgery/:id" element={<ServiceDetails />} />
+        <Route
+          path="/register-hospital"
+          element={<RegisterHospital />}
+        />
 
-        
+
+
 
         {/* User protected routes */}
         <Route
@@ -65,6 +76,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard/doctor/profile"
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <DoctorProfile />
+            </ProtectedRoute>
+          }
+        />
+
 
         {/* Care Assistant protected routes */}
         <Route
@@ -85,50 +105,70 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route element={<ProtectedRoute allowedRoles={["hospital"]} />}>
+          <Route path="/dashboard/hospital" element={<HospitalDashboard />}>
+            <Route index element={
+              <div className="dashboard-wrapper">
+                <h3>Welcome, Hospital Admin</h3>
+                <p>Select a task from the sidebar to manage your hospital's operations.</p>
+              </div>
+            } />
+            <Route path="profile" element={<HospitalProfile />} />
+            <Route path="doctors" element={
+              <>
+                <h3>Manage Hospital Doctors</h3>
+                <AddDoctor />
+              </>
+            } />
+            <Route path="profiles" element={
+              <>
+                <h3>Doctor Profile Completion Status</h3>
+                <HospitalDoctors />
+              </>
+            } />
+            <Route path="surgeries" element={
+              <>
+                <h3>Manage Surgeries & Treatment Packages</h3>
+                <AddSurgery />
+                <HospitalSurgeries />
+              </>
+            } />
+            <Route path="assignments" element={
+              <>
+                <h3>Assign Doctors to Surgeries & Packages</h3>
+                <p>Feature coming soon...</p>
+              </>
+            } />
+          </Route>
+        </Route>
+
         <Route
-  path="/login"
-  element={
-    <PublicRoute>
-      <Login />
-    </PublicRoute>
-  }
-/>
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
 
-<Route
-  path="/signup"
-  element={
-    <PublicRoute>
-      <Signup />
-    </PublicRoute>
-  }
-/>
-
-<Route
-  path="/login/admin"
-  element={
-    <PublicRoute>
-      <RoleLogin />
-    </PublicRoute>
-  }
-/>
-<Route
-  path="/login/assistant"
-  element={
-    <PublicRoute>
-      <RoleLogin />
-    </PublicRoute>
-  }
-/>
-<Route
-  path="/login/doctor"
-  element={
-    <PublicRoute>
-      <RoleLogin />
-    </PublicRoute>
-  }
-/>
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <PatientProfile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      
+
     </BrowserRouter>
   );
 }

@@ -14,6 +14,8 @@ export default function PublicRoute({ children }) {
         return <Navigate to="/dashboard/doctor" replace />;
       case "assistant":
         return <Navigate to="/dashboard/pa" replace />;
+      case "hospital":
+        return <Navigate to="/dashboard/hospital" replace />;
       default:
         return <Navigate to="/dashboard/user" replace />;
     }

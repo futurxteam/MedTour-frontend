@@ -12,9 +12,10 @@ export const getAuthUser = () => {
     const decoded = jwtDecode(token);
 
     return {
-      token,              // ✅ ADD THIS
+      token,
       id: decoded.id,
       role: decoded.role,
+      profileCompleted: decoded.profileCompleted,
       iat: decoded.iat,
       exp: decoded.exp,
     };
@@ -31,7 +32,7 @@ export const getAuthUser = () => {
 export const logout = (navigate) => {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
-  navigate("/login");
+  navigate("/", { replace: true });
 };
 
 /**

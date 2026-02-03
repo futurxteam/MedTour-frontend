@@ -30,10 +30,12 @@
   align-items: center;
   justify-content: space-between;
 }
+
 .header-right {
   display: flex;
   align-items: center;
-  gap: 18px; /* nav ↔ buttons spacing */
+  gap: 18px;
+  /* nav ↔ buttons spacing */
 }
 
 
@@ -57,9 +59,11 @@
 
 .header-btn {
   padding: 10px 22px;
-  background: #7bae9e;          /* SAME as Talk to a doctor */
+  background: #7bae9e;
+  /* SAME as Talk to a doctor */
   color: white;
-  border-radius: 999px;         /* softer, matches hero CTA */
+  border-radius: 999px;
+  /* softer, matches hero CTA */
   border: none;
   font-weight: 500;
   cursor: pointer;
@@ -68,8 +72,10 @@
 }
 
 .header-btn:hover {
-  background: #5f8f82;          /* hover state match */
+  background: #5f8f82;
+  /* hover state match */
 }
+
 .header-btn-outline {
   display: flex;
   align-items: center;
@@ -223,6 +229,7 @@
 .dept-dropdown::-webkit-scrollbar {
   width: 6px;
 }
+
 .dept-dropdown::-webkit-scrollbar-thumb {
   background: #c7c7c7;
   border-radius: 10px;
@@ -241,6 +248,7 @@
 .dept-item-child:hover {
   background: #f3f4f6;
 }
+
 .logo-container {
   display: flex;
   align-items: center;
@@ -252,6 +260,7 @@
   width: auto;
   object-fit: contain;
 }
+
 .profile-wrapper {
   position: relative;
 }
@@ -276,7 +285,7 @@
   width: 160px;
   background: white;
   border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   z-index: 100;
 }

@@ -3,6 +3,8 @@ import "../pages/styles/Auth.css";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleAuth, loginUser } from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api/api";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,20 +14,67 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const dashboardMap = {
+    admin: "/dashboard/admin",
+    doctor: "/dashboard/doctor",
+    assistant: "/dashboard/pa",
+    user: "/dashboard/user",
+    hospital: "/dashboard/hospital",
+
+  };
+
   const handleLogin = async () => {
     setError("");
     setLoading(true);
 
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      setLoading(false);
+      return;
+    }
+
     try {
+      // 1️⃣ Login
       const res = await loginUser({ email, password });
+
+      if (!res.token) {
+        throw new Error("Invalid login response");
+      }
+
+      // 2️⃣ Store token
       localStorage.setItem("token", res.token);
-      navigate("/");
+
+      // 3️⃣ Fetch FULL user from backend
+      const meRes = await api.get("/user/me");
+
+      // 4️⃣ Store full user (🔥 THIS IS THE KEY 🔥)
+      localStorage.setItem("user", JSON.stringify(meRes.data));
+
+      const role = meRes.data.role;
+      const profileCompleted = meRes.data.profileCompleted;
+
+      // 5️⃣ Redirect based on profile completion status
+      // If user role and profile is not completed, redirect to profile page
+      if (role === "user" && !profileCompleted) {
+        navigate("/profile", { replace: true });
+        return;
+      }
+
+      // 6️⃣ Otherwise, redirect based on role to dashboard
+      const targetPath = dashboardMap[role];
+      if (!targetPath) {
+        throw new Error("No dashboard available for this role");
+      }
+
+      navigate(targetPath, { replace: true });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -34,7 +83,22 @@ const Login = () => {
       });
 
       localStorage.setItem("token", res.token);
-      navigate("/");
+
+      // Fetch full user data to check profile completion
+      const meRes = await api.get("/user/me");
+      localStorage.setItem("user", JSON.stringify(meRes.data));
+
+      const role = meRes.data.role;
+      const profileCompleted = meRes.data.profileCompleted;
+
+      // If user role and profile is not completed, redirect to profile page
+      if (role === "user" && !profileCompleted) {
+        navigate("/profile");
+      } else {
+        // Otherwise, redirect to appropriate dashboard
+        const targetPath = dashboardMap[role];
+        navigate(targetPath || "/dashboard/user");
+      }
     } catch {
       setError("Google login failed");
     }

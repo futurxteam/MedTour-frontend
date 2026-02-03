@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/Dashboard.css";
+import "../styles/MyAppointments.css";
 
 const steps = [
   {
@@ -55,133 +56,71 @@ export default function MyAppointments() {
 
   return (
     <div className="dashboard">
-      <div className="dashboard-container" style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 style={{ marginBottom: "8px", fontSize: "28px", color: "#1e293b" }}>
+      <div className="appointments-container">
+        <h2 className="appointments-title">
           My Treatment Journey
         </h2>
-        <p style={{ color: "#64748b", marginBottom: "30px" }}>
+        <p className="appointments-subtitle">
           Track your medical travel and surgery progress
         </p>
 
         {/* Surgery Summary Card */}
-        <div
-          className="dashboard-card"
-          style={{
-            background: "linear-gradient(135deg, #3b82f6, #2563eb)",
-            color: "white",
-            border: "none",
-            borderRadius: "12px",
-            padding: "20px",
-            marginBottom: "30px",
-          }}
-        >
-          <h3 style={{ margin: "0 0 10px 0", fontSize: "24px" }}>Proctology Surgery</h3>
-          <p style={{ margin: "8px 0", opacity: 0.95 }}>
+        <div className="dashboard-card surgery-summary-card">
+          <h3>Proctology Surgery</h3>
+          <p>
             <strong>Hospital:</strong> Futureace Hospital, Edapally, Kochi
           </p>
-           <p style={{ margin: "8px 0", opacity: 0.95 }}>
+          <p>
             <strong>Doctor:</strong> Dr. Rajesh Menon
           </p>
-          <p style={{ margin: "8px 0" }}>
+          <p>
             <strong>Status:</strong>{" "}
-            <span
-              style={{
-                background: "#10b981",
-                padding: "4px 12px",
-                borderRadius: "20px",
-                fontSize: "14px",
-                fontWeight: "600",
-              }}
-            >
+            <span className="surgery-status-badge">
               In Progress
             </span>
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "30px", flexWrap: "wrap" }}>
+        <div className="appointments-content">
           {/* Main Content - Stepper + Details */}
-          <div style={{ flex: "2 1 650px" }}>
+          <div className="appointments-main">
             {/* Vertical Stepper */}
-            <div className="dashboard-card" style={{ padding: "24px" }}>
-              <h3 style={{ marginBottom: "24px", color: "#1e293b" }}>Journey Progress</h3>
+            <div className="dashboard-card journey-progress-card">
+              <h3>Journey Progress</h3>
 
-              <div style={{ position: "relative" }}>
+              <div className="stepper-container">
                 {steps.map((step, index) => (
                   <div
                     key={step.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      marginBottom: index === steps.length - 1 ? "0" : "24px",
-                      position: "relative",
-                    }}
+                    className="stepper-item"
                   >
                     {/* Timeline Line */}
                     {index < steps.length - 1 && (
                       <div
-                        style={{
-                          position: "absolute",
-                          left: "20px",
-                          top: "40px",
-                          width: "2px",
-                          height: "100%",
-                          background: index < currentStepIndex ? "#3b82f6" : "#e2e8f0",
-                          zIndex: 0,
-                        }}
+                        className={`stepper-line ${index < currentStepIndex ? 'completed' : 'pending'}`}
                       />
                     )}
 
                     {/* Circle Indicator */}
                     <div
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                        background:
-                          step.completed || step.current
-                            ? "#3b82f6"
-                            : "#e2e8f0",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: "bold",
-                        fontSize: "18px",
-                        flexShrink: 0,
-                        zIndex: 1,
-                        boxShadow: step.current ? "0 0 0 8px rgba(59, 130, 246, 0.2)" : "none",
-                        transition: "all 0.3s",
-                      }}
+                      className={`stepper-circle ${
+                        step.completed ? 'completed' : step.current ? 'current' : 'pending'
+                      }`}
                     >
                       {step.completed ? "✓" : step.current ? "●" : index + 1}
                     </div>
 
                     {/* Step Content */}
-                    <div style={{ marginLeft: "20px", flex: 1 }}>
-                      <h4
-                        style={{
-                          margin: "0 0 6px 0",
-                          color: step.current ? "#1e293b" : "#64748b",
-                          fontSize: "18px",
-                        }}
-                      >
+                    <div className="stepper-content">
+                      <h4 className={`stepper-title ${step.current ? 'current' : 'pending'}`}>
                         {step.title}
                         {step.current && (
-                          <span
-                            style={{
-                              marginLeft: "10px",
-                              background: "#3b82f6",
-                              color: "white",
-                              fontSize: "12px",
-                              padding: "4px 10px",
-                              borderRadius: "12px",
-                            }}
-                          >
+                          <span className="stepper-current-badge">
                             CURRENT
                           </span>
                         )}
                       </h4>
-                      <p style={{ margin: "4px 0", color: "#64748b", fontSize: "15px" }}>
+                      <p className="stepper-time">
                         {step.time}
                       </p>
                     </div>
@@ -191,28 +130,20 @@ export default function MyAppointments() {
             </div>
 
             {/* Current Step Details */}
-            <div className="dashboard-card" style={{ marginTop: "24px", padding: "24px" }}>
-              <h3 style={{ color: "#1e293b", marginBottom: "16px" }}>
+            <div className="dashboard-card current-step-details">
+              <h3>
                 Current Step: {activeStep.title}
               </h3>
-              <p style={{ fontSize: "16px", color: "#475569", lineHeight: "1.6" }}>
+              <p>
                 <strong>Schedule:</strong> {activeStep.time}
               </p>
-              <p style={{ marginTop: "12px", fontSize: "16px", color: "#475569", lineHeight: "1.7" }}>
+              <p>
                 {activeStep.details}
               </p>
 
               {activeStep.current && (
-                <div
-                  style={{
-                    marginTop: "20px",
-                    padding: "16px",
-                    background: "#f0f9ff",
-                    borderRadius: "10px",
-                    borderLeft: "4px solid #3b82f6",
-                  }}
-                >
-                  <p style={{ margin: 0, color: "#0c4a6e", fontWeight: "500" }}>
+                <div className="current-step-alert">
+                  <p>
                     ✈️ You're on your way! Safe travels to Kochi.
                   </p>
                 </div>
@@ -221,63 +152,49 @@ export default function MyAppointments() {
           </div>
 
           {/* Sidebar */}
-          <div style={{ flex: "1 1 300px" }}>
+          <div className="appointments-sidebar">
             {/* Care Assistant */}
-            <div className="dashboard-card" style={{ marginBottom: "24px" }}>
-              <h3 style={{ marginBottom: "16px", color: "#1e293b" }}>Your Care Assistant</h3>
-              <div style={{ textAlign: "center", marginBottom: "16px" }}>
-                <div
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "50%",
-                    background: "#e0f2fe",
-                    margin: "0 auto 12px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "32px",
-                  }}
-                >
-                  👤
-                </div>
-                <h4 style={{ margin: "0 0 8px 0" }}>Rahul Menon</h4>
-                <p style={{ color: "#64748b", fontSize: "15px" }}>Personal Coordinator</p>
+            <div className="dashboard-card care-assistant-card">
+              <h3>Your Care Assistant</h3>
+              <div className="assistant-avatar">
+                👤
               </div>
-              <p style={{ textAlign: "center", margin: "16px 0" }}>
+              <h4 className="assistant-name">Rahul Menon</h4>
+              <p className="assistant-role">Personal Coordinator</p>
+              <div className="assistant-contact">
                 <strong>Contact:</strong><br />
-                <a href="tel:+919876543210" style={{ color: "#3b82f6", fontSize: "18px", fontWeight: "600" }}>
+                <a href="tel:+919876543210" className="assistant-phone">
                   +91 98765 43210
                 </a>
-              </p>
-              <p style={{ fontSize: "15px", color: "#64748b", textAlign: "center" }}>
+              </div>
+              <p className="assistant-availability">
                 Available 24/7 for any assistance during your journey.
               </p>
             </div>
 
             {/* Included Services */}
-            <div className="dashboard-card">
-              <h3 style={{ marginBottom: "16px", color: "#1e293b" }}>Included Services</h3>
-              <div style={{ spaceY: "12px" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
-                  <span style={{ fontSize: "24px", marginRight: "12px" }}>🌍</span>
-                  <div>
-                    <p style={{ margin: 0, fontWeight: "600" }}>Arabic Translator</p>
-                    <small style={{ color: "#64748b" }}>Dedicated support at hospital</small>
+            <div className="dashboard-card services-card">
+              <h3>Included Services</h3>
+              <div>
+                <div className="service-item">
+                  <span className="service-icon">🌍</span>
+                  <div className="service-content">
+                    <p>Arabic Translator</p>
+                    <small>Dedicated support at hospital</small>
                   </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
-                  <span style={{ fontSize: "24px", marginRight: "12px" }}>🚗</span>
-                  <div>
-                    <p style={{ margin: 0, fontWeight: "600" }}>Premium Transport</p>
-                    <small style={{ color: "#64748b" }}>Airport pickup & transfers</small>
+                <div className="service-item">
+                  <span className="service-icon">🚗</span>
+                  <div className="service-content">
+                    <p>Premium Transport</p>
+                    <small>Airport pickup & transfers</small>
                   </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ fontSize: "24px", marginRight: "12px" }}>🏞️</span>
-                  <div>
-                    <p style={{ margin: 0, fontWeight: "600" }}>Tour Package</p>
-                    <small style={{ color: "#64748b" }}>Optional Kerala sightseeing post-recovery</small>
+                <div className="service-item">
+                  <span className="service-icon">🏞️</span>
+                  <div className="service-content">
+                    <p>Tour Package</p>
+                    <small>Optional Kerala sightseeing post-recovery</small>
                   </div>
                 </div>
               </div>

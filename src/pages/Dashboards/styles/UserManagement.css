@@ -1,0 +1,186 @@
+/* UserManagement Component Styles */
+
+.user-management-container {
+  width: 100%;
+}
+
+.user-management-title {
+  margin-bottom: 20px;
+}
+
+.user-management-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.user-management-controls input,
+.user-management-controls select,
+.user-management-controls button {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.user-management-controls input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.user-management-controls select {
+  min-width: 150px;
+}
+
+.user-management-controls button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.user-management-controls button:hover {
+  background: #2563eb;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-card {
+  padding: 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.user-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.user-card-name {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.user-card-role {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.user-card-email {
+  color: #64748b;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.user-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.user-status-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.user-status-btn.enable {
+  background: #10b981;
+  color: white;
+}
+
+.user-status-btn.enable:hover {
+  background: #059669;
+}
+
+.user-status-btn.disable {
+  background: #ef4444;
+  color: white;
+}
+
+.user-status-btn.disable:hover {
+  background: #dc2626;
+}
+
+.create-user-form {
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.create-user-form select,
+.create-user-form input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.create-user-form button {
+  width: 100%;
+  padding: 10px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.create-user-form button:hover {
+  background: #2563eb;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.pagination-controls button {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #1e293b;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-controls button.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}

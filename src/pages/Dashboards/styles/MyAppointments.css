@@ -1,0 +1,272 @@
+/* MyAppointments Component Styles */
+
+.appointments-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.appointments-title {
+  margin-bottom: 8px;
+  font-size: 28px;
+  color: #1e293b;
+}
+
+.appointments-subtitle {
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+.surgery-summary-card {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.surgery-summary-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+}
+
+.surgery-summary-card p {
+  margin: 8px 0;
+  opacity: 0.95;
+}
+
+.surgery-status-badge {
+  background: #10b981;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.appointments-content {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.appointments-main {
+  flex: 2 1 650px;
+}
+
+.journey-progress-card {
+  padding: 24px;
+}
+
+.journey-progress-card h3 {
+  margin-bottom: 24px;
+  color: #1e293b;
+}
+
+.stepper-container {
+  position: relative;
+}
+
+.stepper-item {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+}
+
+.stepper-item:not(:last-child) {
+  margin-bottom: 24px;
+}
+
+.stepper-line {
+  position: absolute;
+  left: 20px;
+  top: 40px;
+  width: 2px;
+  height: 100%;
+  z-index: 0;
+  transition: background 0.3s;
+}
+
+.stepper-line.completed {
+  background: #3b82f6;
+}
+
+.stepper-line.pending {
+  background: #e2e8f0;
+}
+
+.stepper-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  flex-shrink: 0;
+  z-index: 1;
+  transition: all 0.3s;
+}
+
+.stepper-circle.completed,
+.stepper-circle.current {
+  background: #3b82f6;
+}
+
+.stepper-circle.pending {
+  background: #e2e8f0;
+}
+
+.stepper-circle.current {
+  box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.2);
+}
+
+.stepper-content {
+  margin-left: 20px;
+  flex: 1;
+}
+
+.stepper-title {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.stepper-title.current {
+  color: #1e293b;
+}
+
+.stepper-title.pending {
+  color: #64748b;
+}
+
+.stepper-current-badge {
+  margin-left: 10px;
+  background: #3b82f6;
+  color: white;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.stepper-time {
+  margin: 4px 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.current-step-details {
+  margin-top: 24px;
+  padding: 24px;
+}
+
+.current-step-details h3 {
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.current-step-details p {
+  font-size: 16px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.current-step-details p:nth-of-type(2) {
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+.current-step-alert {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f0f9ff;
+  border-radius: 10px;
+  border-left: 4px solid #3b82f6;
+}
+
+.current-step-alert p {
+  margin: 0;
+  color: #0c4a6e;
+  font-weight: 500;
+}
+
+.appointments-sidebar {
+  flex: 1 1 300px;
+}
+
+.care-assistant-card {
+  margin-bottom: 24px;
+}
+
+.care-assistant-card h3 {
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.assistant-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #e0f2fe;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.assistant-name {
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.assistant-role {
+  color: #64748b;
+  font-size: 15px;
+  text-align: center;
+}
+
+.assistant-contact {
+  text-align: center;
+  margin: 16px 0;
+}
+
+.assistant-phone {
+  color: #3b82f6;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.assistant-availability {
+  font-size: 15px;
+  color: #64748b;
+  text-align: center;
+}
+
+.services-card h3 {
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-item:not(:last-child) {
+  margin-bottom: 12px;
+}
+
+.service-icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.service-content p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.service-content small {
+  color: #64748b;
+}

@@ -3,6 +3,7 @@ import "../pages/styles/Auth.css";
 import { GoogleLogin } from "@react-oauth/google";
 import { googleAuth, signupUser } from "../api/api";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../api/api";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -20,10 +21,15 @@ const Signup = () => {
     try {
       const res = await signupUser({ name, email, password });
       localStorage.setItem("token", res.token);
-      navigate("/");
+
+      // Fetch full user data
+      const meRes = await api.get("/user/me");
+      localStorage.setItem("user", JSON.stringify(meRes.data));
+
+      // New users need to complete their profile
+      navigate("/profile", { replace: true });
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -35,9 +41,16 @@ const Signup = () => {
       });
 
       localStorage.setItem("token", res.token);
-      navigate("/");
+
+      // Fetch full user data
+      const meRes = await api.get("/user/me");
+      localStorage.setItem("user", JSON.stringify(meRes.data));
+
+      // New users need to complete their profile
+      navigate("/profile", { replace: true });
     } catch {
       setError("Google signup failed");
+      setLoading(false);
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard.css";
+import "../styles/PADashboard.css";
 import { getAuthUser, logout } from "../../../utils/auth";
 
 
@@ -176,7 +177,6 @@ export default function PADashboard() {
             <div
               className="dashboard-card"
               onClick={() => setView("patients")}
-              style={{ cursor: "pointer" }}
             >
               <h3>Assigned Patients ({patients.length})</h3>
               <p>View and manage patients under your care</p>
@@ -185,7 +185,6 @@ export default function PADashboard() {
             <div
               className="dashboard-card"
               onClick={() => setView("appointments")}
-              style={{ cursor: "pointer" }}
             >
               <h3>Upcoming Appointments ({appointments.length})</h3>
               <p>Follow up on booked consultations</p>
@@ -197,49 +196,42 @@ export default function PADashboard() {
         {/* Assigned Patients List */}
         {view === "patients" && !selectedPatient && (
           <>
-            <h3 style={{ marginBottom: "20px" }}>Assigned Patients</h3>
-            <div className="dashboard-grid">
+            <h3 className="patient-list-title">Assigned Patients</h3>
+            <div className="patient-list">
               {patients.map((p) => (
                 <div
                   key={p.id}
-                  className="dashboard-card"
-                  style={{
-                    cursor: "pointer",
-                    border: "1px solid #e2e8f0",
-                    transition: "all 0.2s",
-                    position: "relative",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-4px)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+                  className="dashboard-card patient-card"
                 >
-                  <h3>{p.name}</h3>
-                  <p><strong>{p.surgery}</strong></p>
-                  <p>From: {p.from}</p>
-                  <p style={{ fontSize: "14px", color: "#64748b" }}>
-                    Current: {p.steps[p.currentStep]}
-                  </p>
+                  <div className="patient-card-header">
+                    <div>
+                      <div className="patient-card-name">{p.name}</div>
+                      <p className="patient-card-contact">{p.contact}</p>
+                    </div>
+                    <span className="patient-card-from">{p.from}</span>
+                  </div>
+                  <div className="patient-card-details">
+                    <p><strong>{p.surgery}</strong></p>
+                    <p>
+                      Current: {p.steps[p.currentStep]}
+                    </p>
+                  </div>
 
-                  <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+                  <div className="patient-card-buttons">
                     <button
                       className="dashboard-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedPatient(p);
                       }}
-                      style={{ flex: 1 }}
                     >
                       View Details
                     </button>
                     <button
-                      className="dashboard-btn"
+                      className="patient-notify-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNotify(p);
-                      }}
-                      style={{
-                        flex: 1,
-                        background: "#10b981",
-                        border: "none",
                       }}
                     >
                       Notify 📩
@@ -251,64 +243,42 @@ export default function PADashboard() {
           </>
         )}
 
-        {/* Patient Details View - Same as before */}
+        {/* Patient Details View */}
         {selectedPatient && (
           <div>
-            <div className="dashboard-card">
-              <h3>{selectedPatient.name}</h3>
-              <p><b>Contact:</b> {selectedPatient.contact}</p>
-              <p><b>Doctor:</b> {selectedPatient.doctor}</p>
-              <p><b>Surgery:</b> {selectedPatient.surgery}</p>
-              <p><b>Hospital:</b> {selectedPatient.hospital}</p>
-              <p><b>Origin:</b> {selectedPatient.from}</p>
+            <div className="dashboard-card patient-detail-header">
+              <div className="patient-detail-name">{selectedPatient.name}</div>
+              <p className="patient-detail-info"><b>Contact:</b> {selectedPatient.contact}</p>
+              <p className="patient-detail-info"><b>Doctor:</b> {selectedPatient.doctor}</p>
+              <p className="patient-detail-info"><b>Surgery:</b> {selectedPatient.surgery}</p>
+              <p className="patient-detail-info"><b>Hospital:</b> {selectedPatient.hospital}</p>
+              <p className="patient-detail-info"><b>Origin:</b> {selectedPatient.from}</p>
             </div>
 
-            <div className="dashboard-card" style={{ marginTop: "20px" }}>
+            <div className="dashboard-card patient-detail-journey">
               <h3>Procedure Progress</h3>
               {selectedPatient.steps.map((step, index) => (
                 <div
                   key={index}
-                  style={{
-                    padding: "12px 10px",
-                    marginTop: "8px",
-                    borderRadius: "8px",
-                    background:
-                      index < selectedPatient.currentStep
-                        ? "#d4edda"
-                        : index === selectedPatient.currentStep
-                        ? "#e0f2fe"
-                        : "#f8f9fa",
-                    borderLeft: `4px solid ${
-                      index < selectedPatient.currentStep
-                        ? "#28a745"
-                        : index === selectedPatient.currentStep
-                        ? "#0d6efd"
-                        : "#dee2e6"
-                    }`,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
+                  className={`journey-step ${index === selectedPatient.currentStep ? 'current' : ''}`}
                 >
-                  <span style={{ fontWeight: index === selectedPatient.currentStep ? "600" : "normal" }}>
-                    {step}
-                  </span>
-                  {index < selectedPatient.currentStep && <span style={{ color: "#28a745" }}>✓ Completed</span>}
-                  {index === selectedPatient.currentStep && <b style={{ color: "#0d6efd" }}>Current</b>}
+                  <div className="journey-step-number">Step {index + 1}</div>
+                  <div className="journey-step-title">{step}</div>
+                  {index < selectedPatient.currentStep && <div>✓ Completed</div>}
+                  {index === selectedPatient.currentStep && <div><b>Current</b></div>}
                 </div>
               ))}
-              <button
-                className="dashboard-btn"
-                style={{ marginTop: "20px", width: "100%" }}
-                onClick={() => alert("Status update feature coming soon!")}
-              >
-                Update Progress
-              </button>
             </div>
 
             <button
               className="dashboard-btn"
-              style={{ marginTop: "20px" }}
+              onClick={() => alert("Status update feature coming soon!")}
+            >
+              Update Progress
+            </button>
+
+            <button
+              className="dashboard-btn"
               onClick={() => setSelectedPatient(null)}
             >
               Back to Patients List
@@ -319,20 +289,20 @@ export default function PADashboard() {
         {/* Appointments View */}
         {view === "appointments" && (
           <>
-            <h3 style={{ marginBottom: "20px" }}>Upcoming Appointments</h3>
-            <div className="dashboard-grid">
+            <h3 className="appointments-title">Upcoming Appointments</h3>
+            <div className="appointments-list">
               {appointments.map((a) => (
-                <div key={a.id} className="dashboard-card">
-                  <p><b>Patient:</b> {a.patient}</p>
-                  <p><b>Contact:</b> {a.patientContact}</p>
-                  <p><b>Doctor:</b> {a.doctor}</p>
-                  <p><b>Surgery:</b> {a.surgery}</p>
-                  <p><b>Time:</b> <strong>{a.time}</strong></p>
-                  <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
-                    <button className="dashboard-btn" style={{ flex: 1 }} onClick={() => alert(`Calling patient: ${a.patientContact}`)}>
+                <div key={a.id} className="dashboard-card appointment-card">
+                  <p className="appointment-card-details"><b>Patient:</b> {a.patient}</p>
+                  <p className="appointment-card-details"><b>Contact:</b> {a.patientContact}</p>
+                  <p className="appointment-card-details"><b>Doctor:</b> {a.doctor}</p>
+                  <p className="appointment-card-details"><b>Surgery:</b> {a.surgery}</p>
+                  <p className="appointment-card-details"><b>Time:</b> <span className="appointment-card-time">{a.time}</span></p>
+                  <div className="patient-card-buttons">
+                    <button className="dashboard-btn" onClick={() => alert(`Calling patient: ${a.patientContact}`)}>
                       Call Patient
                     </button>
-                    <button className="dashboard-btn" style={{ flex: 1 }} onClick={() => alert(`Calling doctor: ${a.doctorContact}`)}>
+                    <button className="dashboard-btn" onClick={() => alert(`Calling doctor: ${a.doctorContact}`)}>
                       Call Doctor
                     </button>
                   </div>
@@ -346,7 +316,6 @@ export default function PADashboard() {
         {view && !selectedPatient && (
           <button
             className="dashboard-btn"
-            style={{ marginTop: "30px" }}
             onClick={handleBack}
           >
             ← Back to Dashboard
@@ -356,39 +325,18 @@ export default function PADashboard() {
 
       {/* NOTIFICATION MODAL */}
       {notifyPatient && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-          }}
-          onClick={() => setNotifyPatient(null)}
-        >
+        <div className="notify-modal-overlay" onClick={() => setNotifyPatient(null)}>
           <div
-            className="dashboard-card"
-            style={{
-              width: "90%",
-              maxWidth: "500px",
-              padding: "24px",
-              borderRadius: "12px",
-              position: "relative",
-            }}
+            className="dashboard-card notify-panel"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginTop: 0 }}>Notify {notifyPatient.name}</h3>
-            <p style={{ color: "#64748b", marginBottom: "20px" }}>
+            <h3 className="notify-panel-title">Notify {notifyPatient.name}</h3>
+            <p className="notify-panel-contact">
               Contact: {notifyPatient.contact}
             </p>
 
-            <h4 style={{ marginBottom: "12px" }}>Quick Messages</h4>
-            <div style={{ display: "grid", gap: "8px", marginBottom: "20px" }}>
+            <div className="notify-templates">
+              <label className="notify-templates-label">Quick Messages</label>
               {notificationTemplates.map((template, i) => (
                 <button
                   key={i}
@@ -396,54 +344,38 @@ export default function PADashboard() {
                     setSelectedTemplate(template.message);
                     setCustomMessage("");
                   }}
-                  style={{
-                    padding: "12px",
-                    textAlign: "left",
-                    borderRadius: "8px",
-                    border: "1px solid #cbd5e1",
-                    background: selectedTemplate === template.message ? "#dbeafe" : "#fff",
-                    cursor: "pointer",
-                    fontSize: "15px",
-                  }}
+                  className={`notify-template-btn ${selectedTemplate === template.message ? 'active' : ''}`}
                 >
                   <strong>{template.label}</strong>
                   <br />
-                  <small style={{ color: "#64748b" }}>{template.message}</small>
+                  <small>{template.message}</small>
                 </button>
               ))}
             </div>
 
-            <h4>Or Custom Message</h4>
-            <textarea
-              placeholder="Type your message here..."
-              value={customMessage}
-              onChange={(e) => {
-                setCustomMessage(e.target.value);
-                setSelectedTemplate("");
-              }}
-              style={{
-                width: "100%",
-                height: "100px",
-                padding: "12px",
-                borderRadius: "8px",
-                border: "1px solid #cbd5e1",
-                fontSize: "15px",
-                marginBottom: "16px",
-              }}
-            />
+            <div className="notify-custom-message">
+              <label className="notify-custom-label">Or Custom Message</label>
+              <textarea
+                placeholder="Type your message here..."
+                value={customMessage}
+                onChange={(e) => {
+                  setCustomMessage(e.target.value);
+                  setSelectedTemplate("");
+                }}
+                className="notify-custom-textarea"
+              />
+            </div>
 
-            <div style={{ display: "flex", gap: "10px" }}>
+            <div className="notify-buttons">
               <button
-                className="dashboard-btn"
-                style={{ flex: 1, background: "#10b981" }}
+                className="notify-send-btn"
                 onClick={sendNotification}
                 disabled={!selectedTemplate && !customMessage}
               >
                 Send Notification 📩
               </button>
               <button
-                className="dashboard-btn"
-                style={{ flex: 1 }}
+                className="notify-cancel-btn"
                 onClick={() => setNotifyPatient(null)}
               >
                 Cancel
