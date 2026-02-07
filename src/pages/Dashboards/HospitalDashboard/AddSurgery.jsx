@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { addHospitalSurgery, getHospitalSpecializations } from "../../../api/api";
+import {
+  addHospitalSurgery,
+  getHospitalSpecializations,
+} from "../../../api/api";
 import "../styles/HospitalDashboard.css";
 
 export default function AddSurgery() {
@@ -8,54 +11,74 @@ export default function AddSurgery() {
   const [showList, setShowList] = useState(false);
 
   const [form, setForm] = useState({
-    specialization: "",
+    specializationId: "",   // ✅ ObjectId
     surgeryName: "",
     description: "",
     duration: "",
     cost: "",
   });
 
-  // Fetch specializations from database on component mount
+  /* ===========================
+     FETCH SPECIALTIES
+  =========================== */
   useEffect(() => {
     const fetchSpecializations = async () => {
       try {
         const res = await getHospitalSpecializations();
-        setSpecialties(res.data.specializations || []);
+        // Handle both possible keys from backend
+        setSpecialties(res.data.specializations || res.data.specialties || []);
       } catch (err) {
         console.error("Failed to fetch specializations:", err);
       }
     };
     fetchSpecializations();
   }, []);
+
+  /* ===========================
+     FILTER SPECIALTIES
+  =========================== */
   const filteredSpecialties = specialties.filter((spec) =>
-    spec.toLowerCase().includes(search.toLowerCase())
+    spec.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  /* ===========================
+     SUBMIT
+  =========================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.specialization) {
+    if (!form.specializationId) {
       alert("Please select a specialization");
       return;
     }
 
     try {
       await addHospitalSurgery({
-        ...form,
+        specializationId: form.specializationId,
+        surgeryName: form.surgeryName,
+        description: form.description,
+        duration: form.duration,
         cost: Number(form.cost),
       });
+
       alert("Surgery added successfully");
+
       setForm({
-        specialization: "",
+        specializationId: "",
         surgeryName: "",
         description: "",
         duration: "",
         cost: "",
       });
+
       setSearch("");
+      setShowList(false);
     } catch (err) {
       console.error("Error adding surgery:", err);
-      alert("Failed to add surgery: " + (err.response?.data?.message || err.message));
+      alert(
+        "Failed to add surgery: " +
+        (err.response?.data?.message || err.message)
+      );
     }
   };
 
@@ -86,14 +109,17 @@ export default function AddSurgery() {
 
               {filteredSpecialties.map((spec) => (
                 <li
-                  key={spec}
+                  key={spec._id}
                   onClick={() => {
-                    setForm({ ...form, specialization: spec });
-                    setSearch(spec);
+                    setForm((prev) => ({
+                      ...prev,
+                      specializationId: spec._id, // ✅ store ID
+                    }));
+                    setSearch(spec.name);         // show name
                     setShowList(false);
                   }}
                 >
-                  {spec}
+                  {spec.name}
                 </li>
               ))}
             </ul>

@@ -29,12 +29,12 @@ export default function AddDoctor() {
     fetchSpecializations();
   }, []);
 
-  const toggleSpecialization = (spec) => {
+  const toggleSpecialization = (specId) => {
     setForm((prev) => ({
       ...prev,
-      specializations: prev.specializations.includes(spec)
-        ? prev.specializations.filter((s) => s !== spec)
-        : [...prev.specializations, spec],
+      specializations: prev.specializations.includes(specId)
+        ? prev.specializations.filter((id) => id !== specId)
+        : [...prev.specializations, specId],
     }));
   };
 
@@ -96,13 +96,13 @@ export default function AddDoctor() {
             <p style={{ color: "#999" }}>Loading specializations...</p>
           ) : (
             specializations.map((spec) => (
-              <label key={spec}>
+              <label key={spec._id}>
                 <input
                   type="checkbox"
-                  checked={form.specializations.includes(spec)}
-                  onChange={() => toggleSpecialization(spec)}
+                  checked={form.specializations.includes(spec._id)}
+                  onChange={() => toggleSpecialization(spec._id)}
                 />
-                {spec}
+                {spec.name}
               </label>
             ))
           )}

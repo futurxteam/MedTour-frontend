@@ -25,7 +25,7 @@ import AddDoctor from "./pages/Dashboards/HospitalDashboard/AddDoctor.jsx";
 import HospitalDoctors from "./pages/Dashboards/HospitalDashboard/HospitalDoctors.jsx";
 import AddSurgery from "./pages/Dashboards/HospitalDashboard/AddSurgery.jsx";
 import HospitalSurgeries from "./pages/Dashboards/HospitalDashboard/HospitalSurgeries.jsx";
-
+import AssignDoctorToSurgery from "./pages/Dashboards/HospitalDashboard/AssignDoctorToSurgery.jsx";
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -133,12 +133,10 @@ function App() {
                 <HospitalSurgeries />
               </>
             } />
-            <Route path="assignments" element={
-              <>
-                <h3>Assign Doctors to Surgeries & Packages</h3>
-                <p>Feature coming soon...</p>
-              </>
-            } />
+            <Route
+              path="assignments"
+              element={<AssignDoctorToSurgery />}
+            />
           </Route>
         </Route>
 

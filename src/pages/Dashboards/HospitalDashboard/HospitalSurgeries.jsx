@@ -15,9 +15,15 @@ export default function HospitalSurgeries() {
     setSurgeries(res.data);
   };
 
+  // ✅ FIX: group by specialization NAME
   const grouped = surgeries.reduce((acc, s) => {
-    acc[s.specialization] = acc[s.specialization] || [];
-    acc[s.specialization].push(s);
+    const specName = s.specialization?.name || "Others";
+
+    if (!acc[specName]) {
+      acc[specName] = [];
+    }
+
+    acc[specName].push(s);
     return acc;
   }, {});
 
@@ -25,17 +31,21 @@ export default function HospitalSurgeries() {
     <div className="dashboard-container">
       <h2>Surgeries</h2>
 
-      {Object.keys(grouped).map((spec) => (
-        <div key={spec} className="specialization-group">
-          <h3>{spec}</h3>
+      {Object.keys(grouped).map((specName) => (
+        <div key={specName} className="specialization-group">
+          <h3>{specName}</h3>
 
           <div className="card-grid">
-            {grouped[spec].map((surgery) => (
+            {grouped[specName].map((surgery) => (
               <div key={surgery._id} className="card">
                 <h4>{surgery.surgeryName}</h4>
                 <p>{surgery.description}</p>
-                <p><b>Duration:</b> {surgery.duration}</p>
-                <p><b>Cost:</b> ₹{surgery.cost}</p>
+                <p>
+                  <b>Duration:</b> {surgery.duration}
+                </p>
+                <p>
+                  <b>Cost:</b> ₹{surgery.cost}
+                </p>
 
                 <button
                   className={surgery.active ? "danger" : "success"}

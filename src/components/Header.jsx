@@ -141,6 +141,18 @@ const Header = () => {
                   </div>
                 )}
 
+                {role === "assistant" && (
+                  <div
+                    className="dropdown-item"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate("/dashboard/pa");
+                    }}
+                  >
+                    Dashboard
+                  </div>
+                )}
+
                 <div
                   className="dropdown-item"
                   onClick={() => {

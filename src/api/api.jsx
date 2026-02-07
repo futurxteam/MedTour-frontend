@@ -120,6 +120,33 @@ export const getHospitalMe = () =>
 export const getHospitalSpecializations = () =>
   API.get("/hospital/specializations");
 
+export const getPublicSurgeriesMenu = () =>
+  axios.get(`${API_BASE_URL}/api/public/surgeries-menu`);
+
+export const getHospitalDoctors = () =>
+  API.get("/hospital/doctors");
+
+export const getSurgeriesBySpecialization = (specializationId) =>
+  API.get(`/hospital/surgeries/by-specialization/${specializationId}`);
+
+export const getSurgeriesByDoctor = (doctorId) =>
+  API.get(`/hospital/surgeries/by-doctor/${doctorId}`);
+
+export const updateDoctorSurgeries = (doctorId, surgeryIds) =>
+  API.patch(`/hospital/doctors/${doctorId}/surgeries`, { surgeryIds });
+
+export const assignDoctorToSurgery = (surgeryId, doctorId) =>
+  API.post(`/hospital/surgeries/${surgeryId}/assign-doctor`, {
+    doctorId,
+  });
+
+// PUBLIC – Services page only
+
+export const getPublicSurgeriesBySpecialty = (specialtyId) =>
+  API.get(`/public/specialties/${specialtyId}/public-surgeries`);
+
+export const getPublicDoctorsBySurgery = (surgeryId) =>
+  API.get(`/public/surgeries/${surgeryId}/public-doctors`);
 
 
 /* ===========================

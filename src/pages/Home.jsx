@@ -1,84 +1,34 @@
 // src/pages/Home.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { surgeryData } from "./data"; // ✅ Import real data
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "./styles/Home.css";
+import "./styles/Services.css";
 import heroDoctor from "../assets/hero-doctor.png";
-
+import { getPublicSurgeriesMenu } from "../api/api";
 // ✅ Dynamic departments with sub-items (common conditions/treatments)
-const departments = [
-  {
-    name: "Proctology",
-    id: "proctology",
-    items: ["Piles (Hemorrhoids)", "Anal Fissure", "Anal Fistula", "Pilonidal Sinus"],
-  },
-  {
-    name: "Laparoscopy",
-    id: "laparoscopy",
-    items: ["Hernia Repair", "Gallbladder Removal", "Appendectomy", "Hiatal Hernia"],
-  },
-  {
-    name: "Gynaecology",
-    id: "gynaecology",
-    items: ["Hysterectomy", "Fibroid Removal", "Ovarian Cysts", "Endometriosis"],
-  },
-  {
-    name: "ENT",
-    id: "ent",
-    items: ["Sinus Surgery (FESS)", "Tonsillectomy", "Septoplasty", "Tympanoplasty"],
-  },
-  {
-    name: "Urology",
-    id: "urology",
-    items: ["Kidney Stones (PCNL/URS)", "Prostate Surgery (TURP)", "Bladder Tumors", "Vasectomy"],
-  },
-  {
-    name: "Vascular",
-    id: "vascular",
-    items: ["Varicose Veins", "Deep Vein Thrombosis", "Aneurysm Repair", "Peripheral Bypass"],
-  },
-  {
-    name: "Aesthetics",
-    id: "aesthetics",
-    items: ["Liposuction", "Rhinoplasty", "Breast Augmentation", "Facelift"],
-  },
-  {
-    name: "Orthopedics",
-    id: "orthopedics",
-    items: ["Knee Replacement", "Hip Replacement", "ACL Reconstruction", "Spine Surgery"],
-  },
-  {
-    name: "Ophthalmology",
-    id: "ophthalmology",
-    items: ["Cataract Surgery", "LASIK", "Glaucoma Treatment", "Retina Surgery"],
-  },
-  {
-    name: "Fertility",
-    id: "fertility",
-    items: ["IVF", "IUI", "ICSI", "Egg Freezing", "Male Infertility"],
-  },
-  {
-    name: "Weight Loss",
-    id: "weight-loss",
-    items: ["Gastric Sleeve", "Gastric Bypass", "Gastric Balloon", "Revisional Surgery"],
-  },
-  {
-    name: "Dermatology",
-    id: "dermatology",
-    items: ["Acne Treatment", "Skin Cancer Removal", "Laser Therapy", "Hair Restoration"],
-  },
-];
+
 
 export default function Home() {
-  const [activeDept, setActiveDept] = useState(null);
   const navigate = useNavigate();
+  const [menuData, setMenuData] = useState({});
+  const [activeDept, setActiveDept] = useState(null);
 
-  const handleDeptClick = (id) => {
-    navigate(`/surgery/${id}`);
-  };
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      try {
+        const res = await getPublicSurgeriesMenu();
+        setMenuData(res.data);
+      } catch (err) {
+        console.error("Failed to load menu", err);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
 
   return (
     <>
@@ -87,35 +37,35 @@ export default function Home() {
       {/* ================= DYNAMIC DEPARTMENT BAR ================= */}
       <div className="department-bar">
         <div className="department-scroll">
-          {departments.map((dept) => (
+          {Object.keys(menuData || {}).map((deptName) => (
             <div
-              key={dept.id}
+              key={deptName}
               className="dept-wrapper"
-              onMouseEnter={() => setActiveDept(dept.name)}
+              onMouseEnter={() => setActiveDept(deptName)}
               onMouseLeave={() => setActiveDept(null)}
             >
-              <span
-                className="dept-item"
-                onClick={() => handleDeptClick(dept.id)}
-                style={{ cursor: "pointer" }}
-              >
-                {dept.name}
+              <span className="dept-item" style={{ cursor: "pointer" }}>
+                {deptName}
                 <span className="arrow">▾</span>
               </span>
 
-              {activeDept === dept.name && (
+              {activeDept === deptName && menuData[deptName]?.surgeries && (
                 <div className="dept-dropdown">
-                  {dept.items.map((item) => (
+                  {menuData[deptName].surgeries.map((surgery) => (
                     <div
-                      key={item}
+                      key={surgery.id}
                       className="dept-item-child"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent navigating when clicking sub-item
-                        handleDeptClick(dept.id);
-                      }}
-                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        navigate("/services", {
+                          state: {
+                            specialtyId: menuData[deptName]._id,
+                            specialtyName: deptName,
+                            preSelectedSurgery: { _id: surgery.id, surgeryName: surgery.name }
+                          }
+                        })
+                      }
                     >
-                      {item}
+                      {surgery.name}
                     </div>
                   ))}
                 </div>
