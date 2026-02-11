@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getAuthUser } from "../utils/auth";
+import GlobalSearch from "./GlobalSearch";
 import "../pages/styles/Header.css";
 
 const Header = () => {
@@ -33,6 +34,9 @@ const Header = () => {
         <div className="logo-container" onClick={() => navigate("/")}>
           <img src="/logo.jpg" alt="MedTour Logo" className="site-logo" />
         </div>
+
+        {/* GLOBAL SEARCH */}
+        <GlobalSearch />
 
         {/* NAV LINKS */}
         <nav className="nav-items">

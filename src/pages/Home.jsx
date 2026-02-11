@@ -9,6 +9,7 @@ import "./styles/Home.css";
 import "./styles/Services.css";
 import heroDoctor from "../assets/hero-doctor.png";
 import { getPublicSurgeriesMenu } from "../api/api";
+import HomepageEnquiryBox from "../components/HomepageEnquiryBox";
 // ✅ Dynamic departments with sub-items (common conditions/treatments)
 
 
@@ -85,13 +86,32 @@ export default function Home() {
               Built for Your Well-Being.
             </h1>
             <p>
-              Trusted doctors. Transparent care.
-              Modern medicine with Kerala’s compassion.
+              Kerala's Most Trusted Medical Travel Assistance Platform
             </p>
-            <div className="hero-actions">
-              <button className="primary-btn">Consult a Doctor</button>
-              <button className="secondary-btn">Explore Treatments</button>
+
+            {/* Social proof icons/stats shown in image could go here */}
+            <div className="hero-stats">
+              <div className="stats-images">
+                <img src="https://i.pravatar.cc/40?img=1" alt="p1" />
+                <img src="https://i.pravatar.cc/40?img=2" alt="p2" />
+                <img src="https://i.pravatar.cc/40?img=3" alt="p3" />
+                <img src="https://i.pravatar.cc/40?img=4" alt="p4" />
+                <img src="https://i.pravatar.cc/40?img=5" alt="p5" />
+              </div>
+              <div className="stats-text">
+                <b>10,000+</b> Patients Assisted Since 2016
+              </div>
             </div>
+
+            <div className="hero-rating">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" alt="Google" className="google-logo" />
+              <span className="rating-score">4.7</span>
+              <span className="rating-stars">★★★★★</span>
+            </div>
+          </div>
+
+          <div className="hero-form-container">
+            <HomepageEnquiryBox />
           </div>
         </div>
       </section>
@@ -141,7 +161,7 @@ export default function Home() {
             </div>
             <div className="service-card">
               <h3>Surgeries & Treatments</h3>
-              <p>Clear guidance on procedures, costs, and recovery — so you can decide without pressure or confusion.</p>
+              <p>Clear guidance on procedures and recovery — so you can decide without pressure or confusion.</p>
             </div>
             <div className="service-card">
               <h3>Diagnostics & Ongoing Care</h3>

@@ -148,9 +148,41 @@ export const getPublicSurgeriesBySpecialty = (specialtyId) =>
 export const getPublicDoctorsBySurgery = (surgeryId) =>
   API.get(`/public/surgeries/${surgeryId}/public-doctors`);
 
+export const sendEnquiryOtp = (data) =>
+  API.post("/public/enquiry/send-otp", data);
+
+export const verifyOtpAndCreateEnquiry = (data) =>
+  API.post("/public/enquiry/verify-otp", data);
+
+export const getAllEnquiries = () =>
+  API.get("/admin/enquiries");
+
+export const assignPAtoEnquiry = (enquiryId, paId) =>
+  API.post(`/admin/enquiries/${enquiryId}/assign-pa`, { paId });
+
+export const updateEnquiryStatus = (enquiryId, status) =>
+  API.patch(`/admin/enquiries/${enquiryId}/status`, { status });
+
+// ASSISTANT APIS
+export const getAssignedEnquiries = () =>
+  API.get("/assistant/enquiries");
+
+export const updateEnquiryStatusByAssistant = (id, status) =>
+  API.patch(`/assistant/enquiries/${id}/status`, { status });
+
+// Global Search
+export const globalSearch = (query) =>
+  API.get(`/public/search?q=${encodeURIComponent(query)}`);
+
+// Geography APIS
+export const getCountries = () =>
+  API.get("/public/countries");
+
+export const getCitiesByCountry = (countryCode) =>
+  API.get(`/public/cities?country=${countryCode}`);
+
 
 /* ===========================
    EXPORT INSTANCE
 =========================== */
 export default API;
-

@@ -26,6 +26,7 @@ import HospitalDoctors from "./pages/Dashboards/HospitalDashboard/HospitalDoctor
 import AddSurgery from "./pages/Dashboards/HospitalDashboard/AddSurgery.jsx";
 import HospitalSurgeries from "./pages/Dashboards/HospitalDashboard/HospitalSurgeries.jsx";
 import AssignDoctorToSurgery from "./pages/Dashboards/HospitalDashboard/AssignDoctorToSurgery.jsx";
+import HospitalHome from "./pages/Dashboards/HospitalDashboard/HospitalHome.jsx";
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -107,12 +108,7 @@ function App() {
         />
         <Route element={<ProtectedRoute allowedRoles={["hospital"]} />}>
           <Route path="/dashboard/hospital" element={<HospitalDashboard />}>
-            <Route index element={
-              <div className="dashboard-wrapper">
-                <h3>Welcome, Hospital Admin</h3>
-                <p>Select a task from the sidebar to manage your hospital's operations.</p>
-              </div>
-            } />
+            <Route index element={<HospitalHome />} />
             <Route path="profile" element={<HospitalProfile />} />
             <Route path="doctors" element={
               <>

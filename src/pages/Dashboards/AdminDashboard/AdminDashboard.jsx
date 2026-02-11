@@ -4,30 +4,13 @@ import { logout } from "../../../utils/auth";
 import { useNavigate } from "react-router-dom";
 import UserManagement from "./UserManagement";
 import api from "@/api/api";
+import AdminEnquiries from "./AdminEnquiries";
 
-const consultations = [
-  {
-    id: 1,
-    patient: "Ahmed Khan",
-    doctor: "Dr. Rajesh Menon",
-    surgery: "Proctology",
-    status: "Pending",
-    assignedPA: null,
-  },
-  {
-    id: 2,
-    patient: "Fatima Ali",
-    doctor: "Dr. Sneha Iyer",
-    surgery: "Laparoscopy",
-    status: "Pending",
-    assignedPA: null,
-  },
-];
+
 
 export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
-  const [requests, setRequests] = useState(consultations);
 
   /* 🔥 REQUIRED STATE (MOVED INSIDE COMPONENT) */
   const [pendingHospitals, setPendingHospitals] = useState([]);
@@ -46,17 +29,17 @@ export default function AdminDashboard() {
     setPendingHospitals(res.data);
   };
   const fetchApprovedHospitals = async () => {
-  const res = await api.get("/admin/approved-hospitals");
-  setApprovedHospitals(res.data);
-};
-const fetchHospitals = async () => {
-  const res = await api.get(
-    `/admin/hospitals?status=${statusFilter}&search=${search}&page=${page}&limit=${limit}`
-  );
+    const res = await api.get("/admin/approved-hospitals");
+    setApprovedHospitals(res.data);
+  };
+  const fetchHospitals = async () => {
+    const res = await api.get(
+      `/admin/hospitals?status=${statusFilter}&search=${search}&page=${page}&limit=${limit}`
+    );
 
-  setHospitals(res.data.hospitals);
-  setTotalPages(res.data.pagination.totalPages);
-};
+    setHospitals(res.data.hospitals);
+    setTotalPages(res.data.pagination.totalPages);
+  };
 
 
 
@@ -68,8 +51,8 @@ const fetchHospitals = async () => {
       fetchHospitals();
 
     }
-}, [view, statusFilter, search,page]);
- 
+  }, [view, statusFilter, search, page]);
+
 
   const assignPA = (id, pa) => {
     setRequests((prev) =>
@@ -81,16 +64,16 @@ const fetchHospitals = async () => {
     );
   };
 
- const approveHospital = async (id) => {
-  await api.patch(`/admin/approve-hospital/${id}`);
-  fetchHospitals();
-};
+  const approveHospital = async (id) => {
+    await api.patch(`/admin/approve-hospital/${id}`);
+    fetchHospitals();
+  };
 
-const rejectHospital = async (id) => {
-  if (!window.confirm("Reject this hospital?")) return;
-  await api.patch(`/admin/reject-hospital/${id}`);
-  fetchHospitals();
-};
+  const rejectHospital = async (id) => {
+    if (!window.confirm("Reject this hospital?")) return;
+    await api.patch(`/admin/reject-hospital/${id}`);
+    fetchHospitals();
+  };
 
 
   return (
@@ -169,6 +152,7 @@ const rejectHospital = async (id) => {
             >
               Consultation Requests
             </button>
+
           </nav>
         </aside>
 
@@ -177,111 +161,110 @@ const rejectHospital = async (id) => {
           {view === "users" && <UserManagement />}
 
           {view === "hospitals" && (
-  <>
-    <h3>Hospital Verification</h3>
+            <>
+              <h3>Hospital Verification</h3>
 
-    {/* 🔍 Search + Filter */}
-    <div className="hospital-filters">
-      <input
-        placeholder="Search hospital"
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setPage(1);
-        }}
-      />
+              {/* 🔍 Search + Filter */}
+              <div className="hospital-filters">
+                <input
+                  placeholder="Search hospital"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                />
 
-      <select
-        value={statusFilter}
-        onChange={(e) => {
-          setStatusFilter(e.target.value);
-          setPage(1);
-        }}
-      >
-        <option value="all">All</option>
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
-      </select>
-    </div>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
 
-    {hospitals.length === 0 && <p>No hospitals found</p>}
+              {hospitals.length === 0 && <p>No hospitals found</p>}
 
-    {/* 🏥 HOSPITAL CARDS */}
-    {hospitals.map((h) => (
-      <div key={h._id} className="dashboard-card">
-        <b>{h.name}</b>
-        <p>{h.email}</p>
+              {/* 🏥 HOSPITAL CARDS */}
+              {hospitals.map((h) => (
+                <div key={h._id} className="dashboard-card">
+                  <b>{h.name}</b>
+                  <p>{h.email}</p>
 
-        {h.hospitalStatus === "pending" && (
-          <>
-            <button
-              className="user-btn enable"
-              onClick={() => approveHospital(h._id)}
-            >
-              Approve
-            </button>
+                  {h.hospitalStatus === "pending" && (
+                    <>
+                      <button
+                        className="user-btn enable"
+                        onClick={() => approveHospital(h._id)}
+                      >
+                        Approve
+                      </button>
 
-            <button
-              className="user-btn disable"
-              onClick={() => rejectHospital(h._id)}
-            >
-              Reject
-            </button>
-          </>
-        )}
+                      <button
+                        className="user-btn disable"
+                        onClick={() => rejectHospital(h._id)}
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
 
-        {h.hospitalStatus === "approved" && (
-          <span className="user-status active">Approved</span>
-        )}
+                  {h.hospitalStatus === "approved" && (
+                    <span className="user-status active">Approved</span>
+                  )}
 
-        {h.hospitalStatus === "rejected" && (
-          <span className="user-status disabled">Rejected</span>
-        )}
-      </div>
-    ))}
+                  {h.hospitalStatus === "rejected" && (
+                    <span className="user-status disabled">Rejected</span>
+                  )}
+                </div>
+              ))}
 
-    {/* ✅ PAGINATION – OUTSIDE THE MAP */}
-    {totalPages > 1 && (
-      <div className="pagination">
-        <button
-          className="pagination-btn"
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        >
-          Prev
-        </button>
+              {/* ✅ PAGINATION – OUTSIDE THE MAP */}
+              {totalPages > 1 && (
+                <div className="pagination">
+                  <button
+                    className="pagination-btn"
+                    disabled={page === 1}
+                    onClick={() => setPage(page - 1)}
+                  >
+                    Prev
+                  </button>
 
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i}
-            className={`pagination-btn ${
-              page === i + 1 ? "active" : ""
-            }`}
-            onClick={() => setPage(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      className={`pagination-btn ${page === i + 1 ? "active" : ""
+                        }`}
+                      onClick={() => setPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
 
-        <button
-          className="pagination-btn"
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
-      </div>
-    )}
-  </>
-)}
+                  <button
+                    className="pagination-btn"
+                    disabled={page === totalPages}
+                    onClick={() => setPage(page + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </>
+          )}
 
 
 
 
           {view === "analytics" && <h3>System Analytics</h3>}
 
-          {view === "requests" && <h3>Consultation Requests</h3>}
+          {view === "requests" && <AdminEnquiries />}
 
           {!view && <p>Select a task from the sidebar</p>}
         </main>

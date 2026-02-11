@@ -8,6 +8,9 @@ import {
   getPublicSurgeriesMenu,
   getPublicSurgeriesBySpecialty,
   getPublicDoctorsBySurgery,
+  sendEnquiryOtp,
+  verifyOtpAndCreateEnquiry,
+
 } from "../api/api";
 
 export default function Services() {
@@ -27,6 +30,20 @@ export default function Services() {
   const [doctors, setDoctors] = useState([]);
 
   const [selectedPart, setSelectedPart] = useState(null);
+
+  /* ===========================
+     ENQUIRY / OTP STATE
+  =========================== */
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
+  const [enquiryForm, setEnquiryForm] = useState({
+    patientName: "",
+    phone: "",
+    contactMode: "call",
+    otp: "",
+  });
 
   /* ===========================
      FETCH SPECIALTIES (PUBLIC)
@@ -51,7 +68,10 @@ export default function Services() {
   =========================== */
   useEffect(() => {
     if (location.state?.specialtyId) {
-      handleSpecialtyClick(location.state.specialtyId, location.state.specialtyName);
+      handleSpecialtyClick(
+        location.state.specialtyId,
+        location.state.specialtyName
+      );
 
       if (location.state.preSelectedSurgery) {
         handleSurgeryClick(location.state.preSelectedSurgery);
@@ -99,6 +119,46 @@ export default function Services() {
   };
 
   /* ===========================
+     ENQUIRY HANDLERS
+  =========================== */
+  const handleGetQuote = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowQuoteModal(true);
+    setOtpSent(false);
+    setEnquiryForm({
+      patientName: "",
+      phone: "",
+      contactMode: "call",
+      otp: "",
+    });
+  };
+
+  const handleSendOtp = async () => {
+    await sendEnquiryOtp({ phone: enquiryForm.phone });
+    setOtpSent(true);
+  };
+
+  const handleSubmitEnquiry = async () => {
+    if (enquiryForm.otp !== "123") {
+      alert("Invalid OTP. Use 123");
+      return;
+    }
+
+    await verifyOtpAndCreateEnquiry({
+      patientName: enquiryForm.patientName,
+      phone: enquiryForm.phone,
+      otp: enquiryForm.otp,
+      contactMode: enquiryForm.contactMode,
+      specialtyId: selectedSpecialty.id,
+      surgeryId: selectedSurgery._id,
+      doctorId: selectedDoctor._id,
+    });
+
+    alert("Our assistant will contact you shortly");
+    setShowQuoteModal(false);
+  };
+
+  /* ===========================
      RENDER
   =========================== */
   return (
@@ -106,16 +166,17 @@ export default function Services() {
       <section className="services-section">
         <div className="container">
           <h2 className="section-title">
-            {selectedSurgery ? selectedSurgery.surgeryName : (selectedSpecialty ? selectedSpecialty.name : "Our Medical Services")}
+            {selectedSurgery
+              ? selectedSurgery.surgeryName
+              : selectedSpecialty
+                ? selectedSpecialty.name
+                : "Our Medical Services"}
           </h2>
 
           {loading && <p className="loading-text">Loading services...</p>}
 
           <div className="services-nav-container">
-            <span
-              onClick={() => navigate("/")}
-              className="services-nav-home"
-            >
+            <span onClick={() => navigate("/")} className="services-nav-home">
               🌐 Home
             </span>
 
@@ -150,21 +211,27 @@ export default function Services() {
                     key={specialtyData._id}
                     className="service-card"
                     onClick={() =>
-                      handleSpecialtyClick(specialtyData._id, specialtyName)
+                      handleSpecialtyClick(
+                        specialtyData._id,
+                        specialtyName
+                      )
                     }
                   >
                     <h3>{specialtyName}</h3>
 
                     <ul className="specialty-surgeries-list">
-                      {Array.isArray(specialtyData.surgeries) &&
-                        specialtyData.surgeries.slice(0, 4).map((surgery, index) => (
-                          <li key={surgery.id || index} className="surgery-list-item">
-                            {typeof surgery === "string" ? surgery : surgery.name}
+                      {specialtyData.surgeries
+                        ?.slice(0, 4)
+                        .map((surgery, index) => (
+                          <li key={surgery.id || index}>
+                            {typeof surgery === "string"
+                              ? surgery
+                              : surgery.name}
                           </li>
                         ))}
                     </ul>
 
-                    {Array.isArray(specialtyData.surgeries) && specialtyData.surgeries.length > 4 && (
+                    {specialtyData.surgeries?.length > 4 && (
                       <p className="more-text">
                         +{specialtyData.surgeries.length - 4} more
                       </p>
@@ -180,7 +247,6 @@ export default function Services() {
           =========================== */}
           {selectedSpecialty && !selectedSurgery && (
             <div className="services-grid">
-              {surgeries.length === 0 && <p>No surgeries found for this specialty.</p>}
               {surgeries.map((surgery) => (
                 <div
                   key={surgery._id}
@@ -189,8 +255,7 @@ export default function Services() {
                 >
                   <h3>{surgery.surgeryName}</h3>
                   <p>Duration: {surgery.duration}</p>
-                  <p className="surgery-cost">Est. Cost: ₹ {surgery.cost}</p>
-                </div>
+                  <p className="surgery-description">{surgery.description}</p>                </div>
               ))}
             </div>
           )}
@@ -200,18 +265,15 @@ export default function Services() {
           =========================== */}
           {selectedSurgery && (
             <div className="services-grid">
-              {doctors.length === 0 && (
-                <p className="no-doctors-text">
-                  No doctors available for this surgery at the moment.
-                </p>
-              )}
-
               {doctors.map((doc) => (
                 <div key={doc._id} className="service-card doctor">
                   <div className="doctor-avatar">👨‍⚕️</div>
                   <h3>{doc.name}</h3>
                   <p>Specialist Surgeon</p>
-                  <p className="doctor-email">{doc.email}</p>
+
+                  <button onClick={() => handleGetQuote(doc)}>
+                    Get Free Quote
+                  </button>
                 </div>
               ))}
             </div>
@@ -231,6 +293,74 @@ export default function Services() {
           )}
         </div>
       </section>
+
+      {/* ===========================
+          QUOTE MODAL
+      =========================== */}
+      {showQuoteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Get Free Quote</h3>
+
+            <input
+              placeholder="Your Name"
+              value={enquiryForm.patientName}
+              onChange={(e) =>
+                setEnquiryForm({
+                  ...enquiryForm,
+                  patientName: e.target.value,
+                })
+              }
+            />
+
+            <input
+              placeholder="Phone Number"
+              value={enquiryForm.phone}
+              onChange={(e) =>
+                setEnquiryForm({
+                  ...enquiryForm,
+                  phone: e.target.value,
+                })
+              }
+            />
+
+            <select
+              value={enquiryForm.contactMode}
+              onChange={(e) =>
+                setEnquiryForm({
+                  ...enquiryForm,
+                  contactMode: e.target.value,
+                })
+              }
+            >
+              <option value="call">Call</option>
+              <option value="message">Message</option>
+            </select>
+
+            {!otpSent ? (
+              <button onClick={handleSendOtp}>Send OTP</button>
+            ) : (
+              <>
+                <input
+                  placeholder="Enter OTP (123)"
+                  value={enquiryForm.otp}
+                  onChange={(e) =>
+                    setEnquiryForm({
+                      ...enquiryForm,
+                      otp: e.target.value,
+                    })
+                  }
+                />
+                <button onClick={handleSubmitEnquiry}>
+                  Submit Enquiry
+                </button>
+              </>
+            )}
+
+            <button onClick={() => setShowQuoteModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

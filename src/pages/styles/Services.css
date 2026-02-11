@@ -1,18 +1,36 @@
 /* =========================
    SERVICES PAGE LAYOUT
 ========================= */
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-main: #f8f9fa;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --radius-xl: 16px;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
 
 .services-section {
     padding: 60px 0;
-    background: #f9fafb;
+    background: linear-gradient(to bottom, #f3f4f6, #ffffff);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
 }
 
 .section-title {
     text-align: center;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 40px;
-    color: #222;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 50px;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
 }
 
 /* =========================
@@ -21,9 +39,9 @@
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+    margin-top: 32px;
 }
 
 /* =========================
@@ -32,55 +50,101 @@
 
 .service-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: var(--radius-xl);
+    padding: 28px;
     cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eee;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--card-shadow);
+    border: 1px solid #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 220px;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
 }
 
 .service-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
-    border-color: #007bff;
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.service-card:hover::after {
+    transform: scaleX(1);
 }
 
 .service-card h3 {
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 600;
-    margin-bottom: 12px;
-    color: #111;
+    margin: 0 0 12px 0;
+    color: var(--text-main);
 }
 
-.service-card p {
-    font-size: 14px;
-    color: #555;
-    margin: 6px 0;
-    line-height: 1.5;
-}
-
-/* =========================
-   SURGERY LIST (SPECIALTY VIEW)
-========================= */
-
+/* Specialty List Styling */
 .specialty-surgeries-list {
-    margin-top: 15px;
-    padding-left: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
-.surgery-list-item {
+.specialty-surgeries-list li {
     font-size: 14px;
-    color: #444;
-    margin-bottom: 6px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding-left: 14px;
+    position: relative;
+}
+
+.specialty-surgeries-list li::before {
+    content: "•";
+    color: var(--primary);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
 }
 
 .more-text {
-    margin-top: 10px;
+    margin-top: 12px;
     font-size: 13px;
-    color: #888;
-    font-style: italic;
+    color: #9ca3af;
+    font-weight: 500;
 }
+
+/* Surgery Card Specifics */
+.service-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 6px 0;
+    line-height: 1.6;
+}
+
+.surgery-description {
+    font-size: 13px !important;
+    color: var(--text-muted);
+    margin-top: 8px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+
 
 /* =========================
    DOCTOR CARD
@@ -88,85 +152,86 @@
 
 .service-card.doctor {
     text-align: center;
-    padding: 30px 20px;
+    align-items: center;
+    padding: 32px 24px;
 }
 
 .doctor-avatar {
-    font-size: 40px;
-    margin-bottom: 10px;
+    width: 80px;
+    height: 80px;
+    background: #e0e7ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin-bottom: 16px;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #e0e7ff;
 }
 
 .service-card.doctor h3 {
-    margin-bottom: 4px;
+    font-size: 18px;
+    margin-bottom: 6px;
 }
 
 .service-card.doctor p {
-    font-size: 13px;
-    color: #777;
-    margin: 2px 0;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
 }
 
-.doctor-email {
-    font-size: 12px;
-    color: #888;
+.service-card.doctor button {
+    margin-top: auto;
+    width: 100%;
+    padding: 10px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
 }
+
+.service-card.doctor button:hover {
+    background: var(--primary-hover);
+}
+
 
 /* =========================
-   UTILITIES & NAVIGATION
+   NAVIGATION
 ========================= */
 
 .services-nav-container {
     display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 16px;
+    margin-bottom: 32px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-.services-back {
-    cursor: pointer;
-    color: #007bff;
-    font-size: 14px;
-    display: inline-block;
-    font-weight: 500;
-    margin: 0;
-}
-
-.services-back:hover {
-    text-decoration: underline;
-}
-
+.services-back,
 .services-nav-home {
-    font-weight: 700;
-    color: #333;
-    display: flex;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    text-decoration: none;
 }
 
+.services-back:hover,
 .services-nav-home:hover {
-    color: #007bff;
-}
-
-.loading-text {
-    text-align: center;
-    padding: 40px;
-    font-size: 16px;
-    color: #666;
-}
-
-.surgery-cost {
-    font-weight: 700;
-    color: #10b981;
-    margin-top: 12px !important;
-}
-
-.no-doctors-text {
-    text-align: center;
-    grid-column: 1 / -1;
-    padding: 60px;
-    color: #888;
-    font-size: 16px;
+    background: #f9fafb;
+    color: var(--primary);
+    border-color: #d1d5db;
 }
 
 /* =========================
@@ -175,17 +240,137 @@
 
 .avatar-header {
     text-align: center;
-    margin-top: 60px;
-    margin-bottom: 25px;
-    font-size: 22px;
-    font-weight: 600;
-    color: #333;
+    margin: 80px 0 32px;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 .avatar-container {
     display: flex;
     justify-content: center;
     margin-bottom: 80px;
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--card-shadow);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* =========================
+   MODAL STYLES
+========================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.modal h3 {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-main);
+    text-align: center;
+}
+
+.modal input,
+.modal select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s;
+    background: #f9fafb;
+}
+
+.modal input:focus,
+.modal select:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.modal button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal button:first-of-type:not(:last-child) {
+    /* Submit buttons */
+    background: var(--primary);
+    color: white;
+    margin-top: 10px;
+}
+
+.modal button:first-of-type:not(:last-child):hover {
+    background: var(--primary-hover);
+}
+
+.modal button:last-child {
+    /* Close button */
+    background: transparent;
+    color: var(--text-muted);
+    margin-top: 0;
+}
+
+.modal button:last-child:hover {
+    background: #f3f4f6;
+    color: var(--text-main);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* =========================
@@ -194,14 +379,15 @@
 
 @media (max-width: 768px) {
     .section-title {
-        font-size: 24px;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
+        font-size: 26px;
     }
 
     .service-card {
-        padding: 20px;
+        min-height: auto;
+    }
+
+    .modal {
+        width: 90%;
+        padding: 24px;
     }
 }

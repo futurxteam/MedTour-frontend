@@ -10,17 +10,22 @@ export const getAuthUser = () => {
 
   try {
     const decoded = jwtDecode(token);
+    const storedUser = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null;
 
     return {
       token,
       id: decoded.id,
       role: decoded.role,
-      profileCompleted: decoded.profileCompleted,
+      // Favor the stored user object for profile status as it updates without token refresh
+      profileCompleted: storedUser?.profileCompleted ?? decoded.profileCompleted,
       iat: decoded.iat,
       exp: decoded.exp,
     };
   } catch (error) {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     return null;
   }
 };

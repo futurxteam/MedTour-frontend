@@ -1,69 +1,82 @@
 import React, { useEffect, useState } from "react";
 import {
     getHospitalDoctors,
-    getSurgeriesByDoctor,
+    getHospitalSurgeries,
     updateDoctorSurgeries,
 } from "../../../api/api";
-import "../styles/HospitalDashboard.css";
+import "../../styles/HospitalDashboard.css";
 
 export default function AssignDoctorToSurgery() {
     const [doctors, setDoctors] = useState([]);
     const [doctorSearch, setDoctorSearch] = useState("");
     const [selectedDoctor, setSelectedDoctor] = useState(null);
+    const [showDrList, setShowDrList] = useState(false);
 
-    const [surgeries, setSurgeries] = useState([]);
+    const [allSurgeries, setAllSurgeries] = useState([]);
+    const [visibleSurgeries, setVisibleSurgeries] = useState([]);
     const [selectedSurgeries, setSelectedSurgeries] = useState([]);
 
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    /* =========================
-       FETCH DOCTORS
-    ========================= */
+    // Fetch Doctors & All Surgeries initially
     useEffect(() => {
-        const fetchDoctors = async () => {
+        const init = async () => {
             setLoading(true);
             try {
-                const res = await getHospitalDoctors();
-                setDoctors(res.data);
+                const [docsRes, surgRes] = await Promise.all([
+                    getHospitalDoctors(),
+                    getHospitalSurgeries()
+                ]);
+                setDoctors(docsRes.data);
+                setAllSurgeries(surgRes.data);
             } catch (err) {
-                console.error("Failed to fetch doctors:", err);
-                setError("Failed to load doctors list");
+                console.error("Failed to load initial data", err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchDoctors();
+        init();
     }, []);
 
-    /* =========================
-       FETCH SURGERIES BY DOCTOR
-    ========================= */
+    // When doctor is selected, update visible list and selections
     useEffect(() => {
         if (!selectedDoctor) {
-            setSurgeries([]);
+            setVisibleSurgeries([]);
             setSelectedSurgeries([]);
             return;
         }
 
-        const fetchSurgeries = async () => {
-            try {
-                const res = await getSurgeriesByDoctor(selectedDoctor.id);
-                setSurgeries(res.data);
+        const doctorId = selectedDoctor._id || selectedDoctor.id;
 
-                // Identify surgeries the doctor is already assigned to
-                const alreadyAssigned = res.data
-                    .filter(s => s.assignedDoctors?.includes(selectedDoctor.id))
-                    .map(s => s._id);
-                setSelectedSurgeries(alreadyAssigned);
-            } catch (err) {
-                console.error("Failed to fetch surgeries:", err);
-                setSurgeries([]);
-            }
-        };
+        // 1. Determine checkboxes (What is ALREADY assigned?)
+        //    Assuming `allSurgeries` contains `.assignedDoctors` array
+        const alreadyAssigned = allSurgeries
+            .filter(s => s.assignedDoctors?.some(d => (d._id || d) === doctorId))
+            .map(s => s._id);
+        setSelectedSurgeries(alreadyAssigned);
 
-        fetchSurgeries();
-    }, [selectedDoctor]);
+        // 2. Filter surgeries by doctor's specialization
+        //    We need to match `s.specialization.name` with `doctor.specializations` (if names)
+        //    OR `s.specialization._id` (if IDs)
+        //    Based on previous observation of HospitalDoctors.jsx, `doctor.specializations` seems to be an array of Names (strings).
+
+        const doctorSpecs = selectedDoctor.specializations || [];
+        // Normalize for comparison (just in case)
+        const normalizedSpecs = doctorSpecs.map(s => typeof s === 'string' ? s.toLowerCase() : s?.name?.toLowerCase());
+
+        const compatible = allSurgeries.filter(s => {
+            const specName = s.specialization?.name?.toLowerCase();
+            if (!specName) return false;
+            return normalizedSpecs.includes(specName);
+        });
+
+        // If no compatible surgeries found, maybe we should show ALL? 
+        // Or if the doctor has no specialization listed?
+        // Let's fallback to showing ALL if doctor has no specs, or just show compatible. 
+        // Usually, strict filtering is better.
+        setVisibleSurgeries(compatible.length > 0 ? compatible : []);
+
+    }, [selectedDoctor, allSurgeries]);
 
     const filteredDoctors = doctors.filter((d) =>
         d.name.toLowerCase().includes(doctorSearch.toLowerCase())
@@ -78,133 +91,186 @@ export default function AssignDoctorToSurgery() {
     };
 
     const handleAssign = async () => {
-        if (!selectedDoctor) {
-            alert("Select a doctor first");
-            return;
-        }
+        if (!selectedDoctor) return;
 
         try {
-            const res = await updateDoctorSurgeries(selectedDoctor.id, selectedSurgeries);
-            alert(res.data.message || "Assignments updated successfully");
+            const doctorId = selectedDoctor._id || selectedDoctor.id;
+            await updateDoctorSurgeries(doctorId, selectedSurgeries);
+            alert("Assignments updated successfully!");
+
+            // Optionally refresh data to reflect changes in `allSurgeries` (if relying on local `assignedDoctors` state)
+            // But we can just reset
+            setSelectedDoctor(null);
+            setDoctorSearch("");
         } catch (err) {
-            console.error("Assignment failed:", err);
-            const msg = err.response?.data?.message || err.response?.data?.error || err.message;
-            alert("Failed: " + msg);
+            console.error(err);
+            alert("Failed to update assignments");
         }
     };
 
     return (
-        <div className="dashboard-container">
-            <h2>Manage Doctor Assignments</h2>
+        <div className="hospital-content">
+            <div className="page-head">
+                <h3>Manage Doctor Assignments</h3>
+            </div>
 
-            {loading && <p>Loading doctors...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            <div className="form-section" style={{ minHeight: '400px' }}>
+                {/* Doctor Search */}
+                <div className="form-group" style={{ position: 'relative', zIndex: 100 }}>
+                    <label>Select Doctor to Assign</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search Doctor by Name..."
+                        value={doctorSearch}
+                        onChange={(e) => {
+                            setDoctorSearch(e.target.value);
+                            setShowDrList(true);
+                            if (selectedDoctor && e.target.value !== selectedDoctor.name) {
+                                setSelectedDoctor(null);
+                            }
+                        }}
+                        onFocus={() => setShowDrList(true)}
+                        onBlur={() => setTimeout(() => setShowDrList(false), 200)}
+                    />
 
-            {/* ===== Doctor Search ===== */}
-            <div className="dropdown-container">
-                <input
-                    type="text"
-                    placeholder="Search doctor"
-                    value={doctorSearch}
-                    onChange={(e) => setDoctorSearch(e.target.value)}
-                />
+                    {showDrList && (
+                        <ul className="custom-dropdown">
+                            {filteredDoctors.length === 0 ? (
+                                <li className="dropdown-item empty">No doctors found</li>
+                            ) : (
+                                filteredDoctors.map((doc) => (
+                                    <li
+                                        key={doc._id || doc.id}
+                                        className="dropdown-item"
+                                        onMouseDown={() => {
+                                            setSelectedDoctor(doc);
+                                            setDoctorSearch(doc.name);
+                                            setShowDrList(false);
+                                        }}
+                                    >
+                                        {doc.name}
+                                    </li>
+                                ))
+                            )}
+                        </ul>
+                    )}
+                </div>
 
-                {doctorSearch && !selectedDoctor && (
-                    <ul className="dropdown-list">
-                        {filteredDoctors.length === 0 ? (
-                            <li className="dropdown-empty">No doctors found</li>
+                {selectedDoctor && (
+                    <div className="alert-box" style={{ justifyContent: 'space-between', marginBottom: '20px' }}>
+                        <div>
+                            <strong>Assigning to: {selectedDoctor.name}</strong>
+                            <div className="text-muted" style={{ fontSize: '13px' }}>
+                                Specializations: {selectedDoctor.specializations?.join(", ") || "None"}
+                            </div>
+                        </div>
+                        <button className="btn btn-secondary" onClick={() => {
+                            setSelectedDoctor(null);
+                            setDoctorSearch("");
+                        }}>
+                            Change
+                        </button>
+                    </div>
+                )}
+
+                {/* Surgeries List Section */}
+                {selectedDoctor && (
+                    <div className="form-group" style={{ position: 'relative', zIndex: 1 }}>
+                        <label>Select Surgeries (Compatible with Doctor's Specialization)</label>
+                        {visibleSurgeries.length === 0 ? (
+                            <div className="empty-state-small">
+                                <p className="text-muted">No surgeries found matching this doctor's specialization.</p>
+                                <p style={{ fontSize: '12px', color: '#999' }}>Ensure the doctor has specializations listed and surgeries are added under those categories.</p>
+                            </div>
                         ) : (
-                            filteredDoctors.map((doc) => (
-                                <li
-                                    key={doc.id || doc._id}
-                                    onClick={() => {
-                                        setSelectedDoctor(doc);
-                                        setDoctorSearch(doc.name);
-                                    }}
-                                >
-                                    {doc.name}
-                                </li>
-                            ))
+                            <div className="card-grid" style={{ gap: '12px' }}>
+                                {visibleSurgeries.map(s => (
+                                    <label key={s._id} className={`checkbox-card ${selectedSurgeries.includes(s._id) ? 'active' : ''}`} style={{ alignItems: 'flex-start' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedSurgeries.includes(s._id)}
+                                            onChange={() => toggleSurgery(s._id)}
+                                            style={{ marginTop: '4px' }}
+                                        />
+                                        <div>
+                                            <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>{s.surgeryName}</div>
+                                            <div className="text-muted" style={{ fontSize: '12px' }}>
+                                                {s.specialization?.name} • ₹{s.cost?.toLocaleString()}
+                                            </div>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
                         )}
-                    </ul>
+
+                        <div style={{ marginTop: '24px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+                            <button className="btn btn-primary" onClick={handleAssign} disabled={visibleSurgeries.length === 0}>
+                                Save Assignments
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
 
-            {/* ===== Selected Doctor Info ===== */}
-            {selectedDoctor && (
-                <div style={{ marginTop: "10px", color: "#666" }}>
-                    Selected: <strong>{selectedDoctor.name}</strong>
-                    <button
-                        style={{ marginLeft: "10px", padding: "2px 5px", fontSize: "0.8rem" }}
-                        onClick={() => {
-                            setSelectedDoctor(null);
-                            setDoctorSearch("");
-                        }}
-                    >
-                        Change
-                    </button>
-                    <div style={{ fontSize: "0.85rem" }}>
-                        Specializations: {selectedDoctor.specializations?.join(", ") || "None"}
-                    </div>
-                </div>
-            )}
-
-            {/* ===== Surgery Selection (Checkboxes) ===== */}
-            {selectedDoctor && (
-                <div style={{ marginTop: "20px" }}>
-                    <h4>Select Surgeries</h4>
-
-                    {surgeries.length === 0 ? (
-                        <p style={{ color: "#999" }}>No active surgeries found for this doctor's specialization(s).</p>
-                    ) : (
-                        <div style={{
-                            background: "#fff",
-                            padding: "15px",
-                            borderRadius: "8px",
-                            border: "1px solid #ddd",
-                            maxHeight: "300px",
-                            overflowY: "auto"
-                        }}>
-                            {surgeries.map((s) => (
-                                <div key={s._id} style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
-                                    <input
-                                        type="checkbox"
-                                        id={s._id}
-                                        checked={selectedSurgeries.includes(s._id)}
-                                        onChange={() => toggleSurgery(s._id)}
-                                        style={{ marginRight: "10px" }}
-                                    />
-                                    <label htmlFor={s._id} style={{ cursor: "pointer" }}>
-                                        {s.surgeryName}
-                                        <span style={{ color: "#888", fontSize: "0.8rem", marginLeft: "8px" }}>
-                                            ({s.specialization?.name})
-                                        </span>
-                                    </label>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* ===== Save Button ===== */}
-            {selectedDoctor && (
-                <button
-                    style={{
-                        marginTop: "20px",
-                        backgroundColor: "#4b6cb7",
-                        color: "white",
-                        padding: "10px 20px",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer"
-                    }}
-                    onClick={handleAssign}
-                    disabled={surgeries.length === 0}
-                >
-                    Update Assignments
-                </button>
-            )}
+            <style>{`
+                .custom-dropdown {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    max-height: 250px;
+                    overflow-y: auto;
+                    z-index: 1000;
+                    list-style: none;
+                    padding: 0;
+                    margin: 4px 0 0;
+                }
+                .dropdown-item {
+                    padding: 10px 16px;
+                    cursor: pointer;
+                    transition: background 0.1s;
+                    font-size: 14px;
+                    border-bottom: 1px solid #f9fafb;
+                }
+                .dropdown-item:hover {
+                    background: #f0f9ff;
+                    color: var(--primary);
+                }
+                .dropdown-item.empty {
+                    color: var(--text-muted);
+                    cursor: default;
+                }
+                .checkbox-card {
+                    display: flex;
+                    gap: 12px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    cursor: pointer;
+                    background: white;
+                    transition: all 0.2s;
+                }
+                .checkbox-card:hover {
+                    border-color: var(--primary);
+                    background: #f0f9ff;
+                }
+                .checkbox-card.active {
+                    background: #eff6ff;
+                    border-color: var(--primary);
+                }
+                .empty-state-small {
+                    padding: 30px;
+                    text-align: center;
+                    background: #f9fafb;
+                    border-radius: var(--radius);
+                    border: 1px dashed var(--border);
+                }
+            `}</style>
         </div>
     );
 }

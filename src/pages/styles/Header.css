@@ -21,14 +21,15 @@
 
 
 .header-inner {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
   height: 100%;
   padding: 0 16px;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  justify-content: space-between;
+  gap: 20px;
 }
 
 .header-right {
@@ -301,4 +302,48 @@
 
 .dropdown-item.logout {
   color: #dc2626;
+}
+
+/* Responsive Header */
+@media (max-width: 1024px) {
+  .header-inner {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+  }
+
+  .nav-items {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    height: auto;
+    min-height: 60px;
+  }
+
+  .header-inner {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px 16px;
+  }
+
+  .logo-container {
+    order: 1;
+  }
+
+  .global-search-container {
+    order: 2;
+    margin: 0;
+  }
+
+  .header-actions,
+  .profile-wrapper {
+    order: 3;
+    justify-self: end;
+  }
+
+  .site-logo {
+    height: 36px;
+  }
 }
