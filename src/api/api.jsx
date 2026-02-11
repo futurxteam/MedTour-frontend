@@ -181,6 +181,35 @@ export const getCountries = () =>
 export const getCitiesByCountry = (countryCode) =>
   API.get(`/public/cities?country=${countryCode}`);
 
+// SERVICE JOURNEY APIS - PA
+export const startService = (enquiryId) =>
+  API.post(`/assistant/enquiries/${enquiryId}/start-service`);
+
+export const getAssignedJourneys = () =>
+  API.get("/assistant/journeys");
+
+export const getJourneyById = (journeyId) =>
+  API.get(`/assistant/journeys/${journeyId}`);
+
+export const addJourneyStage = (journeyId, stageData) =>
+  API.post(`/assistant/journeys/${journeyId}/stages`, stageData);
+
+export const updateJourneyStage = (journeyId, stageId, stageData) =>
+  API.put(`/assistant/journeys/${journeyId}/stages/${stageId}`, stageData);
+
+export const deleteJourneyStage = (journeyId, stageId) =>
+  API.delete(`/assistant/journeys/${journeyId}/stages/${stageId}`);
+
+export const reorderJourneyStages = (journeyId, stageOrder) =>
+  API.patch(`/assistant/journeys/${journeyId}/reorder`, { stageOrder });
+
+export const updateJourneyStatus = (journeyId, status) =>
+  API.patch(`/assistant/journeys/${journeyId}/status`, { status });
+
+// SERVICE JOURNEY APIS - Patient
+export const getMyJourney = () =>
+  API.get("/patient/my-journey");
+
 
 /* ===========================
    EXPORT INSTANCE

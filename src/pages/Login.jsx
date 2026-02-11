@@ -18,9 +18,8 @@ const Login = () => {
     admin: "/dashboard/admin",
     doctor: "/dashboard/doctor",
     assistant: "/dashboard/pa",
-    user: "/dashboard/user",
+    patient: "/dashboard/user", // Patient role redirects to user dashboard
     hospital: "/dashboard/hospital",
-
   };
 
   const handleLogin = async () => {
@@ -28,7 +27,7 @@ const Login = () => {
     setLoading(true);
 
     if (!email || !password) {
-      setError("Please enter both email and password");
+      setError("Please enter both email/phone and password");
       setLoading(false);
       return;
     }
@@ -54,8 +53,8 @@ const Login = () => {
       const profileCompleted = meRes.data.profileCompleted;
 
       // 5️⃣ Redirect based on profile completion status
-      // If user role and profile is not completed, redirect to profile page
-      if (role === "user" && !profileCompleted) {
+      // If user/patient role and profile is not completed, redirect to profile page
+      if ((role === "user" || role === "patient") && !profileCompleted) {
         navigate("/profile", { replace: true });
         return;
       }
@@ -91,8 +90,8 @@ const Login = () => {
       const role = meRes.data.role;
       const profileCompleted = meRes.data.profileCompleted;
 
-      // If user role and profile is not completed, redirect to profile page
-      if (role === "user" && !profileCompleted) {
+      // If user/patient role and profile is not completed, redirect to profile page
+      if ((role === "user" || role === "patient") && !profileCompleted) {
         navigate("/profile");
       } else {
         // Otherwise, redirect to appropriate dashboard
@@ -110,12 +109,12 @@ const Login = () => {
         <h1>Welcome back</h1>
         <p>Login to continue to Medtour</p>
 
-        <label>Email</label>
+        <label>Email or Phone Number</label>
         <input
-          type="email"
+          type="text"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder="you@example.com or phone number"
         />
 
         <label>Password</label>

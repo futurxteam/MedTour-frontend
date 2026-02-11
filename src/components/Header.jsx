@@ -121,7 +121,7 @@ const Header = () => {
                   </div>
                 )}
 
-                {role === "user" && (
+                {role === "patient" && (
                   <div
                     className="dropdown-item"
                     onClick={() => {

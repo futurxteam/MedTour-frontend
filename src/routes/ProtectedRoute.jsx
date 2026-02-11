@@ -20,6 +20,7 @@ export default function ProtectedRoute({ allowedRoles, role, children }) {
   if (!user.profileCompleted) {
     switch (user.role) {
       case "user":
+      case "patient":
         if (!pathname.startsWith("/profile")) {
           return <Navigate to="/profile" replace />;
         }
@@ -60,6 +61,7 @@ export default function ProtectedRoute({ allowedRoles, role, children }) {
       case "hospital":
         return <Navigate to="/dashboard/hospital" replace />;
       case "user":
+      case "patient":
         return <Navigate to="/dashboard/user" replace />;
       default:
         return <Navigate to="/login" replace />;

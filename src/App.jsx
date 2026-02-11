@@ -14,12 +14,13 @@ import HospitalDashboard from "./pages/Dashboards/HospitalDashboard/HospitalDash
 import UserDashboard from "./pages/Dashboards/UserDashboard/UserDashboard.jsx";
 import DoctorDashboard from "./pages/Dashboards/DoctorDashboard/DoctorDashboard.jsx";
 import PADashboard from "./pages/Dashboards/PADashboard/PADashboard.jsx";
+import JourneyDetailEditor from "./pages/Dashboards/PADashboard/JourneyDetailEditor.jsx";
 import AdminDashboard from "./pages/Dashboards/AdminDashboard/AdminDashboard.jsx";
 import RegisterHospital from "@/pages/Dashboards/HospitalDashboard/RegisterHospital";
 import MyAppointments from "./pages/Dashboards/UserDashboard/MyAppointments.jsx";
+import PatientProfile from "./pages/Dashboards/UserDashboard/PatientProfile.jsx";
 
 import DoctorProfile from "./pages/Dashboards/DoctorDashboard/DoctorProfile";
-import PatientProfile from "./pages/Dashboards/UserDashboard/PatientProfile.jsx";
 import HospitalProfile from "./pages/Dashboards/HospitalDashboard/HospitalProfile.jsx";
 import AddDoctor from "./pages/Dashboards/HospitalDashboard/AddDoctor.jsx";
 import HospitalDoctors from "./pages/Dashboards/HospitalDashboard/HospitalDoctors.jsx";
@@ -53,7 +54,7 @@ function App() {
         <Route
           path="/dashboard/user"
           element={
-            <ProtectedRoute role="user">
+            <ProtectedRoute role={["user", "patient"]}>
               <UserDashboard />
             </ProtectedRoute>
           }
@@ -62,7 +63,7 @@ function App() {
         <Route
           path="/appointments"
           element={
-            <ProtectedRoute role="user">
+            <ProtectedRoute role={["user", "patient"]}>
               <MyAppointments />
             </ProtectedRoute>
           }
@@ -96,6 +97,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard/pa/journey/:journeyId"
+          element={
+            <ProtectedRoute role="assistant">
+              <JourneyDetailEditor />
+            </ProtectedRoute>
+          }
+        />
+
+
 
         {/* Admin protected routes */}
         <Route

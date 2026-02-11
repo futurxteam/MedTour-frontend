@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Dashboard.css";
 import { logout } from "../../../utils/auth";
-import api, { getAssignedEnquiries, updateEnquiryStatusByAssistant } from "../../../api/api";
+import api, { getAssignedEnquiries, updateEnquiryStatusByAssistant, startService, getAssignedJourneys } from "../../../api/api";
 
 export default function PADashboard() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState("enquiries");
   const [enquiries, setEnquiries] = useState([]);
+  const [journeys, setJourneys] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,9 +24,23 @@ export default function PADashboard() {
     }
   };
 
+  const fetchJourneys = async () => {
+    setLoading(true);
+    try {
+      const res = await getAssignedJourneys();
+      setJourneys(res.data);
+    } catch (err) {
+      console.error("Failed to fetch journeys", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (view === "enquiries") {
       fetchEnquiries();
+    } else if (view === "services") {
+      fetchJourneys();
     }
   }, [view]);
 
@@ -35,6 +50,18 @@ export default function PADashboard() {
       fetchEnquiries();
     } catch (err) {
       console.error("Failed to update status", err);
+    }
+  };
+
+  const handleStartService = async (enquiryId) => {
+    try {
+      await startService(enquiryId);
+      alert("Service journey started successfully!");
+      fetchEnquiries(); // Refresh to remove from enquiries list
+      setView("services"); // Switch to services view
+    } catch (err) {
+      console.error("Failed to start service", err);
+      alert("Failed to start service. Please try again.");
     }
   };
 
@@ -87,6 +114,12 @@ export default function PADashboard() {
               onClick={() => setView("enquiries")}
             >
               Assigned Enquiries
+            </button>
+            <button
+              className={view === "services" ? "active" : ""}
+              onClick={() => setView("services")}
+            >
+              Services
             </button>
             <button
               className={view === "patients" ? "active" : ""}
@@ -147,16 +180,63 @@ export default function PADashboard() {
                         📞 Make a Call
                       </button>
 
+                      {e.status === "contacted" && (
+                        <button
+                          className="action-btn start-service-btn"
+                          onClick={() => handleStartService(e._id)}
+                        >
+                          🚀 Start Service
+                        </button>
+                      )}
+
                       <select
                         className="status-select"
                         value={e.status}
                         onChange={(ev) => handleUpdateStatus(e._id, ev.target.value)}
                       >
-                        <option value="new">New</option>
                         <option value="assigned">Assigned</option>
                         <option value="contacted">Contacted</option>
                         <option value="closed">Closed</option>
                       </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {view === "services" && (
+            <>
+              <h3>Active Service Journeys</h3>
+              {loading && <p>Loading journeys...</p>}
+              {!loading && journeys.length === 0 && <p>No active service journeys yet.</p>}
+
+              <div className="enquiries-grid">
+                {journeys.map((j) => (
+                  <div key={j._id} className="dashboard-card journey-card">
+                    <div className="enquiry-header">
+                      <b>{j.enquiryId?.patientName || "Patient"}</b>
+                      <span className={`status-pill ${j.status}`}>{j.status}</span>
+                    </div>
+
+                    <p className="enquiry-detail">📞 {j.enquiryId?.phone}</p>
+                    <p className="enquiry-detail">
+                      📊 Progress: {j.progressPercentage}%
+                    </p>
+                    <p className="enquiry-detail">
+                      📋 Stages: {j.stages?.length || 0}
+                    </p>
+                    <p className="enquiry-detail">
+                      ⏱️ Duration: {j.totalDuration} days
+                    </p>
+
+                    <div className="enquiry-actions">
+                      <button
+                        className="action-btn"
+                        onClick={() => navigate(`/dashboard/pa/journey/${j._id}`)}
+                      >
+                        📝 Manage Journey
+                      </button>
                     </div>
                   </div>
                 ))}
