@@ -27,11 +27,7 @@ export default function HospitalDashboard() {
         </div>
 
         <div className="profile-area" onClick={() => setOpen(!open)}>
-          <img
-            src="https://i.pravatar.cc/40?img=12"
-            alt="Hospital Admin"
-            className="profile-avatar"
-          />
+          <div className="profile-avatar-initial">H</div>
           <span className="profile-name">Hospital</span>
 
           {open && (

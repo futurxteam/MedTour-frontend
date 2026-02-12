@@ -85,11 +85,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="profile-area" onClick={() => setOpen(!open)}>
-          <img
-            src="https://i.pravatar.cc/40?img=11"
-            alt="Admin"
-            className="profile-avatar"
-          />
+          <div className="profile-avatar-initial">A</div>
           <span className="profile-name">Admin</span>
 
           {open && (

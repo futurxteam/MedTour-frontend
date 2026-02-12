@@ -203,12 +203,24 @@ export const deleteJourneyStage = (journeyId, stageId) =>
 export const reorderJourneyStages = (journeyId, stageOrder) =>
   API.patch(`/assistant/journeys/${journeyId}/reorder`, { stageOrder });
 
-export const updateJourneyStatus = (journeyId, status) =>
+export const updateJourneyStatus = async (journeyId, status) =>
   API.patch(`/assistant/journeys/${journeyId}/status`, { status });
+
+// MEDICAL RECORDS APIS – PA
+export const addMedicalRecord = (journeyId, formData) =>
+  API.post(`/assistant/journeys/${journeyId}/records`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const getJourneyRecords = (journeyId) =>
+  API.get(`/assistant/journeys/${journeyId}/records`);
 
 // SERVICE JOURNEY APIS - Patient
 export const getMyJourney = () =>
   API.get("/patient/my-journey");
+
+export const getMyJourneyRecords = () =>
+  API.get("/patient/my-journey/records");
 
 
 /* ===========================

@@ -12,22 +12,29 @@ export default function TimelineStepper({ stages, currentStageIndex }) {
         return "pending";
     };
 
-    const calculateDuration = (startDate, endDate) => {
+    const calculateDuration = (startDate, endDate, durationHours) => {
         const start = new Date(startDate);
         const end = new Date(endDate);
         const diffMs = end - start;
 
-        // Calculate hours
-        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        // Calculate hours from dates
+        const hoursFromDates = Math.floor(diffMs / (1000 * 60 * 60));
 
-        // If less than 24 hours, show in hours
-        if (hours < 24) {
-            return `${hours} hour${hours !== 1 ? 's' : ''}`;
+        // If we have a significant duration from dates (> 0), use it
+        if (hoursFromDates > 0) {
+            if (hoursFromDates < 24) {
+                return `${hoursFromDates} hour${hoursFromDates !== 1 ? 's' : ''}`;
+            }
+            const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            return `${days} day${days !== 1 ? 's' : ''}`;
         }
 
-        // Otherwise show in days
-        const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-        return `${days} day${days !== 1 ? 's' : ''}`;
+        // If date difference is 0, check if we have explicit durationHours
+        if (durationHours > 0) {
+            return `${durationHours} hour${durationHours !== 1 ? 's' : ''}`;
+        }
+
+        return null; // Don't show "0 hours"
     };
 
     return (
@@ -76,11 +83,6 @@ export default function TimelineStepper({ stages, currentStageIndex }) {
                                     </div>
                                 )}
 
-                                {status === "pending" && stage.estimatedDate && (
-                                    <div className="step-date pending-date">
-                                        ⏳ Estimated: {new Date(stage.estimatedDate).toLocaleDateString()}
-                                    </div>
-                                )}
                             </div>
 
                             {/* Additional Details */}
@@ -105,11 +107,14 @@ export default function TimelineStepper({ stages, currentStageIndex }) {
                                 </div>
                             )}
 
-                            {stage.startDate && stage.endDate && (
-                                <div className="step-duration">
-                                    Duration: {calculateDuration(stage.startDate, stage.endDate)}
-                                </div>
-                            )}
+                            {(() => {
+                                const durationText = calculateDuration(stage.startDate, stage.endDate, stage.durationHours);
+                                return durationText && (
+                                    <div className="step-duration">
+                                        Duration: {durationText}
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
                 );

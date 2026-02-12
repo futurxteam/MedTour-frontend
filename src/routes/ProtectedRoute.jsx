@@ -19,12 +19,6 @@ export default function ProtectedRoute({ allowedRoles, role, children }) {
   // Profile completion enforcement
   if (!user.profileCompleted) {
     switch (user.role) {
-      case "user":
-      case "patient":
-        if (!pathname.startsWith("/profile")) {
-          return <Navigate to="/profile" replace />;
-        }
-        break;
       case "doctor":
         if (
           user.profileCompleted === false &&

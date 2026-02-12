@@ -78,11 +78,7 @@ export default function PADashboard() {
         </div>
 
         <div className="profile-area" onClick={() => setOpen(!open)}>
-          <img
-            src="https://i.pravatar.cc/40?img=32"
-            alt="Assistant"
-            className="profile-avatar"
-          />
+          <div className="profile-avatar-initial">P</div>
           <span className="profile-name">Assistant</span>
 
           {open && (
@@ -139,38 +135,43 @@ export default function PADashboard() {
         {/* Main content */}
         <main className="dashboard-container">
           {view === "enquiries" && (
-            <>
+            <div className="admin-enquiries-container">
               <h3>Assigned Consultation Requests</h3>
               {loading && <p>Loading enquiries...</p>}
               {!loading && enquiries.length === 0 && <p>No enquiries assigned yet.</p>}
 
-              <div className="enquiries-grid">
+              <div className="enquiries-group">
                 {enquiries.map((e) => (
                   <div key={e._id} className="dashboard-card enquiry-card">
-                    <div className="enquiry-header">
-                      <b>{e.patientName}</b>
-                      <span className={`status-pill ${e.status}`}>{e.status}</span>
+                    <div className="enquiry-main">
+                      <div className="enquiry-patient-header">
+                        <b>{e.patientName}</b>
+                        <span className={`status-badge status-${e.status}`}>{e.status}</span>
+                      </div>
+
+                      <p className="phone">📞 {e.phone}</p>
+                      <p className="meta">Source: {e.source === "homepage" ? "🏠 Homepage" : "🏥 Services"}</p>
+                      <p className="location">📍 {e.city}, {e.country}</p>
+
+                      {e.source === "homepage" ? (
+                        <div className="homepage-details">
+                          <p>🩺 Medical Problem: {e.medicalProblem}</p>
+                          <p>📅 Age/DOB: {e.ageOrDob}</p>
+                        </div>
+                      ) : (
+                        <div className="services-details">
+                          <p className="service-path">
+                            {e.specialtyId?.name} → {e.surgeryId?.surgeryName}
+                          </p>
+                          <p>Doctor: {e.doctorId?.name}</p>
+                          {e.consultationDate && (
+                            <p className="consult-date">
+                              📅 Consultation: <strong>{new Date(e.consultationDate).toLocaleDateString()}</strong>
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
-
-                    <p className="enquiry-detail">📞 {e.phone}</p>
-                    <p className="enquiry-detail">
-                      <b>Source:</b> {e.source === "homepage" ? "🏠 Homepage" : "🏥 Services"}
-                    </p>
-
-                    {e.source === "homepage" ? (
-                      <>
-                        <p className="enquiry-detail">� {e.city}, {e.country}</p>
-                        <p className="enquiry-detail">🩺 <b>Medical Problem:</b> {e.medicalProblem}</p>
-                        <p className="enquiry-detail">📅 <b>Age/DOB:</b> {e.ageOrDob}</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="enquiry-detail">
-                          🏥 {e.specialtyId?.name} → {e.surgeryId?.surgeryName}
-                        </p>
-                        <p className="enquiry-detail">👨‍⚕️ Doctor: {e.doctorId?.name}</p>
-                      </>
-                    )}
 
                     <div className="enquiry-actions">
                       <button
@@ -180,6 +181,18 @@ export default function PADashboard() {
                         📞 Make a Call
                       </button>
 
+                      <div className="status-update-form">
+                        <select
+                          className="status-select"
+                          value={e.status}
+                          onChange={(ev) => handleUpdateStatus(e._id, ev.target.value)}
+                        >
+                          <option value="assigned">Assigned</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="closed">Closed</option>
+                        </select>
+                      </div>
+
                       {e.status === "contacted" && (
                         <button
                           className="action-btn start-service-btn"
@@ -188,51 +201,56 @@ export default function PADashboard() {
                           🚀 Start Service
                         </button>
                       )}
-
-                      <select
-                        className="status-select"
-                        value={e.status}
-                        onChange={(ev) => handleUpdateStatus(e._id, ev.target.value)}
-                      >
-                        <option value="assigned">Assigned</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                      </select>
                     </div>
                   </div>
                 ))}
               </div>
-            </>
+            </div>
           )}
 
           {view === "services" && (
-            <>
+            <div className="admin-enquiries-container">
               <h3>Active Service Journeys</h3>
               {loading && <p>Loading journeys...</p>}
               {!loading && journeys.length === 0 && <p>No active service journeys yet.</p>}
 
-              <div className="enquiries-grid">
+              <div className="enquiries-group">
                 {journeys.map((j) => (
-                  <div key={j._id} className="dashboard-card journey-card">
-                    <div className="enquiry-header">
-                      <b>{j.enquiryId?.patientName || "Patient"}</b>
-                      <span className={`status-pill ${j.status}`}>{j.status}</span>
-                    </div>
+                  <div key={j._id} className="dashboard-card enquiry-card">
+                    <div className="enquiry-main">
+                      <div className="enquiry-patient-header">
+                        <b>{j.enquiryId?.patientName || "Patient"}</b>
+                        <span className={`status-badge status-${j.status}`}>{j.status}</span>
+                      </div>
 
-                    <p className="enquiry-detail">📞 {j.enquiryId?.phone}</p>
-                    <p className="enquiry-detail">
-                      📊 Progress: {j.progressPercentage}%
-                    </p>
-                    <p className="enquiry-detail">
-                      📋 Stages: {j.stages?.length || 0}
-                    </p>
-                    <p className="enquiry-detail">
-                      ⏱️ Duration: {j.totalDuration} days
-                    </p>
+                      <p className="phone">📞 {j.enquiryId?.phone}</p>
+
+                      <div className="journey-summary-grid">
+                        <div className="summary-item">
+                          <span>📊 Progress</span>
+                          <strong>{j.progressPercentage}%</strong>
+                        </div>
+                        <div className="summary-item">
+                          <span>📋 Stages</span>
+                          <strong>{j.stages?.length || 0}</strong>
+                        </div>
+                        <div className="summary-item">
+                          <span>⏱️ Day</span>
+                          <strong>{j.currentDay || 0} of {j.totalDuration || 0}</strong>
+                        </div>
+                      </div>
+
+                      <div className="progress-bar-container">
+                        <div
+                          className="progress-bar-fill"
+                          style={{ width: `${j.progressPercentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
 
                     <div className="enquiry-actions">
                       <button
-                        className="action-btn"
+                        className="action-btn manage-btn"
                         onClick={() => navigate(`/dashboard/pa/journey/${j._id}`)}
                       >
                         📝 Manage Journey
@@ -241,7 +259,7 @@ export default function PADashboard() {
                   </div>
                 ))}
               </div>
-            </>
+            </div>
           )}
 
           {view === "patients" && (

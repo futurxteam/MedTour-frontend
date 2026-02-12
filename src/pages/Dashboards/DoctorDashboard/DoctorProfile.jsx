@@ -17,6 +17,9 @@ const DoctorProfile = () => {
     qualifications: "",
     licenseNumber: "",
     bio: "",
+    about: "",
+    designation: "",
+    consultationFee: "",
   });
 
   /* =========================
@@ -34,6 +37,9 @@ const DoctorProfile = () => {
           qualifications: res.data.qualifications || "",
           licenseNumber: res.data.licenseNumber || "",
           bio: res.data.bio || "",
+          about: res.data.about || "",
+          designation: res.data.designation || "",
+          consultationFee: res.data.consultationFee || "",
         });
 
         if (!res.data.profileCompleted) {
@@ -174,11 +180,39 @@ const DoctorProfile = () => {
             </div>
 
             <div className="form-group">
-              <label>Bio</label>
+              <label>Designation</label>
+              <input
+                value={form.designation}
+                placeholder="Senior Consultant"
+                onChange={(e) => setForm({ ...form, designation: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Consultation Fee ($)</label>
+              <input
+                type="number"
+                value={form.consultationFee}
+                onChange={(e) => setForm({ ...form, consultationFee: e.target.value })}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>About / Professional Summary</label>
+              <textarea
+                value={form.about}
+                onChange={(e) => setForm({ ...form, about: e.target.value })}
+                rows={4}
+                placeholder="Brief summary of your professional background..."
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Personal Bio (Legacy)</label>
               <textarea
                 value={form.bio}
                 onChange={(e) => setForm({ ...form, bio: e.target.value })}
-                rows={4}
+                rows={2}
               />
             </div>
 
@@ -223,7 +257,26 @@ const DoctorProfile = () => {
               </div>
 
               <div className="detail-item">
-                <span className="label">Bio:</span>
+                <span className="label">Designation:</span>
+                <span className="value">{profileData?.designation || "—"}</span>
+              </div>
+
+              <div className="detail-item">
+                <span className="label">Consultation Fee:</span>
+                <span className="value">
+                  {profileData?.consultationFee ? `$${profileData.consultationFee}` : "—"}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="label">About:</span>
+                <span className="value">
+                  {profileData?.about || "—"}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="label">Bio (Legacy):</span>
                 <span className="value">
                   {profileData?.bio || "—"}
                 </span>

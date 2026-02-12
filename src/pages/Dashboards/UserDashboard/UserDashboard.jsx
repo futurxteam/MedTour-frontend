@@ -3,7 +3,7 @@ import "../../styles/Dashboard.css";
 import "./UserDashboard.css";
 import { useNavigate } from "react-router-dom";
 import { logout, getAuthUser } from "../../../utils/auth";
-import { getMyJourney } from "../../../api/api";
+import { getMyJourney, getMyJourneyRecords } from "../../../api/api";
 import api from "../../../api/api";
 import TimelineStepper from "../../../components/TimelineStepper";
 
@@ -11,6 +11,8 @@ export default function UserDashboard() {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("service"); // service, journey, profile
   const [journey, setJourney] = useState(null);
+  const [records, setRecords] = useState([]);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -59,6 +61,7 @@ export default function UserDashboard() {
   // Fetch journey data
   useEffect(() => {
     fetchJourney();
+    fetchRecords();
   }, []);
 
   const fetchJourney = async () => {
@@ -72,6 +75,15 @@ export default function UserDashboard() {
       setJourney(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecords = async () => {
+    try {
+      const res = await getMyJourneyRecords();
+      setRecords(res.data);
+    } catch (err) {
+      console.error("Failed to fetch records:", err);
     }
   };
 
@@ -247,7 +259,7 @@ export default function UserDashboard() {
                             .length || 0}{" "}
                           of {journey.stages?.length || 0} stages completed
                         </span>
-                        <span>{journey.totalDuration || 0} days total</span>
+                        <span>Day {journey.currentDay || 0} of {journey.totalDuration || 0} total</span>
                       </div>
                     </div>
                   </div>
@@ -282,6 +294,59 @@ export default function UserDashboard() {
                           <span className="btn-icon">💬</span>
                           <span className="btn-text">WhatsApp</span>
                         </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Medical Records Card (Trigger) */}
+                  <div className="medical-records-summary-card" onClick={() => setIsPanelOpen(true)}>
+                    <div className="summary-left">
+                      <span className="summary-icon">📄</span>
+                      <div className="summary-text">
+                        <h4>Medical Records</h4>
+                        <p>{records.length} Clinical Document{records.length !== 1 ? 's' : ''} Uploaded</p>
+                      </div>
+                    </div>
+                    <div className="summary-right">
+                      <span className="view-all-text">View All</span>
+                      <span className="arrow-icon">→</span>
+                    </div>
+                  </div>
+
+                  {/* Side Panel Overlay */}
+                  {isPanelOpen && (
+                    <div className="panel-overlay" onClick={() => setIsPanelOpen(false)}>
+                      <div className="side-panel" onClick={(e) => e.stopPropagation()}>
+                        <div className="panel-header">
+                          <h3>📄 Clinical Documents</h3>
+                          <button className="close-panel-btn" onClick={() => setIsPanelOpen(false)}>×</button>
+                        </div>
+                        <div className="panel-body">
+                          {records.length === 0 ? (
+                            <div className="panel-empty">
+                              <p>No records uploaded yet.</p>
+                            </div>
+                          ) : (
+                            <div className="panel-records-list">
+                              {records.map((record) => (
+                                <div key={record._id} className="panel-record-item">
+                                  <div className="record-main-info">
+                                    <h6>{record.description}</h6>
+                                    <span className="record-date">{new Date(record.date).toLocaleDateString()}</span>
+                                  </div>
+                                  <a
+                                    href={record.fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="record-download-link"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -321,12 +386,12 @@ export default function UserDashboard() {
                   {/* Stats Cards */}
                   <div className="journey-stats">
                     <div className="stat-card">
-                      <div className="stat-value">{journey.totalDuration || 0}</div>
-                      <div className="stat-label">Total Days</div>
+                      <div className="stat-value">{journey.currentDay || 0}</div>
+                      <div className="stat-label">Current Day</div>
                     </div>
                     <div className="stat-card">
-                      <div className="stat-value">{journey.progressPercentage || 0}%</div>
-                      <div className="stat-label">Complete</div>
+                      <div className="stat-value">{journey.totalDuration || 0}</div>
+                      <div className="stat-label">Total Days</div>
                     </div>
                     <div className="stat-card">
                       <div className="stat-value">{journey.stages?.length || 0}</div>

@@ -1,216 +1,124 @@
 .journey-editor-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
 }
 
-.journey-header-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-}
-
-.journey-header-card h3 {
-  margin: 0 0 1rem 0;
-  color: #1976d2;
-}
-
-.journey-header-card p {
-  margin: 0.5rem 0;
-  color: #666;
-}
-
-.journey-header-card button {
-  margin-top: 1rem;
-  margin-right: 1rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #2196f3, #1976d2);
-  color: white;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #4caf50, #388e3c);
-  color: white;
-}
-
-.btn-success:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-}
-
-.back-btn {
-  background: transparent;
-  border: none;
-  color: #1976d2;
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.back-btn:hover {
-  text-decoration: underline;
-}
-
-/* Stages List */
-.stages-list {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.stages-list h4 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #333;
-}
-
-.stage-item {
+.journey-dual-column {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 8px;
-  background: #f9f9f9;
-  transition: all 0.3s;
+  gap: 32px;
+  margin-top: 32px;
 }
 
-.stage-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.stages-column {
+  flex: 2;
 }
 
-.stage-number {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  flex-shrink: 0;
-  background: #e0e0e0;
-  color: #757575;
-}
-
-.stage-pending .stage-number {
-  background: white;
-  border: 2px solid #e0e0e0;
-  color: #bdbdbd;
-}
-
-.stage-in-progress .stage-number {
-  background: linear-gradient(135deg, #2196f3, #1976d2);
-  color: white;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
-}
-
-.stage-completed .stage-number {
-  background: #4caf50;
-  color: white;
-}
-
-.stage-completed .stage-number::before {
-  content: "✓";
-}
-
-.stage-content {
+.records-column {
   flex: 1;
-}
-
-.stage-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.stage-header h5 {
-  margin: 0;
-  color: #333;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.status-badge.pending {
-  background: #e0e0e0;
-  color: #757575;
-}
-
-.status-badge.in-progress {
-  background: #2196f3;
-  color: white;
-}
-
-.status-badge.completed {
-  background: #4caf50;
-  color: white;
-}
-
-.stage-dates {
-  display: flex;
-  gap: 1rem;
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.flight-info {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background: #e3f2fd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.stage-notes {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background: #fff3e0;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-.stage-actions {
-  margin-top: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.stage-actions button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
   background: white;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.record-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   transition: all 0.2s;
 }
 
-.stage-actions button:hover {
-  background: #f5f5f5;
-  border-color: #2196f3;
+.record-item:hover {
+  border-color: var(--accent);
+  background: #f8fafc;
 }
 
-/* Modal */
+.record-icon {
+  font-size: 1.5rem;
+}
+
+.record-info h6 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.record-date {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.view-file-link {
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.empty-msg {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 40px 0;
+}
+
+/* Modal and Clinical Overrides */
+.modal-content textarea {
+  min-height: 80px;
+}
+
+.stage-item {
+  margin-bottom: 20px;
+}
+
+.stage-notes-clinical {
+  background: #fff8eb;
+  border-left: 3px solid #f59e0b;
+  padding: 8px 12px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #92400e;
+}
+
+.stage-actions-clinical {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.stage-actions-clinical button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stage-actions-clinical button.delete {
+  color: #ef4444;
+}
+
+/* Existing Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -234,22 +142,10 @@
   overflow-y: auto;
 }
 
-.modal-content h3 {
-  margin-top: 0;
-  color: #1976d2;
-}
-
-.modal-content h4 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #666;
-}
-
 .modal-content label {
   display: block;
   margin-bottom: 1rem;
   font-weight: 500;
-  color: #333;
 }
 
 .modal-content input,
@@ -258,54 +154,21 @@
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-top: 0.25rem;
-  font-family: inherit;
-}
-
-.modal-content textarea {
-  min-height: 80px;
-  resize: vertical;
+  border-radius: 8px;
+  margin-top: 4px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 .modal-actions button {
   flex: 1;
-  padding: 0.75rem;
-  border: none;
+  padding: 12px;
   border-radius: 8px;
+  border: none;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s;
-}
-
-.modal-actions .btn-primary {
-  background: linear-gradient(135deg, #2196f3, #1976d2);
-  color: white;
-}
-
-.modal-actions button:not(.btn-primary) {
-  background: #f5f5f5;
-  color: #666;
-}
-
-.modal-actions button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Additional styles for journey card */
-.start-service-btn {
-  background: linear-gradient(135deg, #ff9800, #f57c00) !important;
-  color: white !important;
-}
-
-.start-service-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
 }

@@ -25,18 +25,8 @@ export default function DoctorDashboard() {
 
         <div className="profile-area doctor-profile-area" onClick={() => setOpen(!open)}>
           <div className="doctor-profile-info">
-            <div className="profile-avatar doctor-avatar-circle">
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="profile"
-                  className="doctor-avatar-img"
-                />
-              ) : (
-                <span className="doctor-avatar-placeholder">
-                  {userName.charAt(0).toUpperCase()}
-                </span>
-              )}
+            <div className="profile-avatar-initial">
+              {userName.charAt(0).toUpperCase()}
             </div>
             <span className="profile-name">{userName}</span>
           </div>

@@ -10,7 +10,8 @@ import {
   getPublicDoctorsBySurgery,
   sendEnquiryOtp,
   verifyOtpAndCreateEnquiry,
-
+  getCountries,
+  getCitiesByCountry,
 } from "../api/api";
 
 export default function Services() {
@@ -40,27 +41,42 @@ export default function Services() {
 
   const [enquiryForm, setEnquiryForm] = useState({
     patientName: "",
-    phone: "",
-    contactMode: "call",
+    country: "",
+    city: "",
+    phoneCode: "+91",
+    phoneNumber: "",
+    medicalProblem: "",
+    ageOrDob: "",
     otp: "",
   });
+
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loadingCities, setLoadingCities] = useState(false);
+  const [viewingDoctor, setViewingDoctor] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [bookingStep, setBookingStep] = useState(1); // 1: Details/Calendar, 2: Form/OTP
 
   /* ===========================
      FETCH SPECIALTIES (PUBLIC)
   =========================== */
   useEffect(() => {
-    const fetchServices = async () => {
+    const fetchInitialData = async () => {
       try {
-        const res = await getPublicSurgeriesMenu();
-        setMenuData(res.data || {});
+        const [menuRes, countriesRes] = await Promise.all([
+          getPublicSurgeriesMenu(),
+          getCountries(),
+        ]);
+        setMenuData(menuRes.data || {});
+        setCountries(countriesRes.data.countries || []);
       } catch (err) {
-        console.error("Failed to load services", err);
+        console.error("Failed to load initial data", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchServices();
+    fetchInitialData();
   }, []);
 
   /* ===========================
@@ -109,7 +125,11 @@ export default function Services() {
   };
 
   const handleBack = () => {
-    if (selectedSurgery) {
+    if (viewingDoctor) {
+      setViewingDoctor(null);
+      setBookingStep(1);
+      setSelectedDate("");
+    } else if (selectedSurgery) {
       setSelectedSurgery(null);
       setDoctors([]);
     } else if (selectedSpecialty) {
@@ -121,20 +141,61 @@ export default function Services() {
   /* ===========================
      ENQUIRY HANDLERS
   =========================== */
+  const handleCountryChange = async (e) => {
+    const countryName = e.target.value;
+    const country = countries.find((c) => c.name === countryName);
+
+    if (!country) {
+      setEnquiryForm({ ...enquiryForm, country: "", city: "" });
+      setCities([]);
+      return;
+    }
+
+    setEnquiryForm({
+      ...enquiryForm,
+      country: country.name,
+      city: "",
+    });
+
+    if (country.hasCities) {
+      setLoadingCities(true);
+      try {
+        const res = await getCitiesByCountry(country.code);
+        setCities(res.data.cities || []);
+      } catch (err) {
+        console.error("Failed to fetch cities", err);
+        setCities([]);
+      } finally {
+        setLoadingCities(false);
+      }
+    } else {
+      setCities([]);
+    }
+  };
+
   const handleGetQuote = (doctor) => {
-    setSelectedDoctor(doctor);
-    setShowQuoteModal(true);
-    setOtpSent(false);
+    setViewingDoctor(doctor);
+    setBookingStep(1);
+    setSelectedDate("");
     setEnquiryForm({
       patientName: "",
-      phone: "",
-      contactMode: "call",
-      otp: "",
+      country: "",
+      city: "",
+      phoneCode: "+91",
+      phoneNumber: "",
+      medicalProblem: "",
+      ageOrDob: "",
     });
+    setOtpSent(false);
   };
 
   const handleSendOtp = async () => {
-    await sendEnquiryOtp({ phone: enquiryForm.phone });
+    if (!enquiryForm.patientName || !enquiryForm.country || !enquiryForm.phoneNumber || !enquiryForm.ageOrDob) {
+      alert("Please fill all required fields");
+      return;
+    }
+    const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
+    await sendEnquiryOtp({ phone: fullPhone });
     setOtpSent(true);
   };
 
@@ -144,18 +205,26 @@ export default function Services() {
       return;
     }
 
+    const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
     await verifyOtpAndCreateEnquiry({
       patientName: enquiryForm.patientName,
-      phone: enquiryForm.phone,
+      phone: fullPhone,
       otp: enquiryForm.otp,
-      contactMode: enquiryForm.contactMode,
+      country: enquiryForm.country,
+      city: enquiryForm.city,
+      medicalProblem: enquiryForm.medicalProblem,
+      ageOrDob: enquiryForm.ageOrDob,
       specialtyId: selectedSpecialty.id,
       surgeryId: selectedSurgery._id,
-      doctorId: selectedDoctor._id,
+      doctorId: viewingDoctor._id,
+      consultationDate: selectedDate,
+      source: "services",
     });
 
-    alert("Our assistant will contact you shortly");
-    setShowQuoteModal(false);
+    alert("Booking enquiry submitted! Our assistant will contact you shortly.");
+    setViewingDoctor(null);
+    setBookingStep(1);
+    setSelectedDate("");
   };
 
   /* ===========================
@@ -191,6 +260,7 @@ export default function Services() {
                     setSelectedSurgery(null);
                     setSurgeries([]);
                     setDoctors([]);
+                    setViewingDoctor(null);
                   }}
                   className="services-back"
                 >
@@ -255,7 +325,8 @@ export default function Services() {
                 >
                   <h3>{surgery.surgeryName}</h3>
                   <p>Duration: {surgery.duration}</p>
-                  <p className="surgery-description">{surgery.description}</p>                </div>
+                  <p className="surgery-description">{surgery.description}</p>
+                </div>
               ))}
             </div>
           )}
@@ -263,19 +334,174 @@ export default function Services() {
           {/* ===========================
               DOCTORS VIEW
           =========================== */}
-          {selectedSurgery && (
+          {selectedSurgery && !viewingDoctor && (
             <div className="services-grid">
               {doctors.map((doc) => (
-                <div key={doc._id} className="service-card doctor">
+                <div key={doc._id} className="service-card doctor" onClick={() => handleGetQuote(doc)}>
                   <div className="doctor-avatar">👨‍⚕️</div>
                   <h3>{doc.name}</h3>
-                  <p>Specialist Surgeon</p>
+                  <p className="doctor-designation">{doc.designation}</p>
+                  <p className="doctor-about-snippet">
+                    {doc.about ? `${doc.about.substring(0, 100)}...` : "Experienced specialist dedicated to patient care."}
+                  </p>
 
-                  <button onClick={() => handleGetQuote(doc)}>
-                    Get Free Quote
+                  <button className="book-btn">
+                    View & Book
                   </button>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* ===========================
+              DOCTOR DETAILS & BOOKING
+          =========================== */}
+          {viewingDoctor && (
+            <div className="doctor-booking-container">
+              <div className="doctor-details-panel">
+                <div className="detail-header">
+                  <div className="doctor-avatar large">👨‍⚕️</div>
+                  <div className="header-text">
+                    <h3>{viewingDoctor.name}</h3>
+                    <p className="designation">{viewingDoctor.designation}</p>
+                    <p className="experience">{viewingDoctor.experience} Years Experience</p>
+                  </div>
+                </div>
+
+                <div className="detail-info">
+                  <div className="info-section">
+                    <h4>About</h4>
+                    <p>{viewingDoctor.about || "No biography provided."}</p>
+                  </div>
+                  <div className="info-section">
+                    <h4>Qualifications</h4>
+                    <p>{viewingDoctor.qualifications || "Not specified"}</p>
+                  </div>
+                  <div className="info-box-row">
+                    <div className="info-item">
+                      <span className="label">Consultation Fee</span>
+                      <span className="value">${viewingDoctor.consultationFee || "0"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="booking-panel">
+                {bookingStep === 1 ? (
+                  <div className="step-content">
+                    <h4>Select Consultation Date</h4>
+                    <input
+                      type="date"
+                      className="date-picker"
+                      min={new Date().toISOString().split("T")[0]}
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                    />
+                    <button
+                      className="btn btn-primary"
+                      disabled={!selectedDate}
+                      onClick={() => setBookingStep(2)}
+                      style={{ marginTop: '20px', width: '100%' }}
+                    >
+                      Continue to Booking
+                    </button>
+                  </div>
+                ) : (
+                  <div className="step-content">
+                    <h4>Complete Your Booking</h4>
+                    <p className="booking-summary">
+                      Date: <strong>{selectedDate}</strong>
+                    </p>
+                    <div className="booking-form">
+                      <input
+                        placeholder="Patient Name"
+                        className="form-input"
+                        value={enquiryForm.patientName}
+                        required
+                        onChange={(e) => setEnquiryForm({ ...enquiryForm, patientName: e.target.value })}
+                      />
+
+                      <select
+                        className="form-input"
+                        value={enquiryForm.country}
+                        required
+                        onChange={handleCountryChange}
+                      >
+                        <option value="">Select Country</option>
+                        {countries.map((c) => (
+                          <option key={c.code} value={c.name}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      <input
+                        list="booking-cities-list"
+                        placeholder={loadingCities ? "Loading cities..." : "Select City"}
+                        className="form-input"
+                        value={enquiryForm.city}
+                        onChange={(e) => setEnquiryForm({ ...enquiryForm, city: e.target.value })}
+                        disabled={!enquiryForm.country || cities.length === 0}
+                      />
+                      <datalist id="booking-cities-list">
+                        {cities.map((city, idx) => (
+                          <option key={idx} value={city.name} />
+                        ))}
+                      </datalist>
+
+                      <div className="form-input phone-group-flex">
+                        <span className="country-code-span">{enquiryForm.phoneCode}</span>
+                        <input
+                          type="tel"
+                          placeholder="Phone Number"
+                          className="phone-field"
+                          value={enquiryForm.phoneNumber}
+                          required
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, phoneNumber: e.target.value })}
+                        />
+                      </div>
+
+                      <textarea
+                        placeholder="Describe The Current Medical Problem (Optional) .."
+                        className="form-input"
+                        style={{ height: '80px', resize: 'none' }}
+                        value={enquiryForm.medicalProblem}
+                        onChange={(e) => setEnquiryForm({ ...enquiryForm, medicalProblem: e.target.value })}
+                      ></textarea>
+
+                      <input
+                        placeholder="Example: 30 Yrs or 29-05-1985"
+                        className="form-input"
+                        value={enquiryForm.ageOrDob}
+                        required
+                        onChange={(e) => setEnquiryForm({ ...enquiryForm, ageOrDob: e.target.value })}
+                      />
+
+                      {!otpSent ? (
+                        <button className="btn btn-primary" onClick={handleSendOtp} style={{ width: '100%' }}>
+                          Send Verification OTP
+                        </button>
+                      ) : (
+                        <>
+                          <input
+                            placeholder="Enter OTP (123)"
+                            className="form-input"
+                            value={enquiryForm.otp}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, otp: e.target.value })}
+                          />
+                          <button className="btn btn-success" onClick={handleSubmitEnquiry} style={{ width: '100%' }}>
+                            Confirm Booking Enquiry
+                          </button>
+                        </>
+                      )}
+
+                      <button className="btn-link" onClick={() => setBookingStep(1)} style={{ marginTop: '10px' }}>
+                        ← Change Date
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -293,74 +519,6 @@ export default function Services() {
           )}
         </div>
       </section>
-
-      {/* ===========================
-          QUOTE MODAL
-      =========================== */}
-      {showQuoteModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Get Free Quote</h3>
-
-            <input
-              placeholder="Your Name"
-              value={enquiryForm.patientName}
-              onChange={(e) =>
-                setEnquiryForm({
-                  ...enquiryForm,
-                  patientName: e.target.value,
-                })
-              }
-            />
-
-            <input
-              placeholder="Phone Number"
-              value={enquiryForm.phone}
-              onChange={(e) =>
-                setEnquiryForm({
-                  ...enquiryForm,
-                  phone: e.target.value,
-                })
-              }
-            />
-
-            <select
-              value={enquiryForm.contactMode}
-              onChange={(e) =>
-                setEnquiryForm({
-                  ...enquiryForm,
-                  contactMode: e.target.value,
-                })
-              }
-            >
-              <option value="call">Call</option>
-              <option value="message">Message</option>
-            </select>
-
-            {!otpSent ? (
-              <button onClick={handleSendOtp}>Send OTP</button>
-            ) : (
-              <>
-                <input
-                  placeholder="Enter OTP (123)"
-                  value={enquiryForm.otp}
-                  onChange={(e) =>
-                    setEnquiryForm({
-                      ...enquiryForm,
-                      otp: e.target.value,
-                    })
-                  }
-                />
-                <button onClick={handleSubmitEnquiry}>
-                  Submit Enquiry
-                </button>
-              </>
-            )}
-
-            <button onClick={() => setShowQuoteModal(false)}>Close</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

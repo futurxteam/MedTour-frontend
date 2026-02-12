@@ -70,7 +70,7 @@ const HomepageEnquiryBox = () => {
 
     const handleSendOtp = async (e) => {
         e.preventDefault();
-        if (!formData.patientName || !formData.country || !formData.phoneNumber || !formData.medicalProblem || !formData.ageOrDob) {
+        if (!formData.patientName || !formData.country || !formData.phoneNumber || !formData.ageOrDob) {
             alert("Please fill all required fields");
             return;
         }
@@ -195,8 +195,7 @@ const HomepageEnquiryBox = () => {
 
                     <div className="form-group">
                         <textarea
-                            placeholder="Describe The Current Medical Problem .."
-                            required
+                            placeholder="Describe The Current Medical Problem (Optional) .."
                             value={formData.medicalProblem}
                             onChange={(e) => setFormData({ ...formData, medicalProblem: e.target.value })}
                         ></textarea>
