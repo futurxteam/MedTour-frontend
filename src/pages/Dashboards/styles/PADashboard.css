@@ -1,333 +1,257 @@
-/* PADashboard Component Styles */
+/* ==========================================================================
+   REIMAGINED PA DASHBOARD
+   ========================================================================== */
+
+/* The base variables are inherited from Dashboard.css */
 
 .pa-dashboard-container {
   width: 100%;
 }
 
-.dashboard-grid > .dashboard-card {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+.admin-enquiries-container {
+  padding: 0;
+  /* Let dashboard-container handle padding */
 }
 
-.dashboard-grid > .dashboard-card:hover {
-  transform: translateY(-2px);
-}
-
-.patient-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.patient-list-title {
-  margin-bottom: 20px;
-}
-
-.patient-card {
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.patient-card:hover {
-  transform: translateY(-2px);
-}
-
-.patient-card-header {
+.view-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.patient-card-name {
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.patient-card-role {
-  color: #64748b;
-  font-size: 14px;
-}
-
-.patient-card-from {
-  background: #e0f2fe;
-  color: #0369a1;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.patient-card-contact {
-  color: #64748b;
-  font-size: 14px;
-}
-
-.patient-card-details {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 12px;
-  margin-top: 12px;
-  font-size: 14px;
-  color: #64748b;
-}
-
-.patient-card-buttons {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-}
-
-.patient-card-buttons button {
-  flex: 1;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.patient-notify-btn {
-  background: #10b981;
-  color: white;
-  border: none !important;
-}
-
-.patient-notify-btn:hover {
-  background: #059669;
-}
-
-.patient-detail-back {
-  background: #e2e8f0;
-  color: #1e293b;
-  margin-bottom: 20px;
-  padding: 8px 16px;
-}
-
-.patient-detail-header {
-  margin-bottom: 24px;
+  align-items: flex-end;
+  margin-bottom: 32px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-soft);
 }
 
-.patient-detail-name {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 8px;
+.view-header h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  letter-spacing: -0.03em;
 }
 
-.patient-detail-info {
-  font-size: 15px;
-  color: #64748b;
-  margin: 6px 0;
-}
-
-.patient-detail-journey {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+/* Stats Pill Header */
+.stats-header {
+  display: flex;
   gap: 12px;
-  margin-bottom: 24px;
-  padding: 24px;
 }
 
-.journey-step {
-  padding: 12px;
+.mini-stat {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.mini-stat strong {
+  color: var(--accent-dark);
+}
+
+/* ========== CARD EVOLUTION ========== */
+.enquiries-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.pa-enquiry-card {
+  background: white;
+  padding: 24px !important;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pa-enquiry-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+
+/* Card Patient Info */
+.enquiry-patient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.enquiry-patient-header b {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-assigned {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-contacted {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-closed {
   background: #f1f5f9;
-  border-radius: 8px;
-  text-align: center;
+  color: #475569;
 }
 
-.journey-step.current {
-  background: #dbeafe;
-  border: 2px solid #3b82f6;
+/* Main Content */
+.enquiry-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
 }
 
-.journey-step-number {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  margin-bottom: 6px;
+.enquiry-main p {
+  margin: 0 !important;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
-.journey-step-title {
-  font-weight: 600;
-  color: #1e293b;
-  font-size: 13px;
+.enquiry-main .phone {
+  font-weight: 700;
+  color: var(--text-main);
 }
 
-.notify-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+.source-tag {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+/* Specialty/Surgery Box */
+.services-details,
+.homepage-details {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: var(--radius-lg);
+  margin-top: 12px;
+  border: 1px solid var(--border-soft);
+}
+
+.service-path {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* ========== SERVICES: JOURNEY INFO ========== */
+.journey-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: var(--accent-light);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  margin: 0 !important;
+  border: 1px solid rgba(13, 148, 136, 0.1);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-item span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-item strong {
+  font-size: 0.9375rem;
+  color: var(--text-main);
+}
+
+/* ========== ACTIONS ========== */
+.enquiry-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid var(--border-soft) !important;
+}
+
+.action-btn {
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  padding: 12px !important;
+  border-radius: 10px !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  gap: 8px;
 }
 
-.notify-panel {
-  width: 90%;
-  max-width: 500px;
-  padding: 24px;
-  border-radius: 12px;
-  position: relative;
+.call-btn {
+  background: white !important;
+  color: var(--accent-dark) !important;
+  border: 1.5px solid var(--accent-dark) !important;
 }
 
-.notify-panel-title {
-  margin-top: 0;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 16px;
+.call-btn:hover {
+  background: var(--accent-light) !important;
 }
 
-.notify-panel-contact {
-  color: #64748b;
-  margin-bottom: 20px;
-}
-
-.notify-templates {
-  margin-bottom: 20px;
-}
-
-.notify-templates-label {
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.notify-template-btn {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  text-align: left;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #fff;
-  cursor: pointer;
-  font-size: 15px;
-  margin-bottom: 8px;
-  transition: background 0.2s;
-}
-
-.notify-template-btn:hover {
-  background: #f1f5f9;
-}
-
-.notify-template-btn.active {
-  background: #dbeafe;
-  border-color: #3b82f6;
-}
-
-.notify-template-btn strong {
-  display: block;
-  margin-bottom: 4px;
-}
-
-.notify-template-btn small {
-  color: #64748b;
-}
-
-.notify-custom-message {
-  margin-bottom: 16px;
-}
-
-.notify-custom-label {
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.notify-custom-textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 15px;
-  min-height: 100px;
-  font-family: inherit;
-  resize: vertical;
-}
-
-.notify-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.notify-send-btn {
-  flex: 1;
-  background: #10b981;
+.manage-btn,
+.start-service-btn {
+  background: var(--accent);
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
 }
 
-.notify-send-btn:hover:not(:disabled) {
-  background: #059669;
+.manage-btn:hover,
+.start-service-btn:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
 }
 
-.notify-send-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* ========== EMPTY STATES ========== */
 
-.notify-cancel-btn {
-  flex: 1;
-  background: #e2e8f0;
-  color: #1e293b;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.notify-cancel-btn:hover {
-  background: #cbd5e1;
-}
-
-.appointments-title {
-  margin-bottom: 20px;
-}
-
-.appointments-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.appointment-card {
-  padding: 16px;
+.empty-state {
+  text-align: center;
+  padding: 60px 24px;
   background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-}
-
-.appointment-card-title {
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 10px;
-}
-
-.appointment-card-details {
-  font-size: 14px;
-  color: #64748b;
-  margin: 6px 0;
-}
-
-.appointment-card-time {
-  color: #3b82f6;
-  font-weight: 600;
+  border: 2px dashed var(--border-soft);
+  border-radius: var(--radius-xl);
+  color: var(--text-muted);
 }

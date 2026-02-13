@@ -2,16 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { surgeryData } from "./data"; // ✅ Import real data
+import { surgeryData } from "./data";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "./styles/Home.css";
 import "./styles/Services.css";
-import heroDoctor from "../assets/hero-doctor.png";
 import { getPublicSurgeriesMenu } from "../api/api";
 import HomepageEnquiryBox from "../components/HomepageEnquiryBox";
-// ✅ Dynamic departments with sub-items (common conditions/treatments)
-
 
 export default function Home() {
   const navigate = useNavigate();
@@ -27,12 +24,11 @@ export default function Home() {
         console.error("Failed to load menu", err);
       }
     };
-
     fetchMenuData();
   }, []);
 
   return (
-    <>
+    <div className="home-root">
       <Header />
 
       {/* ================= DYNAMIC DEPARTMENT BAR ================= */}
@@ -45,9 +41,9 @@ export default function Home() {
               onMouseEnter={() => setActiveDept(deptName)}
               onMouseLeave={() => setActiveDept(null)}
             >
-              <span className="dept-item" style={{ cursor: "pointer" }}>
+              <span className="dept-item">
                 {deptName}
-                <span className="arrow">▾</span>
+                <span className="arrow" style={{ marginLeft: '4px', opacity: 0.5 }}>▾</span>
               </span>
 
               {activeDept === deptName && menuData[deptName]?.surgeries && (
@@ -76,73 +72,97 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ================= HERO ================= */}
-      <section className="hero-section kerala-hero">
-        <div className="container hero-grid">
-          <div className="hero-text">
+      {/* ================= HERO SECTION ================= */}
+      <section className="hero-wrapper">
+        <div className="hero-aura-1"></div>
+        <div className="container">
+          <div className="hero-content">
+            <div className="hero-tagline">
+              <span className="dot"></span>
+              Kerala's #1 Medical Travel Platform
+            </div>
             <h1>
-              Rooted in Kerala.
-              <br />
-              Built for Your Well-Being.
+              Global Healthcare, <br />
+              <span>Rooted in Kerala</span>
             </h1>
             <p>
-              Kerala's Most Trusted Medical Travel Assistance Platform
+              Experience world-class medical treatments blended with the healing serenity of God's Own Country. We bridge the gap between you and excellence.
             </p>
 
-            {/* Social proof icons/stats shown in image could go here */}
-            <div className="hero-stats">
-              <div className="stats-images">
-                <img src="https://i.pravatar.cc/40?img=1" alt="p1" />
-                <img src="https://i.pravatar.cc/40?img=2" alt="p2" />
-                <img src="https://i.pravatar.cc/40?img=3" alt="p3" />
-                <img src="https://i.pravatar.cc/40?img=4" alt="p4" />
-                <img src="https://i.pravatar.cc/40?img=5" alt="p5" />
-              </div>
-              <div className="stats-text">
-                <b>10,000+</b> Patients Assisted Since 2016
-              </div>
+            <div className="hero-enquiry-wrapper">
+              <HomepageEnquiryBox />
             </div>
-
-            <div className="hero-rating">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_Logo.svg" alt="Google" className="google-logo" />
-              <span className="rating-score">4.7</span>
-              <span className="rating-stars">★★★★★</span>
-            </div>
-          </div>
-
-          <div className="hero-form-container">
-            <HomepageEnquiryBox />
           </div>
         </div>
       </section>
 
-      {/* Rest of your Home page (Specialities, Services, etc.) remains unchanged */}
-      {/* You can keep the Specialities section as previously updated or this one */}
+      {/* ================= KERALA BRAND BAR ================= */}
+      <div className="brand-bar">
+        <div className="container">
+          <div className="brand-scroll">
+            <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '2px' }}>NABH ACCREDITED</span>
+            <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '2px' }}>JCI ACCREDITED</span>
+            <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '2px' }}>ISO CERTIFIED</span>
+            <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '2px' }}>KERALA TOURISM</span>
+          </div>
+        </div>
+      </div>
 
-      {/* Example: Keep your updated Specialities section here */}
-      <section className="departments-section specialities-section">
-        <div className="specialities-overlay"></div>
-        <div className="container specialities-content">
-          <h2 className="section-title">Our Specialities</h2>
-          <div className="departments-grid">
-            {surgeryData.map((service) => (
+      <div className="kasavu-divider"></div>
+
+      {/* ================= FEATURES SECTION ================= */}
+      <section className="container" style={{ padding: '120px 0 0' }}>
+        <div className="section-head">
+          <h2>Redefining Medical Care</h2>
+          <p>We provide a seamless journey from consultation to full recovery.</p>
+        </div>
+
+        <div className="feature-grid">
+          <div className="feature-card">
+            <div className="icon-box">👨‍⚕️</div>
+            <h3>Expert Specialists</h3>
+            <p>Access the top 1% of surgeons and medical practitioners in Kerala, handpicked for your specific needs.</p>
+          </div>
+          <div className="feature-card">
+            <div className="icon-box">🛡️</div>
+            <h3>End-to-End Support</h3>
+            <p>From visa assistance to post-surgery rehabilitation, our dedicated PAs handle everything for you.</p>
+          </div>
+          <div className="feature-card">
+            <div className="icon-box">🌿</div>
+            <h3>Ayurvedic Healing</h3>
+            <p>Complement your modern surgical treatment with traditional Ayurvedic recovery protocols in serene resorts.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= SPECIALITIES SECTION ================= */}
+      <section className="specialities-section">
+        <div className="container">
+          <div className="section-head">
+            <h2>Our Specialities</h2>
+            <p>World-class expertise across multiple medical disciplines.</p>
+          </div>
+
+          <div className="specialities-grid">
+            {Object.entries(menuData || {}).slice(0, 6).map(([deptName, deptData], index) => (
               <div
-                key={service.id}
-                className="dept-card"
-                onClick={() => navigate(`/surgery/${service.id}`)}
-                style={{ cursor: "pointer" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.1)";
-                }}
+                key={deptData._id}
+                className="speciality-card"
+                onClick={() =>
+                  navigate("/services", {
+                    state: {
+                      specialtyId: deptData._id,
+                      specialtyName: deptName,
+                    }
+                  })
+                }
               >
-                <div className="dept-info">
-                  <h3>{service.title}</h3>
-                  <p>{service.description}</p>
+                {/* Dynamic Unsplash images for high quality */}
+                <img src={`https://images.unsplash.com/photo-${index === 0 ? '1576091160550-217359f4ecf8' : index === 1 ? '1631815589968-fdb09a223b1e' : index === 2 ? '1579684385127-1ef15d508118' : index === 3 ? '1599443015574-be5fe8a05783' : index === 4 ? '1551601651-2a8555f1a136' : '1584362917165-526a968579e8'}?auto=format&fit=crop&w=600&q=80`} alt={deptName} />
+                <div className="speciality-overlay">
+                  <h3>{deptName}</h3>
+                  <p>{deptData.surgeries?.length || 0} Treatments Available</p>
                 </div>
               </div>
             ))}
@@ -150,58 +170,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services, Trust, Dashboard Access sections remain the same */}
-      <section className="services-section">
-        <div className="container">
-          <h2 className="section-title">Care designed around you</h2>
-          <div className="services-grid">
-            <div className="service-card">
-              <h3>Doctor Consultations</h3>
-              <p>Talk to experienced doctors who listen carefully, explain patiently, and guide you honestly.</p>
-            </div>
-            <div className="service-card">
-              <h3>Surgeries & Treatments</h3>
-              <p>Clear guidance on procedures and recovery — so you can decide without pressure or confusion.</p>
-            </div>
-            <div className="service-card">
-              <h3>Diagnostics & Ongoing Care</h3>
-              <p>From accurate tests to long-term follow-ups, we help you stay informed and supported.</p>
-            </div>
-          </div>
+      {/* ================= TRUST BANNER ================= */}
+      <section className="container">
+        <div className="trust-banner">
+          <h2>"Excellence is not a skill, it is an attitude. <br /> In Kerala, it's our heritage."</h2>
+          <p style={{ opacity: 0.8, fontSize: '18px' }}>— Trusted by 10,000+ International Patients</p>
         </div>
       </section>
 
-      <section className="trust-section">
-        <div className="container trust-box">
-          <p>Trusted by patients who value clarity, compassion, and honest medical guidance.</p>
+      {/* ================= QUICK ACCESS / DASHBOARDS ================= */}
+      <section className="container">
+        <div className="section-head">
+          <h2>Platform Portals</h2>
+          <p>Seamless access for every stakeholder in the healthcare ecosystem.</p>
         </div>
-      </section>
 
-      <section className="dashboard-access">
-        <div className="container">
-          <h2 className="section-title">Quick Access</h2>
-          <div className="dashboard-access-grid">
-            <a href="/dashboard/user" className="dashboard-access-card">
-              <h3>User Dashboard</h3>
-              <p>View appointments, treatments, and medical history</p>
-            </a>
-            <a href="/dashboard/doctor" className="dashboard-access-card">
-              <h3>Doctor Dashboard</h3>
-              <p>Manage patients, schedules, and consultations</p>
-            </a>
-            <a href="/dashboard/pa" className="dashboard-access-card">
-              <h3>PA Dashboard</h3>
-              <p>Assist patients and coordinate medical services</p>
-            </a>
-            <a href="/dashboard/admin" className="dashboard-access-card">
-              <h3>Admin Dashboard</h3>
-              <p>Control platform data, users, and operations</p>
-            </a>
-          </div>
+        <div className="dashboard-grid">
+          <a href="/dashboard/user" className="access-card">
+            <h3>Patients Portal</h3>
+            <p>Track your medical journey and reports.</p>
+          </a>
+          <a href="/dashboard/doctor" className="access-card">
+            <h3>Doctor's Desk</h3>
+            <p>Manage consultations and surgeries.</p>
+          </a>
+          <a href="/dashboard/pa" className="access-card">
+            <h3>Assistant Hub</h3>
+            <p>Coordinate patient travels and care.</p>
+          </a>
+          <a href="/dashboard/admin" className="access-card">
+            <h3>Admin Control</h3>
+            <p>Oversee platform operations and security.</p>
+          </a>
         </div>
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 }

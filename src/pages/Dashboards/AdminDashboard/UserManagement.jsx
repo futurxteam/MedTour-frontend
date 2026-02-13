@@ -68,9 +68,10 @@ export default function UserManagement() {
       <h3 className="user-management-title">User Management</h3>
 
       {/* TOP CONTROLS */}
+      {/* TOP CONTROLS */}
       <div className="user-management-controls">
         <input
-          placeholder="Search by name"
+          placeholder="Search by name or email..."
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -92,44 +93,47 @@ export default function UserManagement() {
           <option value="hospital">Hospital</option>
         </select>
 
-        <button onClick={() => setShowCreate(!showCreate)}>
-          + Add User
+        <button className="add-user-btn" onClick={() => setShowCreate(!showCreate)}>
+          {showCreate ? "Close Panel" : "+ Add Member"}
         </button>
       </div>
 
       {/* CREATE USER PANEL */}
       {showCreate && (
         <div className="create-user-form">
-          <select
-            value={newUser.role}
-            onChange={(e) =>
-              setNewUser({ ...newUser, role: e.target.value })
-            }
-          >
-            <option value="">Select Role</option>
-            <option value="user">User</option>
-            <option value="doctor">Doctor</option>
-            <option value="assistant">Assistant</option>
-            <option value="hospital">Hospital</option>
-          </select>
+          <div className="create-form-grid">
+            <select
+              value={newUser.role}
+              onChange={(e) =>
+                setNewUser({ ...newUser, role: e.target.value })
+              }
+            >
+              <option value="">Select Role</option>
+              <option value="user">User</option>
+              <option value="doctor">Doctor</option>
+              <option value="assistant">Assistant</option>
+              <option value="hospital">Hospital</option>
+            </select>
 
-          <input
-            placeholder="Email"
-            value={newUser.email}
-            onChange={(e) =>
-              setNewUser({ ...newUser, email: e.target.value })
-            }
-          />
+            <input
+              placeholder="Primary Email Address"
+              value={newUser.email}
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value })
+              }
+            />
 
-          <input
-            placeholder="Temporary Password"
-            value={newUser.password}
-            onChange={(e) =>
-              setNewUser({ ...newUser, password: e.target.value })
-            }
-          />
+            <input
+              type="password"
+              placeholder="Temporary Password"
+              value={newUser.password}
+              onChange={(e) =>
+                setNewUser({ ...newUser, password: e.target.value })
+              }
+            />
+          </div>
 
-          <button onClick={handleCreate}>Create</button>
+          <button className="submit-create-btn" onClick={handleCreate}>Create Member Account</button>
         </div>
       )}
 
@@ -138,30 +142,27 @@ export default function UserManagement() {
         {users.map((u) => (
           <div key={u._id} className="dashboard-card user-card">
             <div className="user-card-header">
-              <span>
-                <span className="user-card-name">{u.name}</span> ({u.role})
-              </span>
+              <span className="user-card-name">{u.name}</span>
+              <span className="role-badge">{u.role}</span>
             </div>
-            <p className="user-card-email">{u.email}</p>
+            <p className="user-card-email">✉️ {u.email}</p>
 
             <div className="user-card-actions">
               <button
                 className={`user-status-btn ${u.active ? "disable" : "enable"}`}
                 onClick={async () => {
-                  // Confirmation only for enabling
                   if (!u.active && !window.confirm("Enable this user?")) return;
-
                   await toggleUserStatus(u._id, !u.active);
                   loadUsers();
                 }}
               >
-                {u.active ? "Disable" : "Enable"}
+                {u.active ? "Disable Account" : "Activate Account"}
               </button>
 
               <span
                 className={`user-status ${u.active ? "active" : "disabled"}`}
               >
-                {u.active ? "Active" : "Disabled"}
+                {u.active ? "● Active" : "● Disabled"}
               </span>
             </div>
           </div>

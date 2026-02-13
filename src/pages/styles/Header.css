@@ -60,7 +60,7 @@
 
 .header-btn {
   padding: 10px 22px;
-  background: #7bae9e;
+  background: #0f766e;
   /* SAME as Talk to a doctor */
   color: white;
   border-radius: 999px;
@@ -73,7 +73,7 @@
 }
 
 .header-btn:hover {
-  background: #5f8f82;
+  background: #0d615a;
   /* hover state match */
 }
 
@@ -86,8 +86,8 @@
   padding: 0 20px;
 
   background: transparent;
-  color: #7bae9e;
-  border: 2px solid #7bae9e;
+  color: #0f766e;
+  border: 2px solid #0f766e;
   border-radius: 999px;
 
   font-size: 15px;

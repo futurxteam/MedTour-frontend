@@ -15,8 +15,8 @@
 /* Base Container */
 .hospital-content {
     padding: 0;
-    max-width: 1000px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
 }
 
 .page-head {
@@ -130,7 +130,7 @@ textarea.form-control {
 /* ========== CARDS & GRIDS ========== */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
     margin-top: 20px;
 }
@@ -263,4 +263,47 @@ textarea.form-control {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+}
+
+/* ========== FLEX FORM LAYOUT ========== */
+.add-doctor-form-container {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    margin-top: 24px;
+}
+
+.add-doctor-main-inputs {
+    flex: 1.5;
+    background: white;
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+.add-doctor-side-panel {
+    flex: 1;
+    background: white;
+    padding: 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 104px;
+}
+
+.add-doctor-side-panel .form-group:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 1200px) {
+    .add-doctor-form-container {
+        flex-direction: column;
+    }
+
+    .add-doctor-side-panel {
+        width: 100%;
+        position: static;
+    }
 }

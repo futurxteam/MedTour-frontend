@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../api/api";
+import { getDoctorPhotoUrl, uploadDoctorPhoto } from "../../../api/api";
 import "../../styles/HospitalDashboard.css";
 
 export default function HospitalDoctors() {
@@ -11,6 +12,8 @@ export default function HospitalDoctors() {
   const [editMode, setEditMode] = useState(false);
   const [specializationsList, setSpecializationsList] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   // Form state for editing
   const [editForm, setEditForm] = useState({
@@ -77,7 +80,21 @@ export default function HospitalDoctors() {
       licenseNumber: selectedDoctor.licenseNumber || "",
       specializations: selectedDoctor.specializationIds || [],
     });
+    setPhoto(null);
+    setPhotoPreview(selectedDoctor.hasPhoto ? getDoctorPhotoUrl(selectedDoctor.id) : null);
     setEditMode(true);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File size exceeds 2MB limit.");
+        return;
+      }
+      setPhoto(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSave = async (e) => {
@@ -85,6 +102,13 @@ export default function HospitalDoctors() {
     setSaving(true);
     try {
       await api.put(`/hospital/doctors/${selectedDoctor.id}/profile`, editForm);
+
+      if (photo) {
+        const formData = new FormData();
+        formData.append("photo", photo);
+        await uploadDoctorPhoto(selectedDoctor.id, formData);
+      }
+
       setEditMode(false);
       fetchDoctors();
     } catch (err) {
@@ -143,6 +167,13 @@ export default function HospitalDoctors() {
                     setEditMode(false);
                   }}
                 >
+                  <div className="item-avatar">
+                    {doc.hasPhoto ? (
+                      <img src={getDoctorPhotoUrl(doc.id)} alt={doc.name} />
+                    ) : (
+                      <div className="avatar-placeholder">👤</div>
+                    )}
+                  </div>
                   <div className="item-info">
                     <strong>{doc.name}</strong>
                     <span className="designation">{doc.designation || "Doctor"}</span>
@@ -166,6 +197,27 @@ export default function HospitalDoctors() {
                 <div className="detail-header">
                   <h4>Edit Profile: {selectedDoctor.name}</h4>
                   <button className="btn btn-secondary" onClick={() => setEditMode(false)}>Cancel</button>
+                </div>
+
+                <div className="photo-edit-section">
+                  <div className="edit-avatar-box">
+                    {photoPreview ? (
+                      <img src={photoPreview} alt="Preview" />
+                    ) : (
+                      <span className="placeholder">👤</span>
+                    )}
+                  </div>
+                  <div className="upload-btn-wrapper">
+                    <input
+                      type="file"
+                      id="editPhoto"
+                      hidden
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handlePhotoChange}
+                    />
+                    <label htmlFor="editPhoto" className="btn btn-outline">Change Profile Photo</label>
+                    <p className="upload-hint">Square image, JPG/PNG/WEBP, Max 2MB</p>
+                  </div>
                 </div>
 
                 <form onSubmit={handleSave} className="edit-form grid-2">
@@ -262,6 +314,13 @@ export default function HospitalDoctors() {
               /* DETAIL VIEW MODE */
               <div className="profile-detail">
                 <div className="detail-header">
+                  <div className="detail-avatar">
+                    {selectedDoctor.hasPhoto ? (
+                      <img src={getDoctorPhotoUrl(selectedDoctor.id)} alt={selectedDoctor.name} />
+                    ) : (
+                      <div className="avatar-placeholder">👤</div>
+                    )}
+                  </div>
                   <div className="header-main">
                     <h4>{selectedDoctor.name}</h4>
                     <span className="badge badge-secondary">{selectedDoctor.designation || "Doctor"}</span>
@@ -511,6 +570,64 @@ export default function HospitalDoctors() {
             .grid-2 { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
         }
+
+        /* Avatar Styles */
+        .item-avatar {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: #e2e8f0;
+          overflow: hidden;
+          margin-right: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-placeholder { font-size: 24px; color: #94a3b8; }
+
+        .detail-avatar {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-right: 20px;
+          border: 3px solid white;
+          box-shadow: var(--shadow-sm);
+        }
+        .detail-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .photo-edit-section {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-bottom: 30px;
+          padding: 20px;
+          background: #f8fafc;
+          border-radius: var(--radius);
+        }
+        .edit-avatar-box {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          overflow: hidden;
+          background: #e2e8f0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .edit-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        .edit-avatar-box .placeholder { font-size: 40px; color: #94a3b8; }
+        .btn-outline {
+          border: 1px solid var(--primary);
+          color: var(--primary);
+          background: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+        .upload-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+
       `}</style>
     </div>
   );

@@ -12,6 +12,7 @@ import {
   verifyOtpAndCreateEnquiry,
   getCountries,
   getCitiesByCountry,
+  getDoctorPhotoUrl,
 } from "../api/api";
 
 export default function Services() {
@@ -55,6 +56,7 @@ export default function Services() {
   const [loadingCities, setLoadingCities] = useState(false);
   const [viewingDoctor, setViewingDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [currentViewMonth, setCurrentViewMonth] = useState(new Date());
   const [bookingStep, setBookingStep] = useState(1); // 1: Details/Calendar, 2: Form/OTP
 
   /* ===========================
@@ -338,7 +340,13 @@ export default function Services() {
             <div className="services-grid">
               {doctors.map((doc) => (
                 <div key={doc._id} className="service-card doctor" onClick={() => handleGetQuote(doc)}>
-                  <div className="doctor-avatar">👨‍⚕️</div>
+                  <div className="doctor-avatar">
+                    {doc.hasPhoto ? (
+                      <img src={getDoctorPhotoUrl(doc._id || doc.id)} alt={doc.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    ) : (
+                      "👨‍⚕️"
+                    )}
+                  </div>
                   <h3>{doc.name}</h3>
                   <p className="doctor-designation">{doc.designation}</p>
                   <p className="doctor-about-snippet">
@@ -360,7 +368,13 @@ export default function Services() {
             <div className="doctor-booking-container">
               <div className="doctor-details-panel">
                 <div className="detail-header">
-                  <div className="doctor-avatar large">👨‍⚕️</div>
+                  <div className="doctor-avatar large">
+                    {viewingDoctor.hasPhoto ? (
+                      <img src={getDoctorPhotoUrl(viewingDoctor._id || viewingDoctor.id)} alt={viewingDoctor.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                    ) : (
+                      "👨‍⚕️"
+                    )}
+                  </div>
                   <div className="header-text">
                     <h3>{viewingDoctor.name}</h3>
                     <p className="designation">{viewingDoctor.designation}</p>
@@ -390,13 +404,67 @@ export default function Services() {
                 {bookingStep === 1 ? (
                   <div className="step-content">
                     <h4>Select Consultation Date</h4>
-                    <input
-                      type="date"
-                      className="date-picker"
-                      min={new Date().toISOString().split("T")[0]}
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                    />
+                    <div className="custom-calendar-container">
+                      <div className="calendar-header">
+                        <button
+                          className="cal-nav-btn"
+                          onClick={() => {
+                            const prev = new Date(currentViewMonth);
+                            prev.setMonth(prev.getMonth() - 1);
+                            setCurrentViewMonth(prev);
+                          }}
+                        >
+                          ‹
+                        </button>
+                        <span className="current-month">
+                          {currentViewMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                        </span>
+                        <button
+                          className="cal-nav-btn"
+                          onClick={() => {
+                            const next = new Date(currentViewMonth);
+                            next.setMonth(next.getMonth() + 1);
+                            setCurrentViewMonth(next);
+                          }}
+                        >
+                          ›
+                        </button>
+                      </div>
+
+                      <div className="calendar-grid">
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
+                          <div key={day} className="weekday-label">{day}</div>
+                        ))}
+
+                        {Array.from({ length: new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth(), 1).getDay() }).map((_, i) => (
+                          <div key={`empty-${i}`} className="calendar-day empty"></div>
+                        ))}
+
+                        {Array.from({ length: new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth() + 1, 0).getDate() }).map((_, i) => {
+                          const day = i + 1;
+                          const dateObj = new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth(), day);
+                          const dateString = dateObj.toISOString().split('T')[0];
+                          const isToday = new Date().toISOString().split('T')[0] === dateString;
+                          const isSelected = selectedDate === dateString;
+                          const isPast = dateObj < new Date(new Date().setHours(0, 0, 0, 0));
+
+                          return (
+                            <div
+                              key={day}
+                              className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}`}
+                              onClick={() => !isPast && setSelectedDate(dateString)}
+                            >
+                              {day}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="selected-date-display">
+                      {selectedDate ? `Selected: ${new Date(selectedDate).toLocaleDateString('en-US', { dateStyle: 'full' })}` : "No date selected"}
+                    </div>
+
                     <button
                       className="btn btn-primary"
                       disabled={!selectedDate}

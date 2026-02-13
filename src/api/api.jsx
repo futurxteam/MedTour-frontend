@@ -140,6 +140,14 @@ export const assignDoctorToSurgery = (surgeryId, doctorId) =>
     doctorId,
   });
 
+export const uploadDoctorPhoto = (doctorId, formData) =>
+  API.post(`/hospital/doctors/${doctorId}/photo`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const getDoctorPhotoUrl = (doctorId) =>
+  `${API_BASE_URL}/api/public/doctor/${doctorId}/photo`;
+
 // PUBLIC – Services page only
 
 export const getPublicSurgeriesBySpecialty = (specialtyId) =>
