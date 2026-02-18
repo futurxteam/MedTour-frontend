@@ -658,3 +658,126 @@ body {
   color: white;
   transform: translateY(-1px);
 }
+
+/* ========== GLOBAL SURGERY REGISTRY ========== */
+.admin-global-surgeries .view-header,
+.admin-specialties .view-header {
+  margin-bottom: 2rem;
+}
+
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.registry-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.registry-info {
+  flex: 1;
+}
+
+.registry-meta {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.spec-pill {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.cost-tag {
+  background: #f1f5f9;
+  color: var(--text-main);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.registry-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.registry-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  min-width: 120px;
+}
+
+.secondary-btn {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+  background: var(--bg-main);
+  border-color: var(--text-muted);
+}
+
+.error-banner {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border-left: 4px solid #ef4444;
+  margin-bottom: 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.registry-card .status-pill.approved {
+  background: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.registry-card .status-pill.rejected {
+  background: #fff1f2;
+  color: #e11d48;
+}

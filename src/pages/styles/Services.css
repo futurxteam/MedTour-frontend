@@ -362,6 +362,17 @@
     flex: 1;
 }
 
+.booking-summary {
+    background: #f0fdfa;
+    border: 1px dashed var(--primary);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    text-align: center;
+}
+
 .date-picker,
 .form-input {
     width: 100%;
@@ -380,6 +391,53 @@
     border-color: var(--primary);
     box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
     outline: none;
+}
+
+.phone-group-flex {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    overflow: hidden;
+    background: #ffffff !important;
+}
+
+.country-code-span {
+    padding: 12px 16px;
+    background: #f8fafc;
+    color: var(--text-main);
+    font-weight: 700;
+    border-right: 1px solid #e2e8f0;
+    min-width: 70px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.phone-field {
+    flex: 1;
+    border: none !important;
+    padding: 12px 16px !important;
+    background: transparent !important;
+    font-size: 0.9rem !important;
+    width: 100%;
+}
+
+.phone-field:focus {
+    outline: none !important;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.btn-link:hover {
+    color: var(--primary);
 }
 
 /* ========== AVATAR SECTION ========== */

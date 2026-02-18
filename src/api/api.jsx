@@ -140,6 +140,9 @@ export const assignDoctorToSurgery = (surgeryId, doctorId) =>
     doctorId,
   });
 
+export const getAvailableGlobalSurgeries = (specializationId = "") =>
+  API.get(`/hospital/global-registry?specializationId=${specializationId}`);
+
 export const uploadDoctorPhoto = (doctorId, formData) =>
   API.post(`/hospital/doctors/${doctorId}/photo`, formData, {
     headers: { "Content-Type": "multipart/form-data" },

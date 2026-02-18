@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import UserManagement from "./UserManagement";
 import api from "@/api/api";
 import AdminEnquiries from "./AdminEnquiries";
+import AdminGlobalSurgeries from "./AdminGlobalSurgeries";
+import AdminSpecialties from "./AdminSpecialties";
 
 
 
@@ -156,6 +158,20 @@ export default function AdminDashboard() {
               📑 Booking Requests
             </button>
 
+            <button
+              className={view === "globalSurgeries" ? "active" : ""}
+              onClick={() => setView("globalSurgeries")}
+            >
+              🏥 Global Surgeries
+            </button>
+
+            <button
+              className={view === "specialties" ? "active" : ""}
+              onClick={() => setView("specialties")}
+            >
+              🔬 Specializations
+            </button>
+
           </nav>
         </aside>
 
@@ -278,6 +294,8 @@ export default function AdminDashboard() {
 
 
           {view === "analytics" && <h3>System Analytics</h3>}
+          {view === "globalSurgeries" && <AdminGlobalSurgeries />}
+          {view === "specialties" && <AdminSpecialties />}
 
           {view === "requests" && <AdminEnquiries />}
 

@@ -2,22 +2,28 @@ import React, { useEffect, useState } from "react";
 import {
   addHospitalSurgery,
   getHospitalSpecializations,
+  getAvailableGlobalSurgeries,
 } from "../../../api/api";
 import "../../styles/HospitalDashboard.css";
 
 export default function AddSurgery() {
   const [specialties, setSpecialties] = useState([]);
+  const [globalSurgeries, setGlobalSurgeries] = useState([]);
   const [search, setSearch] = useState("");
+  const [surgerySearch, setSurgerySearch] = useState("");
   const [showList, setShowList] = useState(false);
+  const [showSurgeryList, setShowSurgeryList] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     specializationId: "",
-    surgeryName: "",
+    globalSurgeryId: "",
     description: "",
     duration: "",
     cost: "",
   });
+
+  const [selectedGlobal, setSelectedGlobal] = useState(null);
 
   useEffect(() => {
     const fetchSpecializations = async () => {
@@ -31,22 +37,54 @@ export default function AddSurgery() {
     fetchSpecializations();
   }, []);
 
+  useEffect(() => {
+    const fetchGlobals = async () => {
+      if (!form.specializationId) {
+        setGlobalSurgeries([]);
+        return;
+      }
+      try {
+        const res = await getAvailableGlobalSurgeries(form.specializationId);
+        setGlobalSurgeries(res.data);
+      } catch (err) {
+        console.error("Failed to fetch global surgeries:", err);
+      }
+    };
+    fetchGlobals();
+  }, [form.specializationId]);
+
   const filteredSpecialties = specialties.filter((spec) =>
     spec.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const filteredGlobalSurgeries = globalSurgeries.filter((gs) =>
+    gs.surgeryName.toLowerCase().includes(surgerySearch.toLowerCase())
+  );
+
+  const handleGlobalSelect = (selected) => {
+    setSelectedGlobal(selected);
+    setSurgerySearch(selected.surgeryName);
+    setForm(prev => ({
+      ...prev,
+      globalSurgeryId: selected._id,
+      description: selected?.description || prev.description,
+      duration: selected?.duration || prev.duration,
+      cost: selected?.minimumCost || prev.cost
+    }));
+    setShowSurgeryList(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.specializationId) {
-      alert("Please select a specialization");
+    if (!form.specializationId || !form.globalSurgeryId) {
+      alert("Please select specialization and surgery from catalog");
       return;
     }
 
     setLoading(true);
     try {
       await addHospitalSurgery({
-        specializationId: form.specializationId,
-        surgeryName: form.surgeryName,
+        globalSurgeryId: form.globalSurgeryId,
         description: form.description,
         duration: form.duration,
         cost: Number(form.cost),
@@ -56,13 +94,16 @@ export default function AddSurgery() {
 
       setForm({
         specializationId: "",
-        surgeryName: "",
+        globalSurgeryId: "",
         description: "",
         duration: "",
         cost: "",
       });
       setSearch("");
+      setSurgerySearch("");
       setShowList(false);
+      setShowSurgeryList(false);
+      setSelectedGlobal(null);
     } catch (err) {
       console.error("Error adding surgery:", err);
       alert("Failed to add surgery: " + (err.response?.data?.message || err.message));
@@ -74,18 +115,19 @@ export default function AddSurgery() {
   return (
     <div className="hospital-content">
       <div className="page-head">
-        <h3>Add New Surgery Package</h3>
+        <h3>Offer Master Surgery Package</h3>
+        <p className="subtitle">Select from the master registry and set your hospital pricing</p>
       </div>
 
       <div className="form-section">
         <form onSubmit={handleSubmit}>
 
-          <div className="form-group" style={{ position: 'relative', zIndex: 50 }}>
-            <label>Specialization</label>
+          <div className="form-group" style={{ position: 'relative', zIndex: 60 }}>
+            <label>1. Select Specialization</label>
             <input
               type="text"
               className="form-control"
-              placeholder="Search & Select Specialization..."
+              placeholder="Search specialization..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -106,9 +148,11 @@ export default function AddSurgery() {
                       key={spec._id}
                       className="dropdown-item"
                       onMouseDown={() => {
-                        setForm((prev) => ({ ...prev, specializationId: spec._id }));
+                        setForm((prev) => ({ ...prev, specializationId: spec._id, globalSurgeryId: "" }));
                         setSearch(spec.name);
+                        setSurgerySearch("");
                         setShowList(false);
+                        setSelectedGlobal(null);
                       }}
                     >
                       {spec.name}
@@ -119,20 +163,69 @@ export default function AddSurgery() {
             )}
           </div>
 
-          <div className="card-grid" style={{ zIndex: 1, position: 'relative' }}>
+          <div className="form-group" style={{ position: 'relative', zIndex: 50 }}>
+            <label>2. Select Surgery from Master Catalog</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder={form.specializationId ? "Search surgery name..." : "Select specialization first"}
+              value={surgerySearch}
+              onChange={(e) => {
+                setSurgerySearch(e.target.value);
+                setShowSurgeryList(true);
+              }}
+              onFocus={() => setShowSurgeryList(true)}
+              onBlur={() => setTimeout(() => setShowSurgeryList(false), 200)}
+              disabled={!form.specializationId}
+              required
+            />
+
+            {showSurgeryList && globalSurgeries.length > 0 && (
+              <ul className="custom-dropdown">
+                {filteredGlobalSurgeries.length === 0 ? (
+                  <li className="dropdown-item empty">No surgeries found</li>
+                ) : (
+                  filteredGlobalSurgeries.map((gs) => (
+                    <li
+                      key={gs._id}
+                      className="dropdown-item"
+                      onMouseDown={() => handleGlobalSelect(gs)}
+                    >
+                      <div className="gs-item-main">
+                        <span>{gs.surgeryName}</span>
+                        <small>Min: ₹{gs.minimumCost}</small>
+                      </div>
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
+          </div>
+
+          {selectedGlobal && (
+            <div className="catalog-info-box">
+              <p>ℹ️ <b>Master Registry Info:</b> {selectedGlobal.description}</p>
+              <p>Base Duration: {selectedGlobal.duration}</p>
+            </div>
+          )}
+
+          <div className="card-grid" style={{ zIndex: 1, position: 'relative', marginTop: '1.5rem' }}>
             <div className="form-group">
-              <label>Surgery Name</label>
+              <label>Your Hospital Price (INR)</label>
               <input
+                type="number"
                 className="form-control"
-                placeholder="Ex: Knee Replacement"
-                value={form.surgeryName}
-                onChange={(e) => setForm({ ...form, surgeryName: e.target.value })}
+                placeholder="Ex: 150000"
+                value={form.cost}
+                onChange={(e) => setForm({ ...form, cost: e.target.value })}
                 required
+                min={selectedGlobal?.minimumCost || 0}
               />
+              {selectedGlobal && <small>Must be at least ₹{selectedGlobal.minimumCost}</small>}
             </div>
 
             <div className="form-group">
-              <label>Duration</label>
+              <label>Specific Duration</label>
               <input
                 className="form-control"
                 placeholder="Ex: 2-3 hours"
@@ -141,25 +234,13 @@ export default function AddSurgery() {
                 required
               />
             </div>
-
-            <div className="form-group">
-              <label>Cost (INR)</label>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Ex: 150000"
-                value={form.cost}
-                onChange={(e) => setForm({ ...form, cost: e.target.value })}
-                required
-              />
-            </div>
           </div>
 
           <div className="form-group">
-            <label>Description</label>
+            <label>Specific Description (Optional)</label>
             <textarea
               className="form-control"
-              placeholder="Detailed description of the surgery and what is included..."
+              placeholder="Add any hospital-specific details about this surgery package..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows="3"
@@ -167,12 +248,22 @@ export default function AddSurgery() {
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? "Adding..." : "Add Surgery Package"}
+            {loading ? "Adding..." : "List This Surgery Package"}
           </button>
         </form>
       </div>
 
       <style>{`
+        .catalog-info-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #166534;
+        }
+        .catalog-info-box p { margin: 0; }
         .custom-dropdown {
             position: absolute;
             top: 100%;
@@ -206,6 +297,15 @@ export default function AddSurgery() {
         .dropdown-item.empty {
             color: var(--text-muted);
             cursor: default;
+        }
+        .gs-item-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .gs-item-main small {
+            color: var(--text-muted);
+            font-weight: 500;
         }
       `}</style>
     </div>

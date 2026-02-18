@@ -75,22 +75,26 @@ export default function Home() {
       {/* ================= HERO SECTION ================= */}
       <section className="hero-wrapper">
         <div className="hero-aura-1"></div>
-        <div className="container">
-          <div className="hero-content">
-            <div className="hero-tagline">
-              <span className="dot"></span>
-              Kerala's #1 Medical Travel Platform
+        <div className="container hero-container">
+          <div className="hero-flex-layout">
+            <div className="hero-text-content">
+              <div className="hero-tagline">
+                <span className="dot"></span>
+                Kerala's #1 Medical Travel Platform
+              </div>
+              <h1>
+                Global Healthcare, <br />
+                <span>Rooted in Kerala</span>
+              </h1>
+              <p>
+                Experience world-class medical treatments blended with the healing serenity of God's Own Country. We bridge the gap between you and excellence.
+              </p>
             </div>
-            <h1>
-              Global Healthcare, <br />
-              <span>Rooted in Kerala</span>
-            </h1>
-            <p>
-              Experience world-class medical treatments blended with the healing serenity of God's Own Country. We bridge the gap between you and excellence.
-            </p>
 
-            <div className="hero-enquiry-wrapper">
-              <HomepageEnquiryBox />
+            <div className="hero-form-content">
+              <div className="hero-enquiry-wrapper">
+                <HomepageEnquiryBox />
+              </div>
             </div>
           </div>
         </div>

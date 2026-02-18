@@ -145,10 +145,22 @@ export default function Services() {
   =========================== */
   const handleCountryChange = async (e) => {
     const countryName = e.target.value;
+
+    if (countryName === "Other") {
+      setEnquiryForm({
+        ...enquiryForm,
+        country: "Other",
+        phoneCode: "+",
+        city: "",
+      });
+      setCities([]);
+      return;
+    }
+
     const country = countries.find((c) => c.name === countryName);
 
     if (!country) {
-      setEnquiryForm({ ...enquiryForm, country: "", city: "" });
+      setEnquiryForm({ ...enquiryForm, country: "", city: "", phoneCode: "+91" });
       setCities([]);
       return;
     }
@@ -156,6 +168,7 @@ export default function Services() {
     setEnquiryForm({
       ...enquiryForm,
       country: country.name,
+      phoneCode: country.phoneCode || "+91",
       city: "",
     });
 
@@ -501,6 +514,7 @@ export default function Services() {
                             {c.name}
                           </option>
                         ))}
+                        <option value="Other">Other</option>
                       </select>
 
                       <input
@@ -509,7 +523,7 @@ export default function Services() {
                         className="form-input"
                         value={enquiryForm.city}
                         onChange={(e) => setEnquiryForm({ ...enquiryForm, city: e.target.value })}
-                        disabled={!enquiryForm.country || cities.length === 0}
+                        disabled={!enquiryForm.country || cities.length === 0 || enquiryForm.country === "Other"}
                       />
                       <datalist id="booking-cities-list">
                         {cities.map((city, idx) => (
@@ -518,7 +532,18 @@ export default function Services() {
                       </datalist>
 
                       <div className="form-input phone-group-flex">
-                        <span className="country-code-span">{enquiryForm.phoneCode}</span>
+                        {enquiryForm.country === "Other" ? (
+                          <input
+                            type="text"
+                            className="country-code-span"
+                            style={{ width: '80px', border: 'none', background: '#e2e8f0' }}
+                            value={enquiryForm.phoneCode}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, phoneCode: e.target.value })}
+                            placeholder="+XX"
+                          />
+                        ) : (
+                          <span className="country-code-span">{enquiryForm.phoneCode}</span>
+                        )}
                         <input
                           type="tel"
                           placeholder="Phone Number"
