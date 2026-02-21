@@ -13,6 +13,7 @@ const HomepageEnquiryBox = () => {
     const [formData, setFormData] = useState({
         patientName: "",
         country: "",
+        otherCountry: "",
         countryCode: "",
         city: "",
         phoneCode: "+91",
@@ -37,6 +38,19 @@ const HomepageEnquiryBox = () => {
 
     const handleCountryChange = async (e) => {
         const countryName = e.target.value;
+
+        if (countryName === "Other") {
+            setFormData({
+                ...formData,
+                country: "Other",
+                countryCode: "OTHER",
+                city: "",
+                phoneCode: "+",
+            });
+            setCities([]);
+            return;
+        }
+
         const country = countries.find((c) => c.name === countryName);
 
         if (!country) {
@@ -50,6 +64,7 @@ const HomepageEnquiryBox = () => {
             country: country.name,
             countryCode: country.code,
             city: "",
+            phoneCode: country.phoneCode || "+91",
         });
 
         if (country.hasCities) {
@@ -103,7 +118,7 @@ const HomepageEnquiryBox = () => {
                 otp: otp,
                 contactMode: "call", // Default for homepage
                 source: "homepage",
-                country: formData.country,
+                country: formData.country === "Other" ? formData.otherCountry : formData.country,
                 city: formData.city,
                 medicalProblem: formData.medicalProblem,
                 ageOrDob: formData.ageOrDob,
@@ -161,8 +176,21 @@ const HomepageEnquiryBox = () => {
                                     {c.name}
                                 </option>
                             ))}
+                            <option value="Other">Other</option>
                         </select>
                     </div>
+
+                    {formData.country === "Other" && (
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                placeholder="Enter Your Country"
+                                required
+                                value={formData.otherCountry}
+                                onChange={(e) => setFormData({ ...formData, otherCountry: e.target.value })}
+                            />
+                        </div>
+                    )}
 
                     <div className="form-group">
                         <input
@@ -181,7 +209,17 @@ const HomepageEnquiryBox = () => {
 
                     <div className="form-group phone-group">
                         <div className="phone-input-group">
-                            <div className="country-code-display">{formData.phoneCode}</div>
+                            {formData.country === "Other" ? (
+                                <input
+                                    type="text"
+                                    className="country-code-display-input"
+                                    value={formData.phoneCode}
+                                    onChange={(e) => setFormData({ ...formData, phoneCode: e.target.value })}
+                                    placeholder="+XX"
+                                />
+                            ) : (
+                                <div className="country-code-display">{formData.phoneCode}</div>
+                            )}
                             <input
                                 className="phone-number"
                                 type="tel"

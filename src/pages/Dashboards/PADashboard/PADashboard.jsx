@@ -4,6 +4,7 @@ import "../../styles/Dashboard.css";
 import "../styles/PADashboard.css";
 import { logout } from "../../../utils/auth";
 import api, { getAssignedEnquiries, updateEnquiryStatusByAssistant, startService, getAssignedJourneys } from "../../../api/api";
+import PAServicePackages from "./PAServicePackages";
 
 export default function PADashboard() {
   const [open, setOpen] = useState(false);
@@ -11,6 +12,7 @@ export default function PADashboard() {
   const [enquiries, setEnquiries] = useState([]);
   const [journeys, setJourneys] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expandedEnquiry, setExpandedEnquiry] = useState(null);
   const navigate = useNavigate();
 
   const fetchEnquiries = async () => {
@@ -70,11 +72,21 @@ export default function PADashboard() {
     window.location.href = `tel:${phone}`;
   };
 
+  // Called by PAServicePackages when a package is added/removed
+  const handleEnquiryUpdate = (updatedEnquiry) => {
+    setEnquiries((prev) =>
+      prev.map((e) => (e._id === updatedEnquiry._id ? { ...e, ...updatedEnquiry } : e))
+    );
+  };
+
   return (
     <div className="dashboard">
       {/* Top Header */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
+          <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
+            🏠 Home
+          </button>
           <h2>Assistant Dashboard</h2>
         </div>
 
@@ -216,7 +228,31 @@ export default function PADashboard() {
                           🚀 Start Service Journey
                         </button>
                       )}
+
+                      <button
+                        className="action-btn"
+                        style={{
+                          background: expandedEnquiry === e._id
+                            ? "rgba(167,139,250,0.2)"
+                            : "rgba(255,255,255,0.06)",
+                          border: "1px solid rgba(167,139,250,0.3)",
+                          color: "#a78bfa",
+                        }}
+                        onClick={() =>
+                          setExpandedEnquiry(expandedEnquiry === e._id ? null : e._id)
+                        }
+                      >
+                        📦 {expandedEnquiry === e._id ? "Hide" : "Manage"} Packages
+                      </button>
                     </div>
+
+                    {/* Service Packages Panel */}
+                    {expandedEnquiry === e._id && (
+                      <PAServicePackages
+                        enquiry={e}
+                        onEnquiryUpdate={handleEnquiryUpdate}
+                      />
+                    )}
                   </div>
                 ))}
               </div>

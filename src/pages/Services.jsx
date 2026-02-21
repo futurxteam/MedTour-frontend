@@ -195,6 +195,7 @@ export default function Services() {
     setEnquiryForm({
       patientName: "",
       country: "",
+      otherCountry: "",
       city: "",
       phoneCode: "+91",
       phoneNumber: "",
@@ -225,7 +226,7 @@ export default function Services() {
       patientName: enquiryForm.patientName,
       phone: fullPhone,
       otp: enquiryForm.otp,
-      country: enquiryForm.country,
+      country: enquiryForm.country === "Other" ? enquiryForm.otherCountry : enquiryForm.country,
       city: enquiryForm.city,
       medicalProblem: enquiryForm.medicalProblem,
       ageOrDob: enquiryForm.ageOrDob,
@@ -339,7 +340,12 @@ export default function Services() {
                   onClick={() => handleSurgeryClick(surgery)}
                 >
                   <h3>{surgery.surgeryName}</h3>
-                  <p>Duration: {surgery.duration}</p>
+                  <div className="surgery-meta">
+                    <p className="surgery-duration">⏱ {surgery.duration}</p>
+                    <p className="starting-price">
+                      Starting from <span>₹{surgery.globalSurgeryId?.minimumCost?.toLocaleString() || surgery.cost?.toLocaleString()}</span>
+                    </p>
+                  </div>
                   <p className="surgery-description">{surgery.description}</p>
                 </div>
               ))}
@@ -516,6 +522,17 @@ export default function Services() {
                         ))}
                         <option value="Other">Other</option>
                       </select>
+
+                      {enquiryForm.country === "Other" && (
+                        <input
+                          type="text"
+                          placeholder="Enter Your Country"
+                          className="form-input"
+                          required
+                          value={enquiryForm.otherCountry}
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, otherCountry: e.target.value })}
+                        />
+                      )}
 
                       <input
                         list="booking-cities-list"

@@ -20,6 +20,9 @@ export default function DoctorDashboard() {
       {/* ===== TOP HEADER BAR ===== */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
+          <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
+            🏠 Home
+          </button>
           <h2>Doctor Dashboard</h2>
         </div>
 

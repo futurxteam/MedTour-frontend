@@ -116,7 +116,42 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+.surgery-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.surgery-duration {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.starting-price {
+    text-align: right;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.starting-price span {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-top: 2px;
 }
 
 .specialty-surgeries-list {

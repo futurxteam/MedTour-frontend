@@ -10,6 +10,7 @@ import Contact from "./pages/Contact";
 
 import ServiceDetails from "./pages/serviceDetails";
 import DoctorDetails from "./pages/doctorDetails";
+import HospitalPublicProfile from "./pages/HospitalPublicProfile";
 import HospitalDashboard from "./pages/Dashboards/HospitalDashboard/HospitalDashboard.jsx";
 import UserDashboard from "./pages/Dashboards/UserDashboard/UserDashboard.jsx";
 import DoctorDashboard from "./pages/Dashboards/DoctorDashboard/DoctorDashboard.jsx";
@@ -46,6 +47,7 @@ function App() {
           path="/register-hospital"
           element={<RegisterHospital />}
         />
+        <Route path="/hospital/:id" element={<HospitalPublicProfile />} />
 
 
 

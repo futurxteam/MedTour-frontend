@@ -159,6 +159,12 @@ export const getPublicSurgeriesBySpecialty = (specialtyId) =>
 export const getPublicDoctorsBySurgery = (surgeryId) =>
   API.get(`/public/surgeries/${surgeryId}/public-doctors`);
 
+export const getLowestQuotes = () =>
+  API.get("/public/lowest-quotes");
+
+export const getCommonProcedures = () =>
+  API.get("/public/common-procedures");
+
 export const sendEnquiryOtp = (data) =>
   API.post("/public/enquiry/send-otp", data);
 
@@ -233,6 +239,55 @@ export const getMyJourney = () =>
 export const getMyJourneyRecords = () =>
   API.get("/patient/my-journey/records");
 
+// ── SERVICE PACKAGES – Admin ──────────────────────────────
+export const adminCreateServicePackage = (data) =>
+  API.post("/admin/service-packages", data);
+
+export const adminListServicePackages = () =>
+  API.get("/admin/service-packages");
+
+export const adminToggleServicePackage = (id) =>
+  API.patch(`/admin/service-packages/${id}/toggle`);
+
+// ── SERVICE PACKAGES – Assistant ─────────────────────────
+export const assistantGetServicePackages = () =>
+  API.get("/assistant/service-packages");
+
+export const assistantAddPackage = (enquiryId, packageId, packageNotes) =>
+  API.post(`/assistant/enquiries/${enquiryId}/add-package`, { packageId, packageNotes });
+
+export const assistantRemovePackage = (enquiryId, packageId) =>
+  API.delete(`/assistant/enquiries/${enquiryId}/remove-package`, { data: { packageId } });
+
+// ── HOSPITAL & PHOTO MANAGEMENT ─────────────────────────
+export const getPublicHospitals = () =>
+  API.get("/public/hospitals");
+
+export const getPublicHospitalById = (id) =>
+  API.get(`/public/hospitals/${id}`);
+
+export const uploadHospitalPhotos = (formData) =>
+  API.post("/hospital/photos", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const removeHospitalPhoto = (publicId) =>
+  API.delete(`/hospital/photos/${publicId}`);
+
+export const updateHospitalProfile = (data) =>
+  API.put("/hospital/profile", data);
+
+// ── ADMIN: HOSPITAL MANAGEMENT ───────────────────────────
+export const adminUpdateHospital = (userId, data) =>
+  API.put(`/admin/hospitals/${userId}`, data);
+
+export const adminUploadHospitalPhotos = (userId, formData) =>
+  API.post(`/admin/hospitals/${userId}/photos`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+export const adminRemoveHospitalPhoto = (userId, publicId) =>
+  API.delete(`/admin/hospitals/${userId}/photos/${publicId}`);
 
 /* ===========================
    EXPORT INSTANCE

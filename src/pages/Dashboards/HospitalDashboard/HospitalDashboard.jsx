@@ -23,6 +23,9 @@ export default function HospitalDashboard() {
       {/* ================= TOP BAR ================= */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
+          <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
+            🏠 Home
+          </button>
           <h2>Hospital Dashboard</h2>
         </div>
 

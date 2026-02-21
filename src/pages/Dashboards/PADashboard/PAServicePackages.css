@@ -1,0 +1,269 @@
+/* =====================================================
+   PA Service Packages Panel
+   Matches the light theme of PADashboard.css
+===================================================== */
+
+.pa-service-packages {
+    background: #f8fafc;
+    border: 1px solid var(--border-soft, #e2e8f0);
+    border-radius: var(--radius-xl, 16px);
+    padding: 1.4rem 1.6rem;
+    margin-top: 1.2rem;
+}
+
+/* ── Section Header ── */
+.pkg-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-soft, #e2e8f0);
+}
+
+.pkg-section-header h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main, #1e293b);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.pkg-icon {
+    font-size: 1.1rem;
+}
+
+/* ── Alerts ── */
+.pkg-alert {
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+}
+
+.pkg-alert--error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+.pkg-alert--success {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+/* ── Attached Packages List ── */
+.pkg-attached-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.pkg-attached-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 1px solid var(--border-soft, #e2e8f0);
+    border-radius: 10px;
+    padding: 0.65rem 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.pkg-attached-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.pkg-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pkg-type-icon {
+    font-size: 1.2rem;
+}
+
+.pkg-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pkg-item-info strong {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-main, #1e293b);
+}
+
+.pkg-item-sub {
+    font-size: 0.76rem;
+    color: var(--text-muted, #64748b);
+    text-transform: capitalize;
+}
+
+.pkg-item-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pkg-price {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent-dark, #0f766e);
+}
+
+.pkg-remove-btn {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #dc2626;
+    border-radius: 6px;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-weight: 700;
+}
+
+.pkg-remove-btn:hover:not(:disabled) {
+    background: #fca5a5;
+    transform: scale(1.1);
+}
+
+.pkg-remove-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Total Row ── */
+.pkg-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: var(--accent-light, #f0fdfa);
+    border: 1px solid rgba(13, 148, 136, 0.2);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-muted, #64748b);
+    margin-top: 0.4rem;
+    font-weight: 600;
+}
+
+.pkg-total-row strong {
+    color: var(--accent-dark, #0f766e);
+    font-size: 0.95rem;
+}
+
+/* ── Empty State ── */
+.pkg-empty {
+    text-align: center;
+    padding: 0.8rem;
+    color: var(--text-muted, #64748b);
+    font-size: 0.83rem;
+    margin-bottom: 0.8rem;
+}
+
+/* ── Add Package Section ── */
+.pkg-add-section {
+    border-top: 1px solid var(--border-soft, #e2e8f0);
+    padding-top: 1rem;
+}
+
+.pkg-add-section h5 {
+    margin: 0 0 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.pkg-add-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.pkg-select {
+    flex: 1;
+    background: white;
+    border: 1.5px solid var(--border-soft, #e2e8f0);
+    border-radius: 8px;
+    color: var(--text-main, #1e293b);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.pkg-select:focus {
+    border-color: var(--accent, #0d9488);
+}
+
+.pkg-add-btn {
+    background: var(--accent, #0d9488);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.pkg-add-btn:hover:not(:disabled) {
+    background: var(--accent-dark, #0f766e);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+.pkg-add-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Notes ── */
+.pkg-notes-row {
+    margin-top: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.pkg-notes-row label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+}
+
+.pkg-notes-input {
+    background: white;
+    border: 1.5px solid var(--border-soft, #e2e8f0);
+    border-radius: 8px;
+    color: var(--text-main, #1e293b);
+    padding: 0.55rem 0.9rem;
+    font-size: 0.83rem;
+    resize: vertical;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.pkg-notes-input:focus {
+    border-color: var(--accent, #0d9488);
+}

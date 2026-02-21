@@ -56,15 +56,25 @@
     box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
 }
 
-.country-code-display {
+.country-code-display,
+.country-code-display-input {
     padding: 12px 10px 12px 16px;
     background: #f8fafc;
     color: var(--text-muted);
     font-weight: 600;
+    border: none;
     border-right: 1px solid #e2e8f0;
     font-size: 14px;
     display: flex;
     align-items: center;
+}
+
+.country-code-display-input {
+    width: 65px;
+    text-align: center;
+    color: var(--primary);
+    font-weight: 700;
+    outline: none;
 }
 
 .phone-input-group input {

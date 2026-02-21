@@ -9,6 +9,26 @@ import "./styles/Home.css";
 import "./styles/Services.css";
 import { getPublicSurgeriesMenu } from "../api/api";
 import HomepageEnquiryBox from "../components/HomepageEnquiryBox";
+import CareStories from "../components/Home/CareStories";
+import ExpertOpinions from "../components/Home/ExpertOpinions";
+import HospitalDemo from "../components/Home/HospitalDemo";
+import DestinationsComparison from "../components/Home/DestinationsComparison";
+import CommonProcedures from "../components/Home/CommonProcedures";
+import LowestQuotes from "../components/Home/LowestQuotes";
+import NewsletterSignup from "../components/Home/NewsletterSignup";
+import "./styles/HomeExpansion.css";
+import heroBg from "../components/Home/images/background.png";
+
+// Import Specialty Images
+import ayurvedaImg from "../components/Home/images/ayurveda.png";
+import cardiologyImg from "../components/Home/images/cardiology.png";
+import gastrologyImg from "../components/Home/images/gastrology.png";
+import headNeckImg from "../components/Home/images/head_and_neck.png";
+import neurologyImg from "../components/Home/images/neurology.png";
+import oncologyImg from "../components/Home/images/oncology.png";
+import orthoImg from "../components/Home/images/ortho.png";
+import pmrImg from "../components/Home/images/PMR.png";
+import urologyImg from "../components/Home/images/urology.png";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -73,7 +93,15 @@ export default function Home() {
       </div>
 
       {/* ================= HERO SECTION ================= */}
-      <section className="hero-wrapper">
+      <section
+        className="hero-wrapper"
+        style={{
+          backgroundImage: `url(${heroBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative'
+        }}
+      >
         <div className="hero-aura-1"></div>
         <div className="container hero-container">
           <div className="hero-flex-layout">
@@ -86,9 +114,6 @@ export default function Home() {
                 Global Healthcare, <br />
                 <span>Rooted in Kerala</span>
               </h1>
-              <p>
-                Experience world-class medical treatments blended with the healing serenity of God's Own Country. We bridge the gap between you and excellence.
-              </p>
             </div>
 
             <div className="hero-form-content">
@@ -149,27 +174,56 @@ export default function Home() {
           </div>
 
           <div className="specialities-grid">
-            {Object.entries(menuData || {}).slice(0, 6).map(([deptName, deptData], index) => (
-              <div
-                key={deptData._id}
-                className="speciality-card"
-                onClick={() =>
-                  navigate("/services", {
-                    state: {
-                      specialtyId: deptData._id,
-                      specialtyName: deptName,
-                    }
-                  })
-                }
-              >
-                {/* Dynamic Unsplash images for high quality */}
-                <img src={`https://images.unsplash.com/photo-${index === 0 ? '1576091160550-217359f4ecf8' : index === 1 ? '1631815589968-fdb09a223b1e' : index === 2 ? '1579684385127-1ef15d508118' : index === 3 ? '1599443015574-be5fe8a05783' : index === 4 ? '1551601651-2a8555f1a136' : '1584362917165-526a968579e8'}?auto=format&fit=crop&w=600&q=80`} alt={deptName} />
-                <div className="speciality-overlay">
-                  <h3>{deptName}</h3>
-                  <p>{deptData.surgeries?.length || 0} Treatments Available</p>
+            {Object.entries(menuData || {}).map(([deptName, deptData]) => {
+              const specialtyImages = {
+                "Ayurveda": ayurvedaImg,
+                "Cardiology": cardiologyImg,
+                "Gastroenterology": gastrologyImg,
+                "Gastrology": gastrologyImg,
+                "Neurology": neurologyImg,
+                "Neurosurgery": neurologyImg,
+                "Oncology": oncologyImg,
+                "Orthopedics": orthoImg,
+                "Orthopedic": orthoImg,
+                "PMR": pmrImg,
+                "Physiotherapy": pmrImg,
+                "Pediatrics": "https://images.unsplash.com/photo-1622907409477-742a12a514d2?auto=format&fit=crop&w=600&q=80",
+                "Urology": urologyImg,
+                "ENT": headNeckImg,
+                "Head and Neck": headNeckImg,
+                "Head & Neck": headNeckImg,
+                "Ophthalmology": "https://images.unsplash.com/photo-1580256081112-e49377338b7f?auto=format&fit=crop&w=600&q=80",
+                "Dentistry": "https://images.unsplash.com/photo-1588776814546-1ffcf4722e99?auto=format&fit=crop&w=600&q=80",
+                "Gynecology": "https://images.unsplash.com/photo-1516574187841-693018f54744?auto=format&fit=crop&w=600&q=80",
+                "General Surgery": "https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=600&q=80",
+                "Dermatology": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?auto=format&fit=crop&w=600&q=80"
+              };
+
+              const imgUrl = specialtyImages[deptName] || "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80";
+
+              return (
+                <div
+                  key={deptData._id}
+                  className="speciality-card"
+                  onClick={() =>
+                    navigate("/services", {
+                      state: {
+                        specialtyId: deptData._id,
+                        specialtyName: deptName,
+                      }
+                    })
+                  }
+                >
+                  <img src={imgUrl} alt={deptName} />
+                  <div className="speciality-overlay">
+                    <div className="speciality-info">
+                      <h3>{deptName}</h3>
+                      <p>{deptData.surgeries?.length || 0} Treatments</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -182,32 +236,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= QUICK ACCESS / DASHBOARDS ================= */}
-      <section className="container">
-        <div className="section-head">
-          <h2>Platform Portals</h2>
-          <p>Seamless access for every stakeholder in the healthcare ecosystem.</p>
-        </div>
+      {/* ================= NEW EXPANSION SECTIONS ================= */}
+      <CareStories />
+      <ExpertOpinions />
+      <HospitalDemo />
+      <DestinationsComparison />
+      <CommonProcedures />
+      <LowestQuotes />
+      <NewsletterSignup />
 
-        <div className="dashboard-grid">
-          <a href="/dashboard/user" className="access-card">
-            <h3>Patients Portal</h3>
-            <p>Track your medical journey and reports.</p>
-          </a>
-          <a href="/dashboard/doctor" className="access-card">
-            <h3>Doctor's Desk</h3>
-            <p>Manage consultations and surgeries.</p>
-          </a>
-          <a href="/dashboard/pa" className="access-card">
-            <h3>Assistant Hub</h3>
-            <p>Coordinate patient travels and care.</p>
-          </a>
-          <a href="/dashboard/admin" className="access-card">
-            <h3>Admin Control</h3>
-            <p>Oversee platform operations and security.</p>
-          </a>
-        </div>
-      </section>
+
 
       <Footer />
     </div>

@@ -7,6 +7,8 @@ import api from "@/api/api";
 import AdminEnquiries from "./AdminEnquiries";
 import AdminGlobalSurgeries from "./AdminGlobalSurgeries";
 import AdminSpecialties from "./AdminSpecialties";
+import AdminServicePackages from "./AdminServicePackages";
+import AdminHospitalManagement from "./AdminHospitalManagement";
 
 
 
@@ -90,6 +92,9 @@ export default function AdminDashboard() {
       {/* Top Header */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
+          <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
+            🏠 Home
+          </button>
           <h2>Admin Dashboard</h2>
         </div>
 
@@ -172,6 +177,13 @@ export default function AdminDashboard() {
               🔬 Specializations
             </button>
 
+            <button
+              className={view === "servicePackages" ? "active" : ""}
+              onClick={() => setView("servicePackages")}
+            >
+              📦 Service Packages
+            </button>
+
           </nav>
         </aside>
 
@@ -179,116 +191,7 @@ export default function AdminDashboard() {
         <main className="dashboard-container">
           {view === "users" && <UserManagement />}
 
-          {view === "hospitals" && (
-            <div className="admin-hospitals-view">
-              <div className="view-header">
-                <h3>Hospital Verification</h3>
-                <div className="stats-header">
-                  <div className="mini-stat">Hospitals: <strong>{hospitals.length}</strong></div>
-                  <div className="mini-stat">Page: <strong>{page}</strong> of {totalPages}</div>
-                </div>
-              </div>
-
-              {/* 🔍 Search + Filter */}
-              <div className="hospital-filters">
-                <input
-                  className="modern-input"
-                  placeholder="Search by hospital name..."
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                    setPage(1);
-                  }}
-                />
-
-                <select
-                  className="pa-select"
-                  style={{ width: '200px' }}
-                  value={statusFilter}
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value);
-                    setPage(1);
-                  }}
-                >
-                  <option value="all">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
-
-              {loading && <p className="loading-msg">Refreshing list...</p>}
-              {!loading && hospitals.length === 0 && <div className="empty-state"><p>No hospitals found matching your criteria</p></div>}
-
-              {/* 🏥 HOSPITAL CARDS */}
-              <div className="hospital-list">
-                {hospitals.map((h) => (
-                  <div key={h._id} className="dashboard-card hospital-card">
-                    <div className="hospital-info">
-                      <b>{h.name}</b>
-                      <p>✉️ {h.email}</p>
-                    </div>
-
-                    <div className="hospital-actions">
-                      {h.hospitalStatus === "pending" ? (
-                        <>
-                          <button
-                            className="approve-btn"
-                            onClick={() => approveHospital(h._id)}
-                          >
-                            ✅ Approve
-                          </button>
-
-                          <button
-                            className="reject-btn"
-                            onClick={() => rejectHospital(h._id)}
-                          >
-                            ❌ Reject
-                          </button>
-                        </>
-                      ) : (
-                        <span className={`status-pill ${h.hospitalStatus}`}>
-                          {h.hospitalStatus}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* ✅ PAGINATION – OUTSIDE THE MAP */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button
-                    className="pagination-btn"
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                  >
-                    Prev
-                  </button>
-
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i}
-                      className={`pagination-btn ${page === i + 1 ? "active" : ""
-                        }`}
-                      onClick={() => setPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
-
-                  <button
-                    className="pagination-btn"
-                    disabled={page === totalPages}
-                    onClick={() => setPage(page + 1)}
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          {view === "hospitals" && <AdminHospitalManagement />}
 
 
 
@@ -296,6 +199,7 @@ export default function AdminDashboard() {
           {view === "analytics" && <h3>System Analytics</h3>}
           {view === "globalSurgeries" && <AdminGlobalSurgeries />}
           {view === "specialties" && <AdminSpecialties />}
+          {view === "servicePackages" && <AdminServicePackages />}
 
           {view === "requests" && <AdminEnquiries />}
 

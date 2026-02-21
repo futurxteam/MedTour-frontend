@@ -151,6 +151,9 @@ export default function UserDashboard() {
       {/* Top Bar */}
       <div className="dashboard-topbar">
         <div className="dashboard-title">
+          <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
+            🏠 Home
+          </button>
           <h2>Welcome Back, {userName}</h2>
         </div>
 
