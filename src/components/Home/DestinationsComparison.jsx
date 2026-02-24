@@ -16,7 +16,10 @@ const DestinationsComparison = () => {
                                 <th>Procedure</th>
                                 <th>USA</th>
                                 <th>UK</th>
-                                <th>India (Kerala)</th>
+                                <th>
+                                    <span className="hide-mobile">India (Kerala)</span>
+                                    <span className="show-mobile">India</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

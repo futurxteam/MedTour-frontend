@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/Home.css";
 import "./styles/Services.css";
 import Avatar from "../components/Avatar";
+import DoctorBooking from "../components/DoctorBooking";
 
 import {
   getPublicSurgeriesMenu,
@@ -384,235 +385,20 @@ export default function Services() {
               DOCTOR DETAILS & BOOKING
           =========================== */}
           {viewingDoctor && (
-            <div className="doctor-booking-container">
-              <div className="doctor-details-panel">
-                <div className="detail-header">
-                  <div className="doctor-avatar large">
-                    {viewingDoctor.hasPhoto ? (
-                      <img src={getDoctorPhotoUrl(viewingDoctor._id || viewingDoctor.id)} alt={viewingDoctor.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
-                    ) : (
-                      "👨‍⚕️"
-                    )}
-                  </div>
-                  <div className="header-text">
-                    <h3>{viewingDoctor.name}</h3>
-                    <p className="designation">{viewingDoctor.designation}</p>
-                    <p className="experience">{viewingDoctor.experience} Years Experience</p>
-                  </div>
-                </div>
-
-                <div className="detail-info">
-                  <div className="info-section">
-                    <h4>About</h4>
-                    <p>{viewingDoctor.about || "No biography provided."}</p>
-                  </div>
-                  <div className="info-section">
-                    <h4>Qualifications</h4>
-                    <p>{viewingDoctor.qualifications || "Not specified"}</p>
-                  </div>
-                  <div className="info-box-row">
-                    <div className="info-item">
-                      <span className="label">Consultation Fee</span>
-                      <span className="value">${viewingDoctor.consultationFee || "0"}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="booking-panel">
-                {bookingStep === 1 ? (
-                  <div className="step-content">
-                    <h4>Select Consultation Date</h4>
-                    <div className="custom-calendar-container">
-                      <div className="calendar-header">
-                        <button
-                          className="cal-nav-btn"
-                          onClick={() => {
-                            const prev = new Date(currentViewMonth);
-                            prev.setMonth(prev.getMonth() - 1);
-                            setCurrentViewMonth(prev);
-                          }}
-                        >
-                          ‹
-                        </button>
-                        <span className="current-month">
-                          {currentViewMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}
-                        </span>
-                        <button
-                          className="cal-nav-btn"
-                          onClick={() => {
-                            const next = new Date(currentViewMonth);
-                            next.setMonth(next.getMonth() + 1);
-                            setCurrentViewMonth(next);
-                          }}
-                        >
-                          ›
-                        </button>
-                      </div>
-
-                      <div className="calendar-grid">
-                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-                          <div key={day} className="weekday-label">{day}</div>
-                        ))}
-
-                        {Array.from({ length: new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth(), 1).getDay() }).map((_, i) => (
-                          <div key={`empty-${i}`} className="calendar-day empty"></div>
-                        ))}
-
-                        {Array.from({ length: new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth() + 1, 0).getDate() }).map((_, i) => {
-                          const day = i + 1;
-                          const dateObj = new Date(currentViewMonth.getFullYear(), currentViewMonth.getMonth(), day);
-                          const dateString = dateObj.toISOString().split('T')[0];
-                          const isToday = new Date().toISOString().split('T')[0] === dateString;
-                          const isSelected = selectedDate === dateString;
-                          const isPast = dateObj < new Date(new Date().setHours(0, 0, 0, 0));
-
-                          return (
-                            <div
-                              key={day}
-                              className={`calendar-day ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}`}
-                              onClick={() => !isPast && setSelectedDate(dateString)}
-                            >
-                              {day}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="selected-date-display">
-                      {selectedDate ? `Selected: ${new Date(selectedDate).toLocaleDateString('en-US', { dateStyle: 'full' })}` : "No date selected"}
-                    </div>
-
-                    <button
-                      className="btn btn-primary"
-                      disabled={!selectedDate}
-                      onClick={() => setBookingStep(2)}
-                      style={{ marginTop: '20px', width: '100%' }}
-                    >
-                      Continue to Booking
-                    </button>
-                  </div>
-                ) : (
-                  <div className="step-content">
-                    <h4>Complete Your Booking</h4>
-                    <p className="booking-summary">
-                      Date: <strong>{selectedDate}</strong>
-                    </p>
-                    <div className="booking-form">
-                      <input
-                        placeholder="Patient Name"
-                        className="form-input"
-                        value={enquiryForm.patientName}
-                        required
-                        onChange={(e) => setEnquiryForm({ ...enquiryForm, patientName: e.target.value })}
-                      />
-
-                      <select
-                        className="form-input"
-                        value={enquiryForm.country}
-                        required
-                        onChange={handleCountryChange}
-                      >
-                        <option value="">Select Country</option>
-                        {countries.map((c) => (
-                          <option key={c.code} value={c.name}>
-                            {c.name}
-                          </option>
-                        ))}
-                        <option value="Other">Other</option>
-                      </select>
-
-                      {enquiryForm.country === "Other" && (
-                        <input
-                          type="text"
-                          placeholder="Enter Your Country"
-                          className="form-input"
-                          required
-                          value={enquiryForm.otherCountry}
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, otherCountry: e.target.value })}
-                        />
-                      )}
-
-                      <input
-                        list="booking-cities-list"
-                        placeholder={loadingCities ? "Loading cities..." : "Select City"}
-                        className="form-input"
-                        value={enquiryForm.city}
-                        onChange={(e) => setEnquiryForm({ ...enquiryForm, city: e.target.value })}
-                        disabled={!enquiryForm.country || cities.length === 0 || enquiryForm.country === "Other"}
-                      />
-                      <datalist id="booking-cities-list">
-                        {cities.map((city, idx) => (
-                          <option key={idx} value={city.name} />
-                        ))}
-                      </datalist>
-
-                      <div className="form-input phone-group-flex">
-                        {enquiryForm.country === "Other" ? (
-                          <input
-                            type="text"
-                            className="country-code-span"
-                            style={{ width: '80px', border: 'none', background: '#e2e8f0' }}
-                            value={enquiryForm.phoneCode}
-                            onChange={(e) => setEnquiryForm({ ...enquiryForm, phoneCode: e.target.value })}
-                            placeholder="+XX"
-                          />
-                        ) : (
-                          <span className="country-code-span">{enquiryForm.phoneCode}</span>
-                        )}
-                        <input
-                          type="tel"
-                          placeholder="Phone Number"
-                          className="phone-field"
-                          value={enquiryForm.phoneNumber}
-                          required
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, phoneNumber: e.target.value })}
-                        />
-                      </div>
-
-                      <textarea
-                        placeholder="Describe The Current Medical Problem (Optional) .."
-                        className="form-input"
-                        style={{ height: '80px', resize: 'none' }}
-                        value={enquiryForm.medicalProblem}
-                        onChange={(e) => setEnquiryForm({ ...enquiryForm, medicalProblem: e.target.value })}
-                      ></textarea>
-
-                      <input
-                        placeholder="Example: 30 Yrs or 29-05-1985"
-                        className="form-input"
-                        value={enquiryForm.ageOrDob}
-                        required
-                        onChange={(e) => setEnquiryForm({ ...enquiryForm, ageOrDob: e.target.value })}
-                      />
-
-                      {!otpSent ? (
-                        <button className="btn btn-primary" onClick={handleSendOtp} style={{ width: '100%' }}>
-                          Send Verification OTP
-                        </button>
-                      ) : (
-                        <>
-                          <input
-                            placeholder="Enter OTP (123)"
-                            className="form-input"
-                            value={enquiryForm.otp}
-                            onChange={(e) => setEnquiryForm({ ...enquiryForm, otp: e.target.value })}
-                          />
-                          <button className="btn btn-success" onClick={handleSubmitEnquiry} style={{ width: '100%' }}>
-                            Confirm Booking Enquiry
-                          </button>
-                        </>
-                      )}
-
-                      <button className="btn-link" onClick={() => setBookingStep(1)} style={{ marginTop: '10px' }}>
-                        ← Change Date
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+            <DoctorBooking
+              doctor={viewingDoctor}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              bookingStep={bookingStep}
+              setBookingStep={setBookingStep}
+              enquiryForm={enquiryForm}
+              setEnquiryForm={setEnquiryForm}
+              countries={countries}
+              cities={cities}
+              loadingCities={loadingCities}
+              onSendOtp={handleSendOtp}
+              onSubmit={handleSubmitEnquiry}
+            />
           )}
 
           {/* ===========================

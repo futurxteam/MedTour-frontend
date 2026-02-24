@@ -289,6 +289,9 @@ export const adminUploadHospitalPhotos = (userId, formData) =>
 export const adminRemoveHospitalPhoto = (userId, publicId) =>
   API.delete(`/admin/hospitals/${userId}/photos/${publicId}`);
 
+export const getPublicDoctorById = (doctorId) =>
+  API.get(`/public/doctors/${doctorId}`);
+
 /* ===========================
    EXPORT INSTANCE
 =========================== */

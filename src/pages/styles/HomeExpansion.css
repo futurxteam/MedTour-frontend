@@ -7,6 +7,20 @@
     --text-muted: #475569;
 }
 
+.show-mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .show-mobile {
+        display: inline;
+    }
+
+    .hide-mobile {
+        display: none;
+    }
+}
+
 .home-expansion-section {
     padding: 100px 0;
 }
@@ -372,4 +386,145 @@
 .view-hosp-btn:hover {
     background: var(--primary);
     color: white;
+}
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .expert-card {
+        padding: 24px;
+        gap: 16px;
+    }
+
+    .newsletter-card {
+        padding: 60px 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-expansion-section {
+        padding: 60px 0;
+    }
+
+    .section-title-alt h2 {
+        font-size: 2rem;
+        letter-spacing: -1px;
+    }
+
+    .section-title-alt p {
+        font-size: 1rem;
+    }
+
+    .stories-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .story-card {
+        padding: 24px;
+    }
+
+    .experts-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    /* Comparison Table Mobile Fix */
+    .comparison-container {
+        overflow-x: hidden;
+        /* Try to fit in one screen */
+        border-radius: 12px;
+        margin: 0 -10px;
+        /* Slight bleed to maximize space */
+    }
+
+    .comparison-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 12px 6px;
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .comparison-table th:first-child,
+    .comparison-table td:first-child {
+        width: 35%;
+        padding-left: 10px;
+    }
+
+    .comparison-table th:not(:first-child),
+    .comparison-table td:not(:first-child) {
+        width: 21.6%;
+        text-align: center;
+    }
+
+    .price-india {
+        font-size: 11px !important;
+        background: #f0fdf4;
+    }
+
+    .procedures-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .quotes-list {
+        padding: 0 16px;
+    }
+
+    .quote-row {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .quote-price {
+        text-align: left;
+    }
+
+    .newsletter-card h2 {
+        font-size: 1.75rem;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        border-radius: 20px;
+        background: transparent;
+        padding: 0;
+        box-shadow: none;
+    }
+
+    .newsletter-form input {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .newsletter-form button {
+        width: 100%;
+    }
+
+    .hospitals-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .patient-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .expert-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .expert-avatar {
+        font-size: 4rem;
+    }
 }

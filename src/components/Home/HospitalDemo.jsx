@@ -42,8 +42,18 @@ const HospitalDemo = () => {
                                 <div className="hosp-content">
                                     <h3>{hosp.hospitalName}</h3>
                                     <div className="hosp-meta">
-                                        <span>📍 {hosp.city}, {hosp.country}</span>
+                                        <span>📍 {hosp.city || 'Kochi'}, {hosp.country || 'India'}</span>
                                         <span>⭐ 4.9 Rating</span>
+                                    </div>
+                                    <div style={{ marginTop: "10px", marginBottom: "15px", display: "flex", gap: "5px", flexWrap: "wrap", overflow: "hidden", maxHeight: "25px" }}>
+                                        {hosp.specialties?.slice(0, 3).map(s => (
+                                            <span key={s._id} style={{ fontSize: "11px", background: "#e0f2fe", color: "#0369a1", padding: "2px 8px", borderRadius: "10px", whiteSpace: "nowrap" }}>
+                                                {s.name}
+                                            </span>
+                                        ))}
+                                        {hosp.specialties?.length > 3 && (
+                                            <span style={{ fontSize: "11px", color: "#64748b" }}>+{hosp.specialties.length - 3}</span>
+                                        )}
                                     </div>
                                     <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>
                                         {hosp.description ? (hosp.description.substring(0, 100) + "...") : "Premier medical facility offering world-class healthcare services."}

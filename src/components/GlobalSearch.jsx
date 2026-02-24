@@ -71,9 +71,7 @@ const GlobalSearch = () => {
     };
 
     const handleHospitalClick = (hospital) => {
-        // Navigate to hospital profile page (to be implemented)
-        // For now, navigate to services
-        navigate("/services");
+        navigate(`/hospital/${hospital._id}`);
         setShowResults(false);
         setQuery("");
     };

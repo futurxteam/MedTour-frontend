@@ -140,35 +140,59 @@ const HospitalPublicProfile = () => {
                             <h3 style={{ marginBottom: '24px', fontWeight: 900, fontSize: '1.5rem' }}>Top Specialists</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 {hospital.doctors?.length > 0 ? (
-                                    hospital.doctors.map((doc, idx) => (
-                                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                            <div style={{
-                                                width: '64px',
-                                                height: '64px',
-                                                borderRadius: '50%',
-                                                background: '#f1f5f9',
+                                    hospital.doctors.map((doc) => (
+                                        <div
+                                            key={doc._id}
+                                            style={{
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                justifyContent: 'center',
-                                                fontSize: '1.5rem',
-                                                overflow: 'hidden'
-                                            }}>
-                                                {doc.hasPhoto ? "👨‍⚕️" : "👤"}
+                                                gap: '20px',
+                                                justifyContent: 'space-between'
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                                <div
+                                                    style={{
+                                                        width: '64px',
+                                                        height: '64px',
+                                                        borderRadius: '50%',
+                                                        background: '#f1f5f9',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        fontSize: '1.5rem',
+                                                        overflow: 'hidden'
+                                                    }}
+                                                >
+                                                    {doc.hasPhoto ? "👨‍⚕️" : "👤"}
+                                                </div>
+
+                                                <div>
+                                                    <h4 style={{ margin: 0, fontWeight: 700 }}>{doc.name}</h4>
+                                                    <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>
+                                                        {doc.designation}
+                                                    </p>
+                                                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#0d9488', fontWeight: 600 }}>
+                                                        {doc.experience} Years Experience
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 style={{ margin: 0, fontWeight: 700 }}>{doc.name}</h4>
-                                                <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>{doc.designation}</p>
-                                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#0d9488', fontWeight: 600 }}>{doc.experience} Years Experience</p>
-                                            </div>
+
+                                            {/* ✅ DOCTOR-SPECIFIC BUTTON */}
+                                            <button
+                                                className="view-hosp-btn"
+                                                style={{ padding: '8px 14px', fontSize: '0.75rem' }}
+                                                onClick={() => navigate(`/book/doctor/${doc._id}`)}
+                                            >
+                                                Book
+                                            </button>
                                         </div>
                                     ))
                                 ) : (
                                     <p style={{ color: '#64748b' }}>Consultation details available on request.</p>
                                 )}
                             </div>
-                            <button className="submit-btn" style={{ marginTop: '40px', width: '100%', py: '16px', borderRadius: '16px' }} onClick={() => navigate('/services', { state: { hospitalId: hospital._id } })}>
-                                Book Consultation
-                            </button>
+
                             <p style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.875rem', color: '#64748b' }}>
                                 Contact: {hospital.phone}
                             </p>

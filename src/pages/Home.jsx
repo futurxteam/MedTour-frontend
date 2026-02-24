@@ -45,6 +45,10 @@ export default function Home() {
       }
     };
     fetchMenuData();
+
+    const closeDropdown = () => setActiveDept(null);
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
   }, []);
 
   return (
@@ -57,9 +61,19 @@ export default function Home() {
           {Object.keys(menuData || {}).map((deptName) => (
             <div
               key={deptName}
-              className="dept-wrapper"
-              onMouseEnter={() => setActiveDept(deptName)}
-              onMouseLeave={() => setActiveDept(null)}
+              className={`dept-wrapper ${activeDept === deptName ? 'active' : ''}`}
+              onMouseEnter={() => {
+                if (window.innerWidth > 1024) setActiveDept(deptName);
+              }}
+              onMouseLeave={() => {
+                if (window.innerWidth > 1024) setActiveDept(null);
+              }}
+              onClick={(e) => {
+                if (window.innerWidth <= 1024) {
+                  e.stopPropagation();
+                  setActiveDept(activeDept === deptName ? null : deptName);
+                }
+              }}
             >
               <span className="dept-item">
                 {deptName}
@@ -67,20 +81,21 @@ export default function Home() {
               </span>
 
               {activeDept === deptName && menuData[deptName]?.surgeries && (
-                <div className="dept-dropdown">
+                <div className="dept-dropdown" onClick={(e) => e.stopPropagation()}>
                   {menuData[deptName].surgeries.map((surgery) => (
                     <div
                       key={surgery.id}
                       className="dept-item-child"
-                      onClick={() =>
+                      onClick={() => {
+                        setActiveDept(null);
                         navigate("/services", {
                           state: {
                             specialtyId: menuData[deptName]._id,
                             specialtyName: deptName,
                             preSelectedSurgery: { _id: surgery.id, surgeryName: surgery.name }
                           }
-                        })
-                      }
+                        });
+                      }}
                     >
                       {surgery.name}
                     </div>

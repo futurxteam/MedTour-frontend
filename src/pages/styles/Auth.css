@@ -1,132 +1,227 @@
-/* ================= AUTH PAGE ================= */
+/* ================= AUTH ROOT ================= */
+.auth-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #fdfcf9;
+  /* Match Home bg-cream */
+}
 
+/* ================= AUTH PAGE ================= */
 .auth-page {
-  min-height: calc(100vh - 72px);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* Match Home background */
-  background: var(--bg-main);
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  padding: 60px 20px;
+  background: radial-gradient(circle at top right, rgba(20, 184, 166, 0.05), transparent 400px),
+    radial-gradient(circle at bottom left, rgba(217, 119, 6, 0.05), transparent 400px);
 }
 
-/* ================= CARD ================= */
+.auth-page.login-bg,
+.auth-page.signup-bg {
+  background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.4)), url('/beach.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
 
+/* ================= AUTH CARD ================= */
 .auth-card {
   width: 100%;
-  max-width: 420px;
-
-  /* Softer, warm card */
+  max-width: 460px;
   background: #ffffff;
-  padding: 36px;
-  border-radius: 20px;
-
-  /* Remove harsh shadow, keep premium */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
-
-  border: 1px solid var(--border-soft);
+  padding: 48px;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  animation: authFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ================= TEXT ================= */
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-.auth-card h1 {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 8px;
-
-  /* Apple-like heading tone */
-  color: #1d1d1f;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.auth-card p {
-  color: var(--text-muted);
-  margin-bottom: 24px;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-/* ================= FORM ================= */
-
-.auth-card label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 6px;
-  margin-top: 16px;
-  color: var(--text-main);
-}
-
-.auth-card input {
-  width: 100%;
-  padding: 12px 14px;
-
-  border-radius: 10px;
-  border: 1px solid var(--border-soft);
-
-  font-size: 15px;
-  background: #fff;
-  color: var(--text-main);
-
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.auth-card input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(123, 174, 158, 0.18);
-}
-
-/* ================= BUTTON ================= */
-
-.auth-btn {
-  margin-top: 24px;
-  width: 100%;
-  padding: 14px;
-
-  border-radius: 999px;
-
-  /* SAME as Talk to a doctor */
-  background: var(--accent);
-  color: white;
-
-  font-weight: 500;
-  font-size: 15px;
-
-  border: none;
-  cursor: pointer;
-
-  transition: background 0.2s ease;
-}
-
-.auth-btn:hover {
-  background: var(--accent-dark);
-}
-
-/* ================= LINK ================= */
-
-.auth-link {
-  margin-top: 18px;
+/* ================= AUTH HEADER ================= */
+.auth-header {
   text-align: center;
+  margin-bottom: 40px;
+}
+
+.auth-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.auth-header p {
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ================= FORM ITEMS ================= */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-item label {
   font-size: 14px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: #334155;
+  margin-left: 4px;
 }
 
-.auth-link a {
-  color: var(--accent);
-  text-decoration: none;
+.form-item input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  color: #0f172a;
+}
+
+.form-item input:focus {
+  outline: none;
+  border-color: #0f766e;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.08);
+}
+
+.form-item input::placeholder {
+  color: #94a3b8;
+}
+
+/* ================= ERROR BOX ================= */
+.auth-error-box {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 500;
+  border: 1px solid #fee2e2;
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
-.auth-link a:hover {
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+/* ================= AUTH BUTTON ================= */
+.auth-btn {
+  width: 100%;
+  padding: 16px;
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
+}
+
+.auth-btn:hover:not(:disabled) {
+  background: #0d615a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3);
+}
+
+.auth-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.auth-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ================= FOOTER LINKS ================= */
+.auth-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 15px;
+  color: #64748b;
+}
+
+.auth-footer a {
+  color: #0f766e;
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 4px;
+  transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+  color: #0d615a;
   text-decoration: underline;
 }
 
-/* ================= MOBILE ================= */
+/* ================= RESPONSIVE ================= */
+@media (max-width: 640px) {
+  .auth-page {
+    padding: 40px 16px;
+  }
 
-@media (max-width: 480px) {
   .auth-card {
-    padding: 28px 22px;
-    border-radius: 18px;
+    padding: 40px 24px;
+    border-radius: 24px;
+  }
+
+  .auth-header h1 {
+    font-size: 28px;
+  }
+
+  .form-item input {
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .auth-card {
+    padding: 32px 20px;
   }
 }

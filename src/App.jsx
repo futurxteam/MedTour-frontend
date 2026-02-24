@@ -32,6 +32,9 @@ import HospitalHome from "./pages/Dashboards/HospitalDashboard/HospitalHome.jsx"
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+import DoctorBooking from "./components/DoctorBooking";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -174,7 +177,11 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/book/doctor/:doctorId" element={<DoctorBooking />} />
+
       </Routes>
+
 
     </BrowserRouter>
   );

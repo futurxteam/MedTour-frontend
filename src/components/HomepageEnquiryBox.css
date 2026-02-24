@@ -203,3 +203,27 @@
 .modal-actions .close-btn:hover {
     background: #e2e8f0;
 }
+
+@media (max-width: 768px) {
+    .enquiry-box h3 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .enquiry-box .form-group {
+        margin-bottom: 12px;
+    }
+
+    .modal {
+        padding: 30px 20px;
+    }
+
+    .modal h3 {
+        font-size: 20px;
+    }
+
+    .modal input {
+        font-size: 20px;
+        padding: 12px;
+    }
+}

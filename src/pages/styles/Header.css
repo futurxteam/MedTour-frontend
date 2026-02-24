@@ -158,6 +158,8 @@
   background: #ffffff;
   border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
+  overflow: visible;
+  /* CRITICAL: Allows dropdowns to show */
 }
 
 /* Horizontal scroll container */
@@ -174,6 +176,9 @@
 .department-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* Optional: Add space for dropdowns to clear if needed, 
+   but overflow: visible on bar handles it mostly */
 
 /* Individual department */
 .dept-wrapper {
@@ -192,7 +197,8 @@
   position: relative;
 }
 
-.dept-item:hover {
+.dept-item:hover,
+.dept-wrapper.active .dept-item {
   color: #0f766e;
 }
 
@@ -314,6 +320,15 @@
   .nav-items {
     display: none;
   }
+
+  .department-scroll {
+    gap: 16px;
+    padding: 10px 16px;
+  }
+
+  .dept-item {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -323,9 +338,9 @@
   }
 
   .header-inner {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 10px 16px;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    padding: 8px 12px;
   }
 
   .logo-container {
@@ -335,6 +350,7 @@
   .global-search-container {
     order: 2;
     margin: 0;
+    max-width: 100%;
   }
 
   .header-actions,
@@ -344,6 +360,53 @@
   }
 
   .site-logo {
+    height: 32px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .header-btn,
+  .header-btn-outline {
+    padding: 8px 14px;
+    font-size: 13px;
     height: 36px;
+  }
+
+  .department-bar {
+    top: 60px;
+    /* Adjusted for smaller header */
+    overflow: visible;
+  }
+
+  .department-scroll {
+    padding: 8px 12px;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dept-dropdown {
+    position: fixed;
+    top: 105px;
+    /* Below the department bar */
+    left: 12px;
+    right: 12px;
+    width: auto;
+    min-width: 0;
+    max-height: 60vh;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-inner {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .global-search-input {
+    font-size: 13px;
   }
 }

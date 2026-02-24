@@ -57,29 +57,37 @@ export default function HospitalHome() {
             <div className="dashboard-grid">
                 <div className="dashboard-card" onClick={() => navigate("/dashboard/hospital/doctors")}>
                     <div className="card-icon">👨‍⚕️</div>
-                    <h3>{stats.doctors}</h3>
-                    <p>Total Doctors</p>
+                    <div className="card-info">
+                        <h3>{stats.doctors}</h3>
+                        <p>Total Doctors</p>
+                    </div>
                     <span className="dashboard-btn">Manage Doctors</span>
                 </div>
 
                 <div className="dashboard-card" onClick={() => navigate("/dashboard/hospital/surgeries")}>
                     <div className="card-icon">🏥</div>
-                    <h3>{stats.surgeries}</h3>
-                    <p>Active Surgeries</p>
+                    <div className="card-info">
+                        <h3>{stats.surgeries}</h3>
+                        <p>Active Surgeries</p>
+                    </div>
                     <span className="dashboard-btn">Manage Surgeries</span>
                 </div>
 
                 <div className="dashboard-card" onClick={() => navigate("/dashboard/hospital/assignments")}>
                     <div className="card-icon">📋</div>
-                    <h3>Assignments</h3>
-                    <p>Assign doctors to surgeries</p>
+                    <div className="card-info">
+                        <h3>Assignments</h3>
+                        <p>Assign doctors to surgeries</p>
+                    </div>
                     <span className="dashboard-btn">View Assignments</span>
                 </div>
 
                 <div className="dashboard-card" onClick={() => navigate("/dashboard/hospital/profiles")}>
                     <div className="card-icon">📄</div>
-                    <h3>Profiles</h3>
-                    <p>Doctor profile status</p>
+                    <div className="card-info">
+                        <h3>Profiles</h3>
+                        <p>Doctor profile status</p>
+                    </div>
                     <span className="dashboard-btn">Check Status</span>
                 </div>
             </div>
