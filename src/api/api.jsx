@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000";
-
+const API_BASE_URL = "https://medtour-backend-1.onrender.com";
 /* ===========================
    AXIOS INSTANCE
 =========================== */
