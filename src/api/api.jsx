@@ -2,9 +2,10 @@ import axios from "axios";
 import i18n from "../i18n/i18n";
 
 //const API_BASE_URL = "http://localhost:5000";
-const API_BASE_URL = "localhost"
-  ? "http://localhost:5000"
-  : "https://medtour-backend.onrender.com";
+const API_BASE_URL =
+  import.meta.env.MODE === "development"
+    ? "http://localhost:5000"
+    : "https://medtour-backend.onrender.com";
 
 /* ===========================
    AXIOS INSTANCE
