@@ -26,8 +26,8 @@ import gastrologyImg from "../components/Home/images/gastrology.png";
 import oncologyImg from "../components/Home/images/Oncology.jpg";
 import orthoImg from "../components/Home/images/ortho.jpg";
 import pmrImg from "../components/Home/images/PMR.jpg";
-import urologyImg from "../components/Home/images/Urology.png";
-import headNeckImg from "../components/Home/images/Head_and_Neck.png";
+import urologyImg from "../components/Home/images/urology.png";
+import headNeckImg from "../components/Home/images/head_and_neck.png";
 
 // Specialty Images replaced with local high-quality professional photos
 
