@@ -1,6 +1,11 @@
 import axios from "axios";
+import i18n from "../i18n/i18n";
 
-const API_BASE_URL = "https://medtour-backend-1.onrender.com";
+//const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "localhost"
+  ? "http://localhost:5000"
+  : "https://medtour-backend.onrender.com";
+
 /* ===========================
    AXIOS INSTANCE
 =========================== */
@@ -9,14 +14,27 @@ const API = axios.create({
 });
 
 /* ===========================
-   JWT INTERCEPTOR - REQUEST
+   JWT & LANG INTERCEPTOR - REQUEST
 =========================== */
-API.interceptors.request.use((req) => {
+API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  return req;
+
+  // 🏥 Admin Impersonation Support
+  const adminViewAs = localStorage.getItem("adminViewAsHospitalId");
+  if (adminViewAs) {
+    config.headers["x-admin-view-as-hospital-id"] = adminViewAs;
+  }
+
+  // Inject language param
+  config.params = {
+    ...config.params,
+    lang: i18n.language || "en"
+  };
+
+  return config;
 });
 
 /* ===========================
@@ -73,6 +91,12 @@ export const googleAuth = async (payload) => {
   if (!res.ok) throw new Error(data.message || "Google auth failed");
   return data;
 };
+
+export const sendAuthOtp = (data) =>
+  API.post("/auth/send-otp", data);
+
+export const verifyAuthOtp = (data) =>
+  API.post("/auth/verify-otp", data);
 
 /* ===========================
    ADMIN – USER MANAGEMENT

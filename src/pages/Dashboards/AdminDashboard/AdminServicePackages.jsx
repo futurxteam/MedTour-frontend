@@ -86,7 +86,7 @@ export default function AdminServicePackages() {
     });
 
     return (
-        <div className="admin-global-surgeries">
+        <div className="admin-service-packages">
             {/* ── Header ── */}
             <div className="view-header">
                 <h3>📦 Service Packages</h3>
@@ -108,12 +108,15 @@ export default function AdminServicePackages() {
 
             {/* ── Create Form ── */}
             <div className="dashboard-card add-surgery-card">
-                <h4>Create New Package</h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                    <div style={{ background: 'var(--accent-light)', padding: '10px', borderRadius: '12px', fontSize: '1.25rem' }}>➕</div>
+                    <h4 style={{ margin: 0 }}>Create New Package</h4>
+                </div>
                 <form onSubmit={handleSubmit} className="modern-form">
                     <div className="form-grid">
                         {/* Package Name */}
                         <div className="form-group">
-                            <label>Package Name</label>
+                            <label>🏷️ Package Name</label>
                             <input
                                 className="modern-input"
                                 name="name"
@@ -126,9 +129,9 @@ export default function AdminServicePackages() {
 
                         {/* Package Type */}
                         <div className="form-group">
-                            <label>Package Type</label>
+                            <label>⚙️ Package Type</label>
                             <select
-                                className="modern-input"
+                                className="modern-select"
                                 name="type"
                                 value={form.type}
                                 onChange={handleFormChange}
@@ -141,9 +144,9 @@ export default function AdminServicePackages() {
                         {/* Translator: Language */}
                         {form.type === "translator" && (
                             <div className="form-group">
-                                <label>Language</label>
+                                <label>🌐 Language</label>
                                 <select
-                                    className="modern-input"
+                                    className="modern-select"
                                     name="language"
                                     value={form.language}
                                     onChange={handleFormChange}
@@ -157,7 +160,7 @@ export default function AdminServicePackages() {
                         {/* Tourism: Place */}
                         {form.type === "tourism" && (
                             <div className="form-group">
-                                <label>Place / Destination</label>
+                                <label>📍 Place / Destination</label>
                                 <input
                                     className="modern-input"
                                     name="place"
@@ -171,7 +174,7 @@ export default function AdminServicePackages() {
 
                         {/* Price */}
                         <div className="form-group">
-                            <label>Price</label>
+                            <label>💰 Price</label>
                             <input
                                 className="modern-input"
                                 name="price"
@@ -186,9 +189,9 @@ export default function AdminServicePackages() {
 
                         {/* Currency */}
                         <div className="form-group">
-                            <label>Currency</label>
+                            <label>💵 Currency</label>
                             <select
-                                className="modern-input"
+                                className="modern-select"
                                 name="currency"
                                 value={form.currency}
                                 onChange={handleFormChange}
@@ -201,11 +204,11 @@ export default function AdminServicePackages() {
                         </div>
                     </div>
 
-                    {/* Description */}
+                    {/* escription */}
                     <div className="form-group full-width" style={{ marginTop: "1rem" }}>
-                        <label>Description</label>
+                        <label>📝 Description</label>
                         <textarea
-                            className="modern-input"
+                            className="modern-textarea"
                             name="description"
                             placeholder="Brief description of what this package includes..."
                             value={form.description}
@@ -215,7 +218,7 @@ export default function AdminServicePackages() {
                     </div>
 
                     <button type="submit" className="dashboard-btn" style={{ marginTop: "1rem" }}>
-                        ➕ Create Package
+                        <span>➕</span> Create Package
                     </button>
                 </form>
             </div>
@@ -223,7 +226,7 @@ export default function AdminServicePackages() {
             {/* ── Filters ── */}
             <div
                 className="view-header"
-                style={{ marginTop: "3rem", marginBottom: "1.5rem" }}
+                style={{ marginTop: "4rem", marginBottom: "1.5rem" }}
             >
                 <div
                     style={{
@@ -231,14 +234,17 @@ export default function AdminServicePackages() {
                         justifyContent: "space-between",
                         alignItems: "center",
                         flexWrap: "wrap",
-                        gap: "1rem",
+                        gap: "20px",
                     }}
                 >
-                    <h4>All Packages ({filtered.length})</h4>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ background: 'var(--accent-light)', padding: '8px', borderRadius: '10px', fontSize: '1.1rem' }}>📋</div>
+                        <h4 style={{ margin: 0 }}>All Packages ({filtered.length})</h4>
+                    </div>
                     <div style={{ display: "flex", gap: "12px" }}>
                         <select
-                            className="modern-input"
-                            style={{ width: "180px", padding: "8px 14px" }}
+                            className="modern-select"
+                            style={{ width: "180px" }}
                             value={typeFilter}
                             onChange={(e) => setTypeFilter(e.target.value)}
                         >
@@ -247,8 +253,8 @@ export default function AdminServicePackages() {
                             <option value="tourism">🧳 Tourism</option>
                         </select>
                         <select
-                            className="modern-input"
-                            style={{ width: "160px", padding: "8px 14px" }}
+                            className="modern-select"
+                            style={{ width: "160px" }}
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >
@@ -262,7 +268,9 @@ export default function AdminServicePackages() {
 
             {/* ── Package List ── */}
             {loading ? (
-                <p className="loading-msg">Loading packages...</p>
+                <div className="empty-state">
+                    <p>Loading packages...</p>
+                </div>
             ) : (
                 <div className="hospital-list">
                     {filtered.length === 0 && (
@@ -278,7 +286,10 @@ export default function AdminServicePackages() {
                                     <span style={{ fontSize: "1.4rem" }}>
                                         {pkg.type === "translator" ? "🗣️" : "🧳"}
                                     </span>
-                                    <b style={{ fontSize: "1.05rem" }}>{pkg.name}</b>
+                                    <b style={{ fontSize: "1.1rem" }}>{pkg.name}</b>
+                                    <span className={`status-pill ${pkg.active ? "approved" : "rejected"}`} style={{ fontSize: '0.65rem' }}>
+                                        {pkg.active ? "• Active" : "• Inactive"}
+                                    </span>
                                 </div>
 
                                 <div className="registry-meta" style={{ marginTop: "0.5rem" }}>
@@ -304,23 +315,25 @@ export default function AdminServicePackages() {
                                 </div>
 
                                 {pkg.description && (
-                                    <p className="registry-desc" style={{ marginTop: "0.4rem" }}>
+                                    <div className="registry-desc">
                                         {pkg.description}
-                                    </p>
+                                    </div>
                                 )}
                             </div>
 
                             <div className="registry-actions">
-                                <span
-                                    className={`status-pill ${pkg.active ? "approved" : "rejected"}`}
-                                >
-                                    {pkg.active ? "Active" : "Inactive"}
-                                </span>
                                 <button
-                                    className="secondary-btn"
+                                    className="dashboard-btn"
+                                    style={{
+                                        background: pkg.active ? '#fee2e2' : 'var(--accent-light)',
+                                        color: pkg.active ? '#991b1b' : 'var(--accent-dark)',
+                                        boxShadow: 'none',
+                                        padding: '8px 16px',
+                                        fontSize: '0.85rem'
+                                    }}
                                     onClick={() => handleToggle(pkg._id)}
                                 >
-                                    {pkg.active ? "Deactivate" : "Activate"}
+                                    {pkg.active ? "🚫 Deactivate" : "✅ Activate"}
                                 </button>
                             </div>
                         </div>

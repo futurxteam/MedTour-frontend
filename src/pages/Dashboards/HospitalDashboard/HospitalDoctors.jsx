@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../api/api";
 import { getDoctorPhotoUrl, uploadDoctorPhoto } from "../../../api/api";
+import { adminLocalize } from "../../../utils/adminLocalize";
 import "../../styles/HospitalDashboard.css";
 
 export default function HospitalDoctors() {
@@ -71,12 +72,12 @@ export default function HospitalDoctors() {
 
   const startEditing = () => {
     setEditForm({
-      name: selectedDoctor.name || "",
-      designation: selectedDoctor.designation || "",
+      name: adminLocalize(selectedDoctor.name) || "",
+      designation: adminLocalize(selectedDoctor.designation) || "",
       experience: selectedDoctor.experience || "",
       consultationFee: selectedDoctor.consultationFee || "",
-      about: selectedDoctor.about || "",
-      qualifications: selectedDoctor.qualifications || "",
+      about: adminLocalize(selectedDoctor.about) || "",
+      qualifications: adminLocalize(selectedDoctor.qualifications) || "",
       licenseNumber: selectedDoctor.licenseNumber || "",
       specializations: selectedDoctor.specializationIds || [],
     });
@@ -128,8 +129,8 @@ export default function HospitalDoctors() {
   };
 
   const filteredDoctors = doctors.filter(doc =>
-    doc.name.toLowerCase().includes(search.toLowerCase()) ||
-    doc.specializations?.some(s => s.toLowerCase().includes(search.toLowerCase()))
+    adminLocalize(doc.name).toLowerCase().includes(search.toLowerCase()) ||
+    doc.specializations?.some(s => adminLocalize(s).toLowerCase().includes(search.toLowerCase()))
   );
 
   if (loading && doctors.length === 0) return <div className="loading-container">Loading managed doctors...</div>;
@@ -175,9 +176,9 @@ export default function HospitalDoctors() {
                     )}
                   </div>
                   <div className="item-info">
-                    <strong>{doc.name}</strong>
-                    <span className="designation">{doc.designation || "Doctor"}</span>
-                    <span className="specs">{doc.specializations?.join(", ") || "No specialization"}</span>
+                    <strong>{adminLocalize(doc.name)}</strong>
+                    <span className="designation">{adminLocalize(doc.designation) || "Doctor"}</span>
+                    <span className="specs">{doc.specializations?.map(s => adminLocalize(s)).join(", ") || "No specialization"}</span>
                   </div>
                   <div className="item-status">
                     <span className={`status-dot ${doc.active ? 'active' : 'inactive'}`}></span>
@@ -195,7 +196,7 @@ export default function HospitalDoctors() {
               /* EDITOR MODE */
               <div className="profile-editor">
                 <div className="detail-header">
-                  <h4>Edit Profile: {selectedDoctor.name}</h4>
+                  <h4>Edit Profile: {adminLocalize(selectedDoctor.name)}</h4>
                   <button className="btn btn-secondary" onClick={() => setEditMode(false)}>Cancel</button>
                 </div>
 
@@ -297,7 +298,7 @@ export default function HospitalDoctors() {
                             checked={editForm.specializations.includes(spec._id)}
                             onChange={() => toggleSpecialization(spec._id)}
                           />
-                          <span>{spec.name}</span>
+                          <span>{adminLocalize(spec.name)}</span>
                         </label>
                       ))}
                     </div>
@@ -322,8 +323,8 @@ export default function HospitalDoctors() {
                     )}
                   </div>
                   <div className="header-main">
-                    <h4>{selectedDoctor.name}</h4>
-                    <span className="badge badge-secondary">{selectedDoctor.designation || "Doctor"}</span>
+                    <h4>{adminLocalize(selectedDoctor.name)}</h4>
+                    <span className="badge badge-secondary">{adminLocalize(selectedDoctor.designation) || "Doctor"}</span>
                   </div>
                   <div className="header-actions">
                     <button className="btn btn-primary" onClick={startEditing}>Edit Profile</button>
@@ -339,13 +340,13 @@ export default function HospitalDoctors() {
                 <div className="detail-body">
                   <div className="detail-section">
                     <h5>Professional Summary</h5>
-                    <p>{selectedDoctor.about || "No biography provided yet."}</p>
+                    <p>{adminLocalize(selectedDoctor.about) || "No biography provided yet."}</p>
                   </div>
 
                   <div className="detail-grid">
                     <div className="info-box">
                       <label>Qualifications</label>
-                      <p>{selectedDoctor.qualifications || "—"}</p>
+                      <p>{adminLocalize(selectedDoctor.qualifications) || "—"}</p>
                     </div>
                     <div className="info-box">
                       <label>Experience</label>
@@ -373,7 +374,7 @@ export default function HospitalDoctors() {
                     <h5>Assigned Specializations</h5>
                     <div className="pills-list">
                       {selectedDoctor.specializations?.map((s, idx) => (
-                        <span key={idx} className="spec-pill">{s}</span>
+                        <span key={idx} className="spec-pill">{adminLocalize(s)}</span>
                       )) || "None"}
                     </div>
                   </div>
@@ -431,8 +432,8 @@ export default function HospitalDoctors() {
             background: #f1f5f9;
         }
         .doctor-item.active {
-            background: #eff6ff;
-            border-left: 4px solid var(--primary);
+            background: rgba(13, 148, 136, 0.05); /* Match accent light */
+            border-left: 4px solid var(--accent);
         }
         .item-info {
             display: flex;
@@ -445,7 +446,7 @@ export default function HospitalDoctors() {
         }
         .item-info .specs {
             font-size: 12px;
-            color: var(--primary);
+            color: var(--accent);
             margin-top: 4px;
         }
         .status-dot {
@@ -454,7 +455,7 @@ export default function HospitalDoctors() {
             border-radius: 50%;
             display: inline-block;
         }
-        .status-dot.active { background: #22c55e; }
+        .status-dot.active { background: #10b981; }
         .status-dot.inactive { background: #ef4444; }
 
         /* Detail Side */
@@ -462,6 +463,7 @@ export default function HospitalDoctors() {
             flex: 1;
             overflow-y: auto;
             background: white;
+            border-radius: var(--radius-xl);
         }
         .empty-detail {
             height: 100%;
@@ -471,50 +473,56 @@ export default function HospitalDoctors() {
             color: var(--text-muted);
         }
         .profile-detail, .profile-editor {
-            padding: 30px;
+            padding: 32px;
         }
         .detail-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-soft);
             padding-bottom: 20px;
         }
         .header-main h4 {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
         .detail-section {
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
         .detail-section h5 {
-            font-size: 16px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
             color: var(--text-main);
+            letter-spacing: -0.01em;
         }
         .detail-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
         }
         .info-box {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: var(--radius);
+            background: var(--bg-main);
+            padding: 20px;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-soft);
         }
         .info-box label {
             font-size: 12px;
+            font-weight: 800;
             text-transform: uppercase;
             color: var(--text-muted);
             letter-spacing: 0.5px;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
         .pills-list {
             display: flex;
@@ -522,111 +530,134 @@ export default function HospitalDoctors() {
             gap: 8px;
         }
         .spec-pill {
-            background: #e0f2fe;
-            color: #0369a1;
-            padding: 4px 12px;
-            border-radius: 20px;
+            background: var(--accent-light);
+            color: var(--accent-dark);
+            padding: 6px 14px;
+            border-radius: 100px;
             font-size: 13px;
+            font-weight: 700;
         }
 
         /* Editor Styles */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 24px;
         }
         .full-width {
             grid-column: span 2;
         }
         .specs-editor-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
         }
         .checkbox-pill {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: #f1f5f9;
-            border-radius: 20px;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-main);
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 13px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-soft);
         }
-        .checkbox-pill:hover { background: #e2e8f0; }
-        .checkbox-pill input:checked + span { color: var(--primary); font-weight: 600; }
+        .checkbox-pill:hover { 
+            background: white; 
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm); 
+        }
+        .checkbox-pill input {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+        }
+        .checkbox-pill input:checked + span { 
+            color: var(--accent-dark); 
+            font-weight: 700; 
+        }
 
         .form-actions {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-soft);
         }
 
         @media (max-width: 1024px) {
             .doctor-management-container { flex-direction: column; height: auto; }
-            .doctor-list-container { width: 100%; height: 300px; }
+            .doctor-list-container { width: 100%; height: 350px; }
             .grid-2 { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
         }
 
         /* Avatar Styles */
         .item-avatar {
-          width: 48px;
-          height: 48px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
-          background: #e2e8f0;
+          background: var(--border-soft);
           overflow: hidden;
-          margin-right: 12px;
+          margin-right: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-placeholder { font-size: 24px; color: #94a3b8; }
+        .avatar-placeholder { font-size: 24px; color: var(--text-muted); }
 
         .detail-avatar {
-          width: 80px;
-          height: 80px;
+          width: 88px;
+          height: 88px;
           border-radius: 50%;
           overflow: hidden;
-          margin-right: 20px;
-          border: 3px solid white;
-          box-shadow: var(--shadow-sm);
+          margin-right: 24px;
+          border: 4px solid white;
+          box-shadow: var(--shadow-md);
         }
         .detail-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .photo-edit-section {
           display: flex;
           align-items: center;
-          gap: 20px;
-          margin-bottom: 30px;
-          padding: 20px;
-          background: #f8fafc;
-          border-radius: var(--radius);
+          gap: 24px;
+          margin-bottom: 32px;
+          padding: 24px;
+          background: var(--bg-main);
+          border-radius: var(--radius-xl);
+          border: 1px solid var(--border-soft);
         }
         .edit-avatar-box {
-          width: 100px;
-          height: 100px;
+          width: 110px;
+          height: 110px;
           border-radius: 50%;
           overflow: hidden;
-          background: #e2e8f0;
+          background: white;
           display: flex;
           align-items: center;
           justify-content: center;
+          box-shadow: var(--shadow-sm);
         }
         .edit-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .edit-avatar-box .placeholder { font-size: 40px; color: #94a3b8; }
+        .edit-avatar-box .placeholder { font-size: 40px; color: var(--text-muted); }
         .btn-outline {
-          border: 1px solid var(--primary);
-          color: var(--primary);
+          border: 2px solid var(--accent);
+          color: var(--accent-dark);
           background: white;
-          padding: 8px 16px;
-          border-radius: 6px;
+          padding: 10px 20px;
+          border-radius: var(--radius-md);
+          font-weight: 700;
           cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .upload-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+        .btn-outline:hover {
+          background: var(--accent-light);
+          box-shadow: inset 0 0 0 1px rgba(13, 148, 136, 0.1);
+        }
+        .upload-hint { font-size: 13px; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
 
       `}</style>
     </div>

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getLowestQuotes } from '../../api/api';
 
 const LowestQuotes = () => {
+    const { t, i18n } = useTranslation();
     const [quotes, setQuotes] = useState([]);
 
     useEffect(() => {
@@ -14,14 +16,14 @@ const LowestQuotes = () => {
             }
         };
         fetchQuotes();
-    }, []);
+    }, [i18n.language]);
 
     return (
         <section className="home-expansion-section" style={{ background: '#f8fafc' }}>
             <div className="container">
                 <div className="section-title-alt">
-                    <h2>Transparent Entry Pricing</h2>
-                    <p>Get a head start on your medical travel budget with our verified base prices across departments.</p>
+                    <h2>{t('quotes.title')}</h2>
+                    <p>{t('quotes.subtitle')}</p>
                 </div>
                 <div className="quotes-list">
                     {quotes.map(quote => (
@@ -31,7 +33,7 @@ const LowestQuotes = () => {
                                 <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>{quote.specialization?.name}</p>
                             </div>
                             <div className="quote-price">
-                                <label>Starting from</label>
+                                <label>{t('procedures.starting_from')}</label>
                                 <span>₹{quote.minimumCost?.toLocaleString()}</span>
                             </div>
                         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api/api";
 import "../../styles/Dashboard.css";
+import { adminLocalize } from "../../../utils/adminLocalize";
 
 export default function AdminHospitalManagement() {
     const [hospitals, setHospitals] = useState([]);
@@ -80,12 +81,12 @@ export default function AdminHospitalManagement() {
     const handleEditClick = (hosp) => {
         setEditingHospital(hosp);
         setFormData({
-            hospitalName: hosp.hospitalName || hosp.name || "",
-            description: hosp.description || "",
-            address: hosp.address || "",
-            city: hosp.city || "",
-            state: hosp.state || "",
-            country: hosp.country || "",
+            hospitalName: adminLocalize(hosp.hospitalName || hosp.name) || "",
+            description: adminLocalize(hosp.description) || "",
+            address: adminLocalize(hosp.address) || "",
+            city: adminLocalize(hosp.city) || "",
+            state: adminLocalize(hosp.state) || "",
+            country: adminLocalize(hosp.country) || "",
             phone: hosp.phone || "",
             avatar: hosp.avatar || "",
             specialties: hosp.specialties?.map(s => s._id || s) || [],
@@ -146,501 +147,263 @@ export default function AdminHospitalManagement() {
     if (editingHospital) {
         return (
             <div className="hospital-management-container">
-                <div className="edit-hospital-card">
-                    <div className="edit-header">
-                        <h3>Edit Center: {editingHospital.hospitalName || editingHospital.name}</h3>
-                        <button className="btn-secondary" onClick={() => setEditingHospital(null)}>← Back to List</button>
+                <div className="view-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                        <h3>✏️ Edit Center: {adminLocalize(editingHospital.hospitalName || editingHospital.name)}</h3>
+                        <p className="subtitle">Update facility details, specialties, and media gallery</p>
                     </div>
+                    <button className="secondary-btn" onClick={() => setEditingHospital(null)}>
+                        ← Back to Center List
+                    </button>
+                </div>
 
-                    <form onSubmit={handleUpdateHospital}>
-                        <div className="form-grid">
-                            <div className="form-group full-width">
-                                <label className="form-label">Hospital Name</label>
-                                <input className="modern-input" type="text" value={formData.hospitalName} onChange={e => setFormData({ ...formData, hospitalName: e.target.value })} required />
-                            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '30px', alignItems: 'start' }}>
+                    <div className="dashboard-card" style={{ padding: '32px' }}>
+                        <h4 style={{ marginBottom: '24px', fontSize: '1.2rem', color: 'var(--text-main)' }}>📋 General Information</h4>
+                        <form onSubmit={handleUpdateHospital} className="modern-form">
+                            <div className="form-grid">
+                                <div className="form-group full-width">
+                                    <label>🏥 Hospital Name</label>
+                                    <input className="modern-input" type="text" value={formData.hospitalName} onChange={e => setFormData({ ...formData, hospitalName: e.target.value })} required />
+                                </div>
 
-                            <div className="form-group full-width">
-                                <label className="form-label">Description</label>
-                                <textarea className="modern-textarea" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
-                            </div>
+                                <div className="form-group full-width">
+                                    <label>📝 About the Facility</label>
+                                    <textarea className="modern-textarea" value={formData.description} rows={5} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Describe the center's excellence..." />
+                                </div>
 
-                            <div className="form-group full-width">
-                                <label className="form-label">Street Address</label>
-                                <input className="modern-input" type="text" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
-                            </div>
+                                <div className="form-group full-width">
+                                    <label>📍 Physical Address</label>
+                                    <input className="modern-input" type="text" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                                </div>
 
-                            <div className="form-group">
-                                <label className="form-label">City</label>
-                                <input className="modern-input" type="text" value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })} />
-                            </div>
+                                <div className="form-group">
+                                    <label>🏙️ City</label>
+                                    <input className="modern-input" type="text" value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })} />
+                                </div>
 
-                            <div className="form-group">
-                                <label className="form-label">Country</label>
-                                <input className="modern-input" type="text" value={formData.country} onChange={e => setFormData({ ...formData, country: e.target.value })} />
-                            </div>
+                                <div className="form-group">
+                                    <label>🌍 Country</label>
+                                    <input className="modern-input" type="text" value={formData.country} onChange={e => setFormData({ ...formData, country: e.target.value })} />
+                                </div>
 
-                            <div className="form-group">
-                                <label className="form-label">Contact Phone</label>
-                                <input className="modern-input" type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                            </div>
-
-                            <div className="form-group full-width" style={{ marginTop: "15px" }}>
-                                <label className="form-label">Provided Specialties</label>
-                                <div className="specialties-grid">
-                                    {availableSpecialties.map(s => (
-                                        <label key={s._id} className="specialty-checkbox-label">
-                                            <input
-                                                type="checkbox"
-                                                checked={formData.specialties.includes(s._id)}
-                                                onChange={(e) => {
-                                                    const checked = e.target.checked;
-                                                    let newSpecialties = [...formData.specialties];
-                                                    if (checked) {
-                                                        newSpecialties.push(s._id);
-                                                    } else {
-                                                        newSpecialties = newSpecialties.filter(id => id !== s._id);
-                                                    }
-                                                    setFormData({ ...formData, specialties: newSpecialties });
-                                                }}
-                                            />
-                                            <span>{s.name}</span>
-                                        </label>
-                                    ))}
+                                <div className="form-group">
+                                    <label>📞 Contact Number</label>
+                                    <input className="modern-input" type="text" value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="form-actions">
-                            <button type="submit" className="btn-save">Save All Changes</button>
-                            <button type="button" className="btn-save" style={{ background: "#4f46e5" }} onClick={async () => {
-                                try {
-                                    await api.patch(`/admin/hospitals/${editingHospital._id}/specialties`, { specialties: formData.specialties });
-                                    alert('Specialties updated directly');
-                                    fetchHospitals();
-                                } catch (err) {
-                                    alert('Failed to update specialties');
-                                }
-                            }}>Update Specialties Only</button>
-                        </div>
-                    </form>
-
-                    <div className="photos-section">
-                        <h4 style={{ marginTop: 0, marginBottom: "20px", color: "#1e293b", fontSize: "1.2rem" }}>Hospital Gallery</h4>
-                        <div className="photos-grid">
-                            {editingHospital.photos?.map(p => (
-                                <div key={p.publicId} className="photo-card">
-                                    <img src={p.url} alt="Hosp" />
-                                    <button className="btn-remove-photo" onClick={() => handleRemovePhoto(p.publicId)}>✕</button>
-                                </div>
-                            ))}
-                        </div>
-                        <form className="file-upload-form" onSubmit={handleUploadPhotos}>
-                            <input className="file-input" type="file" multiple accept="image/*" onChange={e => setPhotosFile(e.target.files)} />
-                            <button type="submit" className="btn-save" style={{ padding: "10px 20px" }}>Upload Photos</button>
+                            <button type="submit" className="dashboard-btn" style={{ marginTop: '32px', width: '100%', height: '54px', fontSize: '1rem' }}>
+                                💾 Save Facility Details
+                            </button>
                         </form>
                     </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                        {/* Specialties Section */}
+                        <div className="dashboard-card" style={{ padding: '24px' }}>
+                            <h4 style={{ marginBottom: '20px', fontSize: '1rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                🔬 Provided Specialties
+                            </h4>
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '8px',
+                                background: 'var(--bg-main)',
+                                padding: '16px',
+                                borderRadius: '14px',
+                                maxHeight: '350px',
+                                overflowY: 'auto',
+                                border: '1px solid var(--border-soft)'
+                            }}>
+                                {availableSpecialties.map(s => (
+                                    <label key={s._id} style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px',
+                                        cursor: 'pointer',
+                                        padding: '10px 14px',
+                                        background: formData.specialties.includes(s._id) ? 'var(--accent-light)' : 'white',
+                                        borderRadius: '10px',
+                                        border: '1px solid',
+                                        borderColor: formData.specialties.includes(s._id) ? 'var(--accent)' : 'var(--border-soft)',
+                                        transition: 'all 0.2s'
+                                    }}>
+                                        <input
+                                            type="checkbox"
+                                            style={{ width: '18px', height: '18px', accentColor: 'var(--accent)' }}
+                                            checked={formData.specialties.includes(s._id)}
+                                            onChange={(e) => {
+                                                const checked = e.target.checked;
+                                                let newSpecialties = [...formData.specialties];
+                                                if (checked) newSpecialties.push(s._id);
+                                                else newSpecialties = newSpecialties.filter(id => id !== s._id);
+                                                setFormData({ ...formData, specialties: newSpecialties });
+                                            }}
+                                        />
+                                        <span style={{ fontSize: '0.9rem', fontWeight: formData.specialties.includes(s._id) ? '700' : '500', color: 'var(--text-main)' }}>
+                                            {adminLocalize(s.name)}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Gallery Section */}
+                        <div className="dashboard-card" style={{ padding: '24px' }}>
+                            <h4 style={{ marginBottom: '20px', fontSize: '1rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                🖼️ Gallery Management
+                            </h4>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '20px' }}>
+                                {editingHospital.photos?.map(p => (
+                                    <div key={p.publicId} style={{ position: 'relative', aspectRatio: '4/3', borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--border-soft)' }}>
+                                        <img src={p.url} alt="Hosp" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <button
+                                            style={{ position: 'absolute', top: '6px', right: '6px', background: 'rgba(239, 68, 68, 0.9)', color: 'white', border: 'none', borderRadius: '50%', width: '24px', height: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '12px' }}
+                                            onClick={() => handleRemovePhoto(p.publicId)}
+                                        >✕</button>
+                                    </div>
+                                ))}
+                                {(!editingHospital.photos || editingHospital.photos.length === 0) && (
+                                    <div style={{ gridColumn: 'span 2', padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', background: 'var(--bg-main)', borderRadius: '10px' }}>
+                                        No photos uploaded yet
+                                    </div>
+                                )}
+                            </div>
+
+                            <form onSubmit={handleUploadPhotos} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <label className="custom-file-upload" style={{
+                                    display: 'block',
+                                    padding: '12px',
+                                    background: 'white',
+                                    border: '1px dashed var(--accent)',
+                                    borderRadius: '10px',
+                                    textAlign: 'center',
+                                    cursor: 'pointer',
+                                    fontSize: '0.85rem',
+                                    color: 'var(--accent-dark)',
+                                    fontWeight: '600'
+                                }}>
+                                    <input type="file" multiple accept="image/*" onChange={e => setPhotosFile(e.target.files)} style={{ display: 'none' }} />
+                                    {photosFile ? `📂 ${photosFile.length} files selected` : "📁 Click to Select Photos"}
+                                </label>
+                                <button type="submit" className="secondary-btn" disabled={!photosFile} style={{ width: '100%', background: photosFile ? 'var(--accent)' : 'var(--bg-main)', color: photosFile ? 'white' : 'var(--text-muted)' }}>
+                                    📤 Upload to Cloud
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                {renderStyles()}
             </div>
         );
     }
 
     return (
-        <div className="hospital-management-container section-card" style={{ background: 'transparent', padding: 0, boxShadow: 'none' }}>
-            <div className="hospital-header-actions">
-                <h3>Hospital Centers</h3>
-                <div className="hospital-filters">
-                    <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="hospital-filter-select">
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
-                    <input
-                        type="text"
-                        className="hospital-search-input"
-                        placeholder="Search hospitals..."
-                        value={search}
-                        onChange={e => setSearch(e.target.value)}
-                    />
+        <div className="hospital-management-container">
+            <div className="view-header">
+                <h3>🏥 Hospital Center</h3>
+                <p className="subtitle">Manage verified medical facilities and verification requests</p>
+            </div>
+
+            <div className="dashboard-card status-card no-hover" style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                    <div className="filter-group">
+                        <label className="field-label">Filter Status</label>
+                        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="modern-select" style={{ width: '180px' }}>
+                            <option value="all">All Statuses</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="approved">✅ Approved</option>
+                            <option value="rejected">❌ Rejected</option>
+                        </select>
+                    </div>
+                    <div className="filter-group">
+                        <label className="field-label">Search Centers</label>
+                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <span style={{ position: 'absolute', left: '14px', pointerEvents: 'none' }}>🔍</span>
+                            <input
+                                type="text"
+                                className="modern-input"
+                                placeholder="Name or City..."
+                                style={{ width: '250px', paddingLeft: '40px' }}
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {loading ? <p style={{ textAlign: "center", padding: "40px", color: "#64748b" }}>Loading centers...</p> : (
-                <div className="hospital-table-card">
-                    <table className="hospital-table">
-                        <thead>
-                            <tr>
-                                <th>Hospital details</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {hospitals && hospitals.length > 0 ? (
-                                hospitals.map((h, index) => (
-                                    <tr key={h._id || index}>
-                                        <td className="hospital-name-cell">
-                                            <strong>{h.hospitalName || h.name}</strong>
-                                            <small>{h.email}</small>
-                                            {h.specialties && h.specialties.length > 0 && (
-                                                <div className="specialty-tags">
-                                                    {h.specialties.map((s, idx) => (
-                                                        <span key={s._id || idx} className="specialty-tag">
-                                                            {s.name}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td style={{ color: "#475569", fontWeight: "500" }}>
-                                            {h.city ? `${h.city}, ${h.country || ''}` : "Not Specified"}
-                                        </td>
-                                        <td>
-                                            <span className={`status-badge ${h.hospitalStatus}`} style={{
-                                                padding: "6px 14px",
-                                                borderRadius: "20px",
-                                                fontSize: "0.75rem",
-                                                fontWeight: "700",
-                                                textTransform: "capitalize",
-                                                display: "inline-block",
-                                                background: h.hospitalStatus === 'approved' ? '#dcfce7' : h.hospitalStatus === 'pending' ? '#fef08a' : '#fee2e2',
-                                                color: h.hospitalStatus === 'approved' ? '#166534' : h.hospitalStatus === 'pending' ? '#854d0e' : '#991b1b',
-                                            }}>
-                                                {h.hospitalStatus}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className="action-buttons">
-                                                <button className="btn-action btn-edit" onClick={() => handleEditClick(h)}>Edit</button>
-                                                {h.hospitalStatus === "pending" && (
-                                                    <>
-                                                        <button className="btn-action btn-approve" onClick={() => handleApprove(h._id)}>Approve</button>
-                                                        <button className="btn-action btn-reject" onClick={() => handleReject(h._id)}>Reject</button>
-                                                    </>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="4" style={{ textAlign: "center", padding: "40px", color: "#64748b" }}>
-                                        No hospitals found matching your criteria.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+            {loading ? (
+                <div className="empty-state">
+                    <p>Loading centers...</p>
+                </div>
+            ) : (
+                <div className="hospital-list">
+                    {hospitals && hospitals.length > 0 ? (
+                        hospitals.map((h, index) => (
+                            <div key={h._id || index} className="dashboard-card registry-card">
+                                <div className="registry-info">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <b style={{ fontSize: '1.25rem' }}>{adminLocalize(h.hospitalName || h.name)}</b>
+                                        <span className={`status-pill ${h.hospitalStatus}`} style={{
+                                            background: h.hospitalStatus === 'approved' ? '#dcfce7' : h.hospitalStatus === 'pending' ? '#fef08a' : '#fee2e2',
+                                            color: h.hospitalStatus === 'approved' ? '#166534' : h.hospitalStatus === 'pending' ? '#854d0e' : '#991b1b',
+                                            fontSize: '0.65rem'
+                                        }}>
+                                            • {h.hospitalStatus.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <p style={{ marginTop: '4px', color: 'var(--text-muted)' }}>✉️ {h.email}</p>
+                                    <p style={{ marginTop: '4px', fontWeight: '600' }}>📍 {adminLocalize(h.city) ? `${adminLocalize(h.city)}, ${adminLocalize(h.country) || ''}` : "Location Not Specified"}</p>
+
+                                    {h.specialties && h.specialties.length > 0 && (
+                                        <div className="registry-meta" style={{ marginTop: '12px' }}>
+                                            {h.specialties.slice(0, 5).map((s, idx) => (
+                                                <span key={s._id || idx} className="spec-pill">
+                                                    {adminLocalize(s.name)}
+                                                </span>
+                                            ))}
+                                            {h.specialties.length > 5 && <span className="spec-pill">+{h.specialties.length - 5} more</span>}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="registry-actions" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <button
+                                        className="dashboard-btn"
+                                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: 'linear-gradient(135deg, var(--accent), var(--accent-dark))', color: 'white', border: 'none' }}
+                                        onClick={() => {
+                                            localStorage.setItem("adminViewAsHospitalId", h._id);
+                                            window.location.href = "/dashboard/hospital";
+                                        }}
+                                    >
+                                        🔑 Enter Dashboard
+                                    </button>
+                                    <button className="dashboard-btn" style={{ padding: '8px 16px', fontSize: '0.85rem' }} onClick={() => handleEditClick(h)}>✏️ Edit Profile</button>
+                                    {h.hospitalStatus === "pending" && (
+                                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                            <button className="dashboard-btn" style={{ background: '#dcfce7', color: '#166534', boxShadow: 'none', padding: '8px 16px', fontSize: '0.85rem' }} onClick={() => handleApprove(h._id)}>✅ Approve</button>
+                                            <button className="dashboard-btn" style={{ background: '#fee2e2', color: '#991b1b', boxShadow: 'none', padding: '8px 16px', fontSize: '0.85rem' }} onClick={() => handleReject(h._id)}>❌ Reject</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="empty-state">
+                            <p>No hospitals found matching your criteria.</p>
+                        </div>
+                    )}
 
                     {totalPages > 1 && (
-                        <div className="pagination" style={{ padding: "20px", display: "flex", justifyContent: "center", gap: "10px", background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}>
-                            <button className="btn-secondary" style={{ padding: "8px 16px" }} disabled={page === 1} onClick={() => setPage(page - 1)}>Prev</button>
-                            <span style={{ alignSelf: "center", fontWeight: "600", color: "#475569" }}>{page} / {totalPages}</span>
-                            <button className="btn-secondary" style={{ padding: "8px 16px" }} disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
+                        <div className="pagination">
+                            <button className="pagination-btn" disabled={page === 1} onClick={() => setPage(page - 1)}>Prev</button>
+                            <span style={{ margin: '0 15px', fontWeight: '700', color: 'var(--text-muted)' }}>{page} of {totalPages}</span>
+                            <button className="pagination-btn" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
                         </div>
                     )}
                 </div>
             )}
-            {renderStyles()}
         </div>
-    );
-}
-
-function renderStyles() {
-    return (
-        <style>{`
-            .hospital-management-container {
-                font-family: 'Inter', sans-serif;
-            }
-            .hospital-header-actions {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                background: white;
-                padding: 24px 30px;
-                border-radius: 20px;
-                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-                margin-bottom: 24px;
-            }
-            .hospital-header-actions h3 { margin: 0; font-size: 1.6rem; color: #0f172a; font-weight: 800; }
-            .hospital-filters {
-                display: flex;
-                gap: 12px;
-            }
-            .hospital-filter-select, .hospital-search-input {
-                padding: 12px 18px;
-                border-radius: 12px;
-                border: 1px solid #e2e8f0;
-                background: #f8fafc;
-                font-size: 0.95rem;
-                outline: none;
-                transition: all 0.2s;
-                font-weight: 500;
-                color: #334155;
-            }
-            .hospital-filter-select:focus, .hospital-search-input:focus {
-                border-color: #3b82f6;
-                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-                background: white;
-            }
-
-            .hospital-table-card {
-                background: white;
-                border-radius: 20px;
-                box-shadow: 0 4px 20px -5px rgba(0,0,0,0.05);
-                overflow: hidden;
-            }
-            
-            .hospital-table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            .hospital-table th {
-                background: #f8fafc;
-                padding: 18px 24px;
-                text-align: left;
-                font-size: 0.8rem;
-                font-weight: 700;
-                color: #64748b;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                border-bottom: 1px solid #e2e8f0;
-            }
-            .hospital-table td {
-                padding: 20px 24px;
-                border-bottom: 1px solid #f1f5f9;
-                vertical-align: middle;
-            }
-            .hospital-table tr:hover td {
-                background: #f8fafc;
-            }
-            .hospital-name-cell strong {
-                display: block;
-                color: #0f172a;
-                font-size: 1.05rem;
-                margin-bottom: 4px;
-                font-weight: 700;
-            }
-            .hospital-name-cell small {
-                color: #64748b;
-                font-size: 0.85rem;
-            }
-            
-            .specialty-tags {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 6px;
-                margin-top: 10px;
-                max-width: 300px;
-            }
-            .specialty-tag {
-                font-size: 0.7rem;
-                background: #f1f5f9;
-                color: #475569;
-                padding: 4px 10px;
-                border-radius: 20px;
-                font-weight: 700;
-                border: 1px solid #e2e8f0;
-            }
-
-            .action-buttons {
-                display: flex;
-                gap: 10px;
-            }
-            .btn-action {
-                padding: 8px 16px;
-                border-radius: 10px;
-                font-size: 0.85rem;
-                font-weight: 700;
-                cursor: pointer;
-                border: none;
-                transition: all 0.2s;
-            }
-            .btn-edit { background: #eff6ff; color: #3b82f6; }
-            .btn-edit:hover { background: #dceafe; transform: translateY(-1px); }
-            .btn-approve { background: #ecfdf5; color: #10b981; }
-            .btn-approve:hover { background: #d1fae5; transform: translateY(-1px); }
-            .btn-reject { background: #fef2f2; color: #ef4444; }
-            .btn-reject:hover { background: #fee2e2; transform: translateY(-1px); }
-
-            /* EDIT FORM */
-            .edit-hospital-card {
-                background: white;
-                border-radius: 24px;
-                padding: 40px;
-                box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1);
-                max-width: 1000px;
-                margin: 0 auto;
-            }
-            .edit-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 30px;
-                padding-bottom: 20px;
-                border-bottom: 1px solid #e2e8f0;
-            }
-            .edit-header h3 { margin: 0; font-size: 1.8rem; color: #0f172a; font-weight: 800;}
-            
-            .form-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
-            }
-            .form-group.full-width { grid-column: span 2; }
-            
-            .modern-input, .modern-textarea {
-                width: 100%;
-                padding: 14px 18px;
-                border-radius: 14px;
-                border: 1px solid #e2e8f0;
-                background: #f8fafc;
-                font-size: 0.95rem;
-                transition: all 0.2s;
-                outline: none;
-            }
-            .modern-input:focus, .modern-textarea:focus {
-                border-color: #3b82f6;
-                background: white;
-                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-            }
-            .modern-textarea { resize: vertical; min-height: 120px; }
-            .form-label {
-                display: block;
-                font-size: 0.85rem;
-                font-weight: 700;
-                color: #475569;
-                margin-bottom: 8px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .specialties-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 12px;
-                background: #f8fafc;
-                padding: 24px;
-                border-radius: 16px;
-                border: 1px solid #e2e8f0;
-                max-height: 350px;
-                overflow-y: auto;
-            }
-            .specialty-checkbox-label {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px 16px;
-                background: white;
-                border-radius: 12px;
-                border: 1px solid #e2e8f0;
-                cursor: pointer;
-                transition: all 0.2s;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.02);
-            }
-            .specialty-checkbox-label:hover { border-color: #cbd5e1; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-            .specialty-checkbox-label input { width: 18px; height: 18px; cursor: pointer; accent-color: #0f172a; }
-            .specialty-checkbox-label span { font-size: 0.95rem; font-weight: 600; color: #334155; }
-
-            .form-actions {
-                display: flex;
-                gap: 16px;
-                margin-top: 40px;
-                padding-top: 30px;
-                border-top: 1px solid #e2e8f0;
-            }
-            .btn-save {
-                padding: 14px 28px;
-                background: #0f172a;
-                color: white;
-                border: none;
-                border-radius: 12px;
-                font-weight: 700;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-            .btn-save:hover { background: #1e293b; transform: translateY(-2px); box-shadow: 0 8px 15px -3px rgba(15, 23, 42, 0.2); }
-            .btn-secondary {
-                padding: 12px 24px;
-                background: #f1f5f9;
-                color: #475569;
-                border: none;
-                border-radius: 12px;
-                font-weight: 700;
-                font-size: 0.95rem;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-            .btn-secondary:hover { background: #e2e8f0; color: #0f172a; }
-
-            .photos-section {
-                margin-top: 40px;
-                background: #f8fafc;
-                padding: 30px;
-                border-radius: 20px;
-                border: 2px dashed #cbd5e1;
-            }
-            .photos-grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 16px;
-                margin-bottom: 24px;
-            }
-            .photo-card {
-                position: relative;
-                width: 140px;
-                height: 140px;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            }
-            .photo-card img { width: 100%; height: 100%; object-fit: cover; }
-            .btn-remove-photo {
-                position: absolute;
-                top: 8px; right: 8px;
-                width: 32px; height: 32px;
-                background: rgba(239, 68, 68, 0.9);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                font-weight: bold;
-                font-size: 1.1rem;
-                cursor: pointer;
-                display: flex; align-items: center; justify-content: center;
-                backdrop-filter: blur(4px);
-                transition: all 0.2s;
-            }
-            .btn-remove-photo:hover { background: rgba(220, 38, 38, 1); transform: scale(1.1); }
-            
-            .file-upload-form { display: flex; gap: 12px; align-items: center; }
-            .file-input {
-                padding: 10px;
-                background: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 12px;
-                flex: 1;
-                font-weight: 500;
-                color: #475569;
-                font-size: 0.9rem;
-            }
-            .file-input::file-selector-button {
-                margin-right: 20px;
-                border: none;
-                background: #f1f5f9;
-                padding: 10px 20px;
-                border-radius: 10px;
-                color: #0f172a;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-weight: 700;
-                font-size: 0.85rem;
-            }
-            .file-input::file-selector-button:hover {
-                background: #e2e8f0;
-            }
-        `}</style>
     );
 }

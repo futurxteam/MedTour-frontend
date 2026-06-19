@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./styles/Home.css";
 import "./styles/Services.css";
 import Avatar from "../components/Avatar";
@@ -17,6 +18,7 @@ import {
 } from "../api/api";
 
 export default function Services() {
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -80,7 +82,7 @@ export default function Services() {
     };
 
     fetchInitialData();
-  }, []);
+  }, [i18n.language]);
 
   /* ===========================
      HANDLE INCOMING STATE (NAV)
@@ -256,10 +258,10 @@ export default function Services() {
               ? selectedSurgery.surgeryName
               : selectedSpecialty
                 ? selectedSpecialty.name
-                : "Our Medical Services"}
+                : t('nav.treatments')}
           </h2>
 
-          {loading && <p className="loading-text">Loading services...</p>}
+          {loading && <p className="loading-text">Loading...</p>}
 
           <div className="services-nav-container">
             <span onClick={() => navigate("/")} className="services-nav-home">
@@ -406,11 +408,8 @@ export default function Services() {
           =========================== */}
           {!selectedSpecialty && (
             <>
-              <br />
-              <h3 className="avatar-header">Or Select in Avatar</h3>
-              <div className="avatar-container">
-                <Avatar onSelect={(part) => setSelectedPart(part)} />
-              </div>
+
+
             </>
           )}
         </div>

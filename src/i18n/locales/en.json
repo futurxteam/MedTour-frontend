@@ -1,0 +1,190 @@
+{
+  "translation": {
+    "nav": {
+      "treatments": "Treatments",
+      "hospitals": "Hospitals",
+      "experience": "Experience",
+      "contact": "Contact",
+      "about": "About Us",
+      "login": "Login",
+      "signup": "Sign up",
+      "dashboard": "Dashboard",
+      "my_profile": "My Profile",
+      "logout": "Logout"
+    },
+    "hero": {
+      "subtitle": "Premium Medical Tourism in India",
+      "title": "World-Class Healthcare in the Heart of Kerala",
+      "desc": "Trusted medical journeys for patients from UAE and across the world. Combine advanced medical treatments with the healing touch of nature.",
+      "plan_btn": "Plan Your Treatment",
+      "talk_btn": "Talk to Coordinator"
+    },
+    "search": {
+      "placeholder": "Search doctors, surgeries, hospitals...",
+      "no_results": "No results found for \"{{query}}\""
+    },
+    "homepage": {
+      "specialities_title": "Our Specialities",
+      "specialities_desc": "World-class expertise across multiple medical disciplines.",
+      "treatments_count": "{{count}} Treatments",
+      "more_text": "+{{count}} more",
+      "loading": "Loading..."
+    },
+    "form": {
+      "title": "Let Us Help You",
+      "patient_name": "Patient Name",
+      "select_country": "Select Country",
+      "select_city": "Select City",
+      "phone": "Your Phone number",
+      "medical_problem": ".. Describe The Current Medical Problem (Optional)",
+      "age_example": "Example: 30 Yrs or 29-05-1985",
+      "cta": "Get FREE Quote",
+      "disclaimer": "By submitting the form I agree to the <1>Terms of Use</1> and <2>Privacy Policy</2> of .MedTour Health"
+    },
+    "common": {
+      "other": "Other",
+      "certified_expert": "MedTour Certified Expert",
+      "kerala": "Kerala",
+      "nabh": "NABH ACCREDITED",
+      "jci": "JCI ACCREDITED",
+      "iso": "ISO CERTIFIED",
+      "tourism": "KERALA TOURISM"
+    },
+    "experts": {
+      "title": "Expert Perspectives",
+      "subtitle": "Listen to direct insights from Kerala's leading medical voices on top-tier surgical care and patient safety.",
+      "badge": "VIDEO INSIGHT",
+      "list": {
+        "1": {
+          "name": "Dr. Rajiv",
+          "role": "Senior Interventional Cardiologist",
+          "hospital": "Aster Medicity, Kochi",
+          "desc": "Specializing in complex angioplasties and advanced cardiac care."
+        },
+        "2": {
+          "name": "Dr. Nitha",
+          "role": "Consultant and Coordinator of PMR",
+          "hospital": "KIMS Health",
+          "desc": "Leading specialist in Physical Medicine and Rehabilitation."
+        },
+        "3": {
+          "name": "Dr. Rohit Nair",
+          "role": "Vascular and Interventional Radiology",
+          "hospital": "Aster Medicity, Kochi",
+          "desc": "Expert in minimally invasive image-guided procedures."
+        }
+      }
+    },
+    "stories": {
+      "title": "Real Care Stories",
+      "subtitle": "Experience the journey of hope and healing through the lives we've touched.",
+      "list": {
+        "1": {
+          "name": "James",
+          "country": "United Kingdom",
+          "surgery": "Hip Replacement",
+          "review": "Everything from the initial consultation to the recovery was handled with extreme professionalism. I saved over 60% compared to UK prices."
+        },
+        "2": {
+          "name": "Abdel",
+          "country": "UAE",
+          "surgery": "Cardiac Bypass",
+          "review": "The medical care in Kerala is world-class. My doctor was very patient and explained everything clearly. Highly recommended!"
+        },
+        "3": {
+          "name": "Sarah",
+          "country": "USA",
+          "surgery": "Dental Implants",
+          "review": "I combined my treatment with a vacation in Munnar. It was the most relaxing recovery ever. MedTour assistants are amazing."
+        },
+        "4": {
+          "name": "Elena",
+          "country": "Canada",
+          "surgery": "Hip Revision",
+          "review": "The surgical team was incredible. I felt safe and cared for every step of the way."
+        },
+        "5": {
+          "name": "Omar",
+          "country": "Oman",
+          "surgery": "Ophthalmology",
+          "review": "Crystal clear vision now. The facility in Kochi felt like a 5-star hotel."
+        },
+        "6": {
+          "name": "Marcus",
+          "country": "Australia",
+          "surgery": "Spine Surgery",
+          "review": "MedTour handled all logistics. I could focus entirely on my recovery."
+        }
+      }
+    },
+    "hospitals": {
+      "title": "Discovery: Top Rated Hospitals",
+      "subtitle": "Kerala's medical hub features infrastructure at par with Western standards. Explore our diamond-tier partners.",
+      "view_btn": "View Full Hospital Profile",
+      "rating": "Rating",
+      "default_desc": "Premier medical facility offering world-class healthcare services."
+    },
+    "procedures": {
+      "title": "Common Procedures & Costs",
+      "subtitle": "High-quality treatments at a fraction of the cost in UAE or Western nations.",
+      "starting_from": "Starting from"
+    },
+    "quotes": {
+      "title": "Live Lowest Quotes",
+      "subtitle": "Real-time pricing from our partner hospitals.",
+      "get_quote": "Get Quote"
+    },
+    "newsletter": {
+      "title": "Join Our Healthcare Community",
+      "subtitle": "Receive monthly insights on medical advancements, wellness tips, and exclusive treatment packages.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe Now",
+      "privacy": "We respect your privacy. Unsubscribe at any time."
+    },
+    "footer": {
+      "rights": "All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "contact": "Contact Us",
+      "register_hosp": "Register as Hospital"
+    },
+    "comparison": {
+      "title": "Global Cost Transparency",
+      "subtitle": "Compare treatment costs in India with other major global hubs. Quality affordable care is no longer a myth.",
+      "show_in": "Show prices in:",
+      "procedure": "Procedure",
+      "india": "India (Kerala)",
+      "disclaimer": "* Prices are approximate and based on standard conversion rates. Final costs vary based on hospital choice and patient condition.",
+      "list": {
+        "knee": "Knee Replacement",
+        "cardiac": "Cardiac Bypass",
+        "ivf": "IVF Treatment",
+        "dental": "Dental Implants"
+      },
+      "currencies": {
+        "USD": "USA Dollars",
+        "GBP": "UK Pounds",
+        "AED": "UAE Dirham",
+        "INR": "Indian Rupee",
+        "SAR": "Saudi Riyal"
+      }
+    },
+    "depts": {
+      "Ayurveda": "Ayurveda",
+      "Cardiology": "Cardiology",
+      "Gastroenterology": "Gastroenterology",
+      "Gastrology": "Gastrology",
+      "Neurosurgery": "Neurosurgery",
+      "Neurology": "Neurology",
+      "Oncology": "Oncology",
+      "Orthopedic": "Orthopedic",
+      "Orthopedics": "Orthopedics",
+      "PMR": "PMR",
+      "Physiotherapy": "Physiotherapy",
+      "Urology": "Urology",
+      "Wellness": "Wellness",
+      "ENT": "ENT",
+      "Pediatrics": "Pediatrics"
+    }
+  }
+}

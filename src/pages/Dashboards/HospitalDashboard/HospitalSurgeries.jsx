@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getHospitalSurgeries, toggleHospitalSurgery, getHospitalSpecializations } from "../../../api/api";
+import { adminLocalize } from "../../../utils/adminLocalize";
 import "../../styles/HospitalDashboard.css";
 
 export default function HospitalSurgeries() {
@@ -39,14 +40,16 @@ export default function HospitalSurgeries() {
   };
 
   const filteredSurgeries = surgeries.filter((s) => {
-    const name = s.globalSurgeryId?.surgeryName || s.surgeryName || "Unnamed Surgery";
+    const rawName = s.globalSurgeryId?.surgeryName || s.surgeryName;
+    const name = adminLocalize(rawName) || "Unnamed Surgery";
     const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSpec = specFilter === "" || s.specialization?._id === specFilter;
     return matchesSearch && matchesSpec;
   });
 
   const grouped = filteredSurgeries.reduce((acc, s) => {
-    const specName = s.specialization?.name || "Others";
+    const rawSpecName = s.specialization?.name;
+    const specName = adminLocalize(rawSpecName) || "Others";
     if (!acc[specName]) {
       acc[specName] = [];
     }
@@ -81,7 +84,7 @@ export default function HospitalSurgeries() {
           >
             <option value="">All Specializations</option>
             {specialties.map((s) => (
-              <option key={s._id} value={s._id}>{s.name}</option>
+              <option key={s._id} value={s._id}>{adminLocalize(s.name)}</option>
             ))}
           </select>
         </div>
@@ -100,16 +103,16 @@ export default function HospitalSurgeries() {
               {grouped[specName].map((surgery) => (
                 <div key={surgery._id} className="info-card">
                   <div className="card-head">
-                    <h4>{surgery.globalSurgeryId?.surgeryName || surgery.surgeryName}</h4>
+                    <h4>{adminLocalize(surgery.globalSurgeryId?.surgeryName || surgery.surgeryName)}</h4>
                     <span className={`badge ${surgery.active ? 'badge-success' : 'badge-danger'}`}>
                       {surgery.active ? 'Active' : 'Disabled'}
                     </span>
                   </div>
 
-                  <p className="card-desc">{surgery.description || "No description provided."}</p>
+                  <p className="card-desc">{adminLocalize(surgery.description) || "No description provided."}</p>
 
                   <div className="card-meta">
-                    <p><strong>Duration:</strong> {surgery.duration}</p>
+                    <p><strong>Duration:</strong> {adminLocalize(surgery.duration)}</p>
                     <p><strong>Cost:</strong> ₹{surgery.cost.toLocaleString()}</p>
                   </div>
 
@@ -138,7 +141,7 @@ export default function HospitalSurgeries() {
         }
         .specialization-title {
             font-size: 18px;
-            color: var(--primary);
+            color: var(--accent);
             margin-bottom: 16px;
             font-weight: 600;
             padding-bottom: 8px;

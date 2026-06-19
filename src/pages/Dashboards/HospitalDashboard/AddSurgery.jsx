@@ -4,6 +4,7 @@ import {
   getHospitalSpecializations,
   getAvailableGlobalSurgeries,
 } from "../../../api/api";
+import { adminLocalize } from "../../../utils/adminLocalize";
 import "../../styles/HospitalDashboard.css";
 
 export default function AddSurgery() {
@@ -54,21 +55,21 @@ export default function AddSurgery() {
   }, [form.specializationId]);
 
   const filteredSpecialties = specialties.filter((spec) =>
-    spec.name.toLowerCase().includes(search.toLowerCase())
+    adminLocalize(spec.name).toLowerCase().includes(search.toLowerCase())
   );
 
   const filteredGlobalSurgeries = globalSurgeries.filter((gs) =>
-    gs.surgeryName.toLowerCase().includes(surgerySearch.toLowerCase())
+    adminLocalize(gs.surgeryName).toLowerCase().includes(surgerySearch.toLowerCase())
   );
 
   const handleGlobalSelect = (selected) => {
     setSelectedGlobal(selected);
-    setSurgerySearch(selected.surgeryName);
+    setSurgerySearch(adminLocalize(selected.surgeryName));
     setForm(prev => ({
       ...prev,
       globalSurgeryId: selected._id,
-      description: selected?.description || prev.description,
-      duration: selected?.duration || prev.duration,
+      description: adminLocalize(selected?.description) || prev.description,
+      duration: adminLocalize(selected?.duration) || prev.duration,
       cost: selected?.minimumCost || prev.cost
     }));
     setShowSurgeryList(false);
@@ -149,13 +150,13 @@ export default function AddSurgery() {
                       className="dropdown-item"
                       onMouseDown={() => {
                         setForm((prev) => ({ ...prev, specializationId: spec._id, globalSurgeryId: "" }));
-                        setSearch(spec.name);
+                        setSearch(adminLocalize(spec.name));
                         setSurgerySearch("");
                         setShowList(false);
                         setSelectedGlobal(null);
                       }}
                     >
-                      {spec.name}
+                      {adminLocalize(spec.name)}
                     </li>
                   ))
                 )}
@@ -192,7 +193,7 @@ export default function AddSurgery() {
                       onMouseDown={() => handleGlobalSelect(gs)}
                     >
                       <div className="gs-item-main">
-                        <span>{gs.surgeryName}</span>
+                        <span>{adminLocalize(gs.surgeryName)}</span>
                         <small>Min: ₹{gs.minimumCost}</small>
                       </div>
                     </li>
@@ -204,8 +205,8 @@ export default function AddSurgery() {
 
           {selectedGlobal && (
             <div className="catalog-info-box">
-              <p>ℹ️ <b>Master Registry Info:</b> {selectedGlobal.description}</p>
-              <p>Base Duration: {selectedGlobal.duration}</p>
+              <p>ℹ️ <b>Master Registry Info:</b> {adminLocalize(selectedGlobal.description)}</p>
+              <p>Base Duration: {adminLocalize(selectedGlobal.duration)}</p>
             </div>
           )}
 
@@ -292,7 +293,7 @@ export default function AddSurgery() {
         }
         .dropdown-item:hover {
             background: #f0f9ff;
-            color: var(--primary);
+            color: var(--accent);
         }
         .dropdown-item.empty {
             color: var(--text-muted);

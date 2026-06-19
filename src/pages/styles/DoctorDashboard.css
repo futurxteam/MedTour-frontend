@@ -31,3 +31,16 @@
     font-weight: bold;
     color: #555;
 }
+
+/* ========== DOCTOR DASHBOARD MOBILE ========== */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .doctor-profile-info .profile-name {
+        display: none;
+    }
+}

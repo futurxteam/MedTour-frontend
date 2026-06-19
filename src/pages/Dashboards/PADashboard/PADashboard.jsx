@@ -60,8 +60,8 @@ export default function PADashboard() {
     try {
       await startService(enquiryId);
       alert("Service journey started successfully!");
-      fetchEnquiries(); // Refresh to remove from enquiries list
-      setView("services"); // Switch to services view
+      fetchEnquiries();
+      setView("services");
     } catch (err) {
       console.error("Failed to start service", err);
       alert("Failed to start service. Please try again.");
@@ -72,7 +72,6 @@ export default function PADashboard() {
     window.location.href = `tel:${phone}`;
   };
 
-  // Called by PAServicePackages when a package is added/removed
   const handleEnquiryUpdate = (updatedEnquiry) => {
     setEnquiries((prev) =>
       prev.map((e) => (e._id === updatedEnquiry._id ? { ...e, ...updatedEnquiry } : e))
@@ -87,26 +86,29 @@ export default function PADashboard() {
           <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
             🏠 Home
           </button>
-          <h2>Assistant Dashboard</h2>
+          <h2>Personal Assistant</h2>
         </div>
 
         <div className="profile-area" onClick={() => setOpen(!open)}>
-          <div className="profile-avatar-initial">P</div>
-          <span className="profile-name">Assistant</span>
+          <div className="profile-avatar-initial" style={{ background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)' }}>P</div>
+          <div className="profile-info" style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="profile-name">Assistant</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>PA Panel</span>
+          </div>
 
           {open && (
             <div className="profile-dropdown">
               <button onClick={() => { setOpen(false); navigate('/dashboard/pa'); }}>
-                Dashboard
+                ⚙️ Dashboard
               </button>
-              <button onClick={() => { setOpen(false); navigate('/profile'); }}>
-                Profile
-              </button>
+              <div style={{ borderTop: '1px solid var(--border-soft)', margin: '8px 0' }}></div>
+
               <button
                 className="logout-btn"
                 onClick={() => logout(navigate)}
+                style={{ color: '#ef4444' }}
               >
-                Logout
+                🚪 Logout
               </button>
             </div>
           )}
@@ -116,32 +118,32 @@ export default function PADashboard() {
       <div className="dashboard-layout">
         {/* Sidebar */}
         <aside className="dashboard-sidebar">
-          <h3 className="sidebar-title">Menu</h3>
+          <div style={{ padding: '0 10px 20px 10px' }}>
+            <h3 className="sidebar-title" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>CORE MENU</h3>
+          </div>
           <nav className="sidebar-nav">
             <button
               className={view === "enquiries" ? "active" : ""}
               onClick={() => setView("enquiries")}
             >
-              Assigned Enquiries
+              📥 Assigned Enquiries
             </button>
             <button
               className={view === "services" ? "active" : ""}
               onClick={() => setView("services")}
             >
-              Services
+              ⚡ Active Journeys
             </button>
+            <div style={{ padding: '20px 10px 10px 10px' }}>
+              <h3 className="sidebar-title" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>PATIENT CARE</h3>
+            </div>
             <button
               className={view === "patients" ? "active" : ""}
               onClick={() => setView("patients")}
             >
-              My Patients
+              👥 My Patients
             </button>
-            <button
-              className={view === "settings" ? "active" : ""}
-              onClick={() => setView("settings")}
-            >
-              Settings
-            </button>
+
           </nav>
         </aside>
 
@@ -150,17 +152,20 @@ export default function PADashboard() {
           {view === "enquiries" && (
             <div className="admin-enquiries-container">
               <div className="view-header">
-                <h3>Assigned Consultation Requests</h3>
+                <div>
+                  <h3>📥 Assigned Consultation Requests</h3>
+                  <p className="subtitle">Track and manage patients assigned to your care</p>
+                </div>
                 <div className="stats-header">
                   <div className="mini-stat">Total: <strong>{enquiries.length}</strong></div>
                   <div className="mini-stat">New: <strong>{enquiries.filter(e => e.status === 'assigned').length}</strong></div>
                 </div>
               </div>
 
-              {loading && <p className="loading-msg">Loading enquiries...</p>}
+              {loading && <p className="loading-msg">Refreshing enquiries...</p>}
               {!loading && enquiries.length === 0 && (
                 <div className="empty-state">
-                  <p>No enquiries assigned yet.</p>
+                  <p>No enquiries assigned yet. They will appear here when allocated by Admin.</p>
                 </div>
               )}
 
@@ -169,55 +174,62 @@ export default function PADashboard() {
                   <div key={e._id} className="pa-enquiry-card">
                     <div className="enquiry-patient-header">
                       <b>{e.patientName}</b>
-                      <span className={`status-badge status-${e.status}`}>{e.status}</span>
+                      <span className={`status-pill ${e.status}`}>{e.status.toUpperCase()}</span>
                     </div>
 
                     <div className="enquiry-main">
                       <p className="phone">📞 {e.phone}</p>
                       <p className="location">📍 {e.city}, {e.country}</p>
 
-                      <div className="source-tag">
+                      <div className="source-tag" style={{ background: e.source === "homepage" ? 'var(--accent-light)' : '#e0f2fe', color: e.source === "homepage" ? 'var(--accent-dark)' : '#0369a1' }}>
                         {e.source === "homepage" ? "🏠 Homepage Lead" : "🏥 Services Inquiry"}
                       </div>
 
-                      {e.source === "homepage" ? (
-                        <div className="homepage-details">
-                          <p><strong>🩺 Problem:</strong> {e.medicalProblem}</p>
-                          <p><strong>📅 Age/DOB:</strong> {e.ageOrDob}</p>
-                        </div>
-                      ) : (
-                        <div className="services-details">
-                          <p className="service-path">
-                            {e.specialtyId?.name} → {e.surgeryId?.surgeryName}
-                          </p>
-                          <p><strong>Doctor:</strong> {e.doctorId?.name}</p>
-                          {e.consultationDate && (
-                            <p className="consult-date">
-                              📅 <strong>{new Date(e.consultationDate).toLocaleDateString()}</strong>
+                      <div className="services-details" style={{ background: 'var(--bg-main)', border: '1px solid var(--border-soft)' }}>
+                        {e.source === "homepage" ? (
+                          <>
+                            <p style={{ margin: '4px 0' }}><label className="field-label" style={{ fontSize: '0.65rem' }}>Medical Problem</label></p>
+                            <p style={{ margin: 0, fontWeight: '500' }}>🩺 {e.medicalProblem}</p>
+                            <p style={{ marginTop: '12px' }}><label className="field-label" style={{ fontSize: '0.65rem' }}>Age / DOB</label></p>
+                            <p style={{ margin: 0 }}>📅 {e.ageOrDob}</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="service-path" style={{ fontSize: '1rem', color: 'var(--accent-dark)' }}>
+                              💉 {e.specialtyId?.name} → {e.surgeryId?.surgeryName}
                             </p>
-                          )}
-                        </div>
-                      )}
+                            <p style={{ marginTop: '12px' }}>👨‍⚕️ <strong>Doctor:</strong> {e.doctorId?.name}</p>
+                            {e.consultationDate && (
+                              <p className="consult-date" style={{ marginTop: '8px' }}>
+                                📅 <strong>Scheduled:</strong> <span style={{ color: 'var(--accent)' }}>{new Date(e.consultationDate).toLocaleDateString(undefined, { dateStyle: 'long' })}</span>
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
 
                     <div className="enquiry-actions">
-                      <button
-                        className="action-btn call-btn"
-                        onClick={() => handleCall(e.phone)}
-                      >
-                        📞 Make a Call
-                      </button>
-
-                      <div className="status-update-form">
-                        <select
-                          className="status-select"
-                          value={e.status}
-                          onChange={(ev) => handleUpdateStatus(e._id, ev.target.value)}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                        <button
+                          className="action-btn call-btn"
+                          onClick={() => handleCall(e.phone)}
                         >
-                          <option value="assigned">Assigned</option>
-                          <option value="contacted">Contacted</option>
-                          <option value="closed">Closed</option>
-                        </select>
+                          📞 Call Patient
+                        </button>
+
+                        <div className="status-update-form">
+                          <select
+                            className="modern-select"
+                            style={{ height: '100%', padding: '0 12px', fontSize: '0.85rem' }}
+                            value={e.status}
+                            onChange={(ev) => handleUpdateStatus(e._id, ev.target.value)}
+                          >
+                            <option value="assigned">Assigned</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="closed">Closed</option>
+                          </select>
+                        </div>
                       </div>
 
                       {e.status === "contacted" && (
@@ -230,28 +242,32 @@ export default function PADashboard() {
                       )}
 
                       <button
-                        className="action-btn"
+                        className="secondary-btn"
                         style={{
-                          background: expandedEnquiry === e._id
-                            ? "rgba(167,139,250,0.2)"
-                            : "rgba(255,255,255,0.06)",
-                          border: "1px solid rgba(167,139,250,0.3)",
-                          color: "#a78bfa",
+                          width: '100%',
+                          background: expandedEnquiry === e._id ? 'var(--accent-light)' : 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          color: 'var(--text-main)'
                         }}
                         onClick={() =>
                           setExpandedEnquiry(expandedEnquiry === e._id ? null : e._id)
                         }
                       >
-                        📦 {expandedEnquiry === e._id ? "Hide" : "Manage"} Packages
+                        {expandedEnquiry === e._id ? "🔼 Hide" : "📦 Manage"} Add-on Packages
                       </button>
                     </div>
 
                     {/* Service Packages Panel */}
                     {expandedEnquiry === e._id && (
-                      <PAServicePackages
-                        enquiry={e}
-                        onEnquiryUpdate={handleEnquiryUpdate}
-                      />
+                      <div className="expanded-content" style={{ animation: 'slideDown 0.3s ease-out' }}>
+                        <PAServicePackages
+                          enquiry={e}
+                          onEnquiryUpdate={handleEnquiryUpdate}
+                        />
+                      </div>
                     )}
                   </div>
                 ))}
@@ -262,7 +278,10 @@ export default function PADashboard() {
           {view === "services" && (
             <div className="admin-enquiries-container">
               <div className="view-header">
-                <h3>Active Service Journeys</h3>
+                <div>
+                  <h3>⚡ Active Service Journeys</h3>
+                  <p className="subtitle">Live roadmaps for patients currently in treatment</p>
+                </div>
                 <div className="stats-header">
                   <div className="mini-stat">Active Jobs: <strong>{journeys.length}</strong></div>
                 </div>
@@ -280,7 +299,7 @@ export default function PADashboard() {
                   <div key={j._id} className="pa-enquiry-card">
                     <div className="enquiry-patient-header">
                       <b>{j.enquiryId?.patientName || "Patient"}</b>
-                      <span className={`status-badge status-${j.status}`}>{j.status}</span>
+                      <span className={`status-pill approved`}>{j.status.toUpperCase()}</span>
                     </div>
 
                     <div className="enquiry-main">
@@ -296,8 +315,8 @@ export default function PADashboard() {
                           <strong>{j.stages?.length || 0}</strong>
                         </div>
                         <div className="summary-item">
-                          <span>⏱️ Day</span>
-                          <strong>{j.currentDay || 0} of {j.totalDuration || 0}</strong>
+                          <span>⏱️ Duration</span>
+                          <strong>{j.currentDay || 0}/{j.totalDuration || 0} Days</strong>
                         </div>
                       </div>
                     </div>
@@ -317,18 +336,12 @@ export default function PADashboard() {
           )}
 
 
-          {view === "patients" && (
-            <>
-              <h3>My Patients</h3>
-              <p>Patient management feature coming soon.</p>
-            </>
-          )}
-
-          {view === "settings" && (
-            <>
-              <h3>Settings</h3>
-              <p>Profile settings feature coming soon.</p>
-            </>
+          {(view === "patients" || view === "settings") && (
+            <div className="empty-state" style={{ marginTop: '40px' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🚧</div>
+              <h4>Module Under Construction</h4>
+              <p>This feature is currently being developed to provide better patient care management.</p>
+            </div>
           )}
         </main>
       </div>

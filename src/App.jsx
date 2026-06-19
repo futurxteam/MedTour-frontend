@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -32,12 +32,23 @@ import HospitalHome from "./pages/Dashboards/HospitalDashboard/HospitalHome.jsx"
 import PublicRoute from "./routes/PublicRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+import { useTranslation } from "react-i18next";
 import DoctorBooking from "./components/DoctorBooking";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 function App() {
+  const { i18n } = useTranslation();
+
+  React.useEffect(() => {
+    const lang = i18n.language || "en";
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
+  }, [i18n.language]);
+
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
@@ -122,7 +133,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route element={<ProtectedRoute allowedRoles={["hospital"]} />}>
+        <Route element={<ProtectedRoute allowedRoles={["hospital", "admin"]} />}>
           <Route path="/dashboard/hospital" element={<HospitalDashboard />}>
             <Route index element={<HospitalHome />} />
             <Route path="profile" element={<HospitalProfile />} />
@@ -179,6 +190,9 @@ function App() {
         />
 
         <Route path="/book/doctor/:doctorId" element={<DoctorBooking />} />
+
+        {/* Catch-all fallback route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
 

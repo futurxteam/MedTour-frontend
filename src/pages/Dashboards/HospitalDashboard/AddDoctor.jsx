@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../../api/api";
+import { adminLocalize } from "../../../utils/adminLocalize";
 import "../../styles/HospitalDashboard.css";
 
 export default function AddDoctor() {
@@ -272,7 +273,7 @@ export default function AddDoctor() {
                         checked={form.specializations.includes(spec._id)}
                         onChange={() => toggleSpecialization(spec._id)}
                       />
-                      <span>{spec.name}</span>
+                      <span>{adminLocalize(spec.name)}</span>
                     </label>
                   ))
                 )}
@@ -302,7 +303,7 @@ export default function AddDoctor() {
             font-weight: 500;
         }
         .checkbox-card-compact:hover {
-            border-color: var(--primary);
+            border-color: var(--accent);
             background: #f0f9ff;
         }
         .checkbox-card-compact input {

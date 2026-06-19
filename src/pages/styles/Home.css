@@ -33,11 +33,22 @@
 /* ================= HERO SECTION (Modern Kerala) ================= */
 .hero-wrapper {
   position: relative;
-  padding: 140px 0 100px;
+  padding: 100px 0 70px;
   min-height: 90vh;
   display: flex;
   align-items: center;
   overflow: hidden;
+
+  background:
+    linear-gradient(90deg,
+      rgba(8, 25, 40, 0.85) 0%,
+      rgba(8, 25, 40, 0.65) 35%,
+      rgba(8, 25, 40, 0.25) 60%,
+      rgba(8, 25, 40, 0.05) 100%),
+    url("https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2000&auto=format&fit=crop");
+
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-aura-1 {
@@ -49,7 +60,11 @@
   background: radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
   filter: blur(80px);
   z-index: 0;
-  animation: float 20s infinite alternate;
+}
+
+.hero-form-content {
+  flex: 0 0 440px;
+  transform: translateY(20px);
 }
 
 @keyframes float {
@@ -66,9 +81,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 60px;
-  position: relative;
-  z-index: 10;
+  gap: 90px;
 }
 
 .hero-text-content {
@@ -98,14 +111,12 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #fff;
-  padding: 8px 16px;
-  border-radius: 99px;
+  background: rgba(15, 118, 110, 0.95);
+  padding: 8px 18px;
+  border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--primary);
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  color: #fff;
   margin-bottom: 24px;
 }
 
@@ -118,31 +129,135 @@
 }
 
 .hero-text-content h1 {
-  font-size: clamp(32px, 5vw, 64px);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(40px, 6vw, 76px);
   line-height: 1.1;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -2px;
   margin-bottom: 24px;
-  color: var(--text-dark);
+  color: #ffffff;
+  
+  animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
 .hero-text-content h1 span {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, #14b8a6 0%, #fde68a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+.hero-text-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 580px;
+  margin-bottom: 40px;
+  
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.hero-premium-pill {
+  display: inline-block;
+  background: rgba(8, 25, 40, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 8px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 30px;
+  
+  animation: fadeInUp 0.8s ease-out both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.btn-primary {
+  padding: 16px 36px;
+  background: #14b8a6;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #0d9488;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(20, 184, 166, 0.3);
+}
+
+.btn-glass {
+  padding: 16px 36px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff;
+}
+
 /* ================= ENQUIRY BOX POLISH ================= */
 .hero-enquiry-wrapper {
   width: 100%;
-  background: var(--glass);
+  background: rgba(8, 25, 40, 0.7);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  padding: 24px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-premium);
+  padding: 32px;
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
   position: relative;
+  overflow: hidden;
+  
+  animation: fadeInRight 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .hero-enquiry-wrapper::before {
@@ -151,14 +266,26 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
-  background: linear-gradient(to right, #d97706 0%, #fde68a 50%, #d97706 100%);
-  border-radius: 40px 40px 0 0;
+  height: 4px;
+  background: linear-gradient(to right, #14b8a6, #fde68a, #14b8a6);
+}
+
+.hero-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 118, 110, 0.95);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 24px;
 }
 
 /* ================= BRAND BAR ================= */
 .brand-bar {
-  padding: 60px 0;
+  padding: 40px 0;
   border-top: 1px solid #f1f5f9;
   border-bottom: 1px solid #f1f5f9;
   background: #fff;
@@ -181,7 +308,7 @@
 /* ================= FEATURE CARDS ================= */
 .section-head {
   text-align: center;
-  margin: 120px 0 80px;
+  margin: 40px 0 30px;
 }
 
 .section-head h2 {
@@ -200,7 +327,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 32px;
-  margin-bottom: 120px;
+  margin-bottom: 80px;
 }
 
 .feature-card {
@@ -243,43 +370,64 @@
   line-height: 1.6;
 }
 
-/* ================= SPECIALITIES (Grid with Images) ================= */
+/* ================= SPECIALITIES (Modern Premium Grid) ================= */
 .specialities-section {
-  padding: 120px 0;
-  background: #f8fafc;
+  padding: 60px 0;
+  background: #fdfcf9; /* Back to cream for premium feel */
+  position: relative;
+}
+
+.specialities-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-image: radial-gradient(#14b8a6 0.5px, transparent 0.5px);
+  background-size: 30px 30px;
+  opacity: 0.05;
+  pointer-events: none;
 }
 
 .specialities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.specialities-grid > * {
+  animation: fadeInUp 0.8s ease-out both;
 }
 
 .speciality-card {
   position: relative;
-  height: 220px;
-  border-radius: 32px;
+  height: 280px; /* Taller for better visual */
+  border-radius: 24px;
   overflow: hidden;
   cursor: pointer;
   background: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .speciality-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(15, 118, 110, 0.15);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(15, 118, 110, 0.2);
+  border-color: var(--primary-light);
 }
 
 .speciality-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .speciality-card:hover img {
-  transform: scale(1.08);
+  transform: scale(1.15);
+  filter: brightness(0.7);
 }
 
 .speciality-overlay {
@@ -287,34 +435,76 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 45%;
-  background: linear-gradient(to top, #0f766e 20%, rgba(15, 118, 110, 0.8) 50%, transparent 100%);
+  height: 100%; /* Full height overlay for better text positioning */
+  background: linear-gradient(to top, 
+    rgba(5, 30, 45, 0.9) 0%, 
+    rgba(5, 30, 45, 0.4) 40%, 
+    transparent 100%
+  );
   display: flex;
   align-items: flex-end;
-  padding: 18px 22px;
+  padding: 24px;
   color: #fff;
+  transition: all 0.3s ease;
+}
+
+.speciality-card:hover .speciality-overlay {
+  background: linear-gradient(to top, 
+    rgba(15, 118, 110, 0.9) 0%, 
+    rgba(15, 118, 110, 0.6) 50%, 
+    rgba(15, 118, 110, 0.2) 100%
+  );
+}
+
+.speciality-info {
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+}
+
+.speciality-card:hover .speciality-info {
+  transform: translateY(0);
 }
 
 .speciality-info h3 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .speciality-info p {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Add a "Go" button that reveals on hover */
+.speciality-info::after {
+  content: "View Details →";
+  display: block;
   font-size: 13px;
-  font-weight: 500;
-  opacity: 0.9;
+  font-weight: 700;
+  margin-top: 15px;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.4s ease 0.1s;
+}
+
+.speciality-card:hover .speciality-info::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* ================= TRUST SECTION ================= */
 .trust-banner {
   background: var(--primary);
-  padding: 100px 0;
+  padding: 60px 0;
   color: #fff;
   text-align: center;
-  margin: 100px 0;
+  margin: 60px 0;
   background: linear-gradient(135deg, var(--primary) 0%, #064e4b 100%);
   position: relative;
   overflow: hidden;
@@ -343,7 +533,7 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   margin-top: 60px;
-  margin-bottom: 120px;
+  margin-bottom: 80px;
 }
 
 .access-card {
@@ -408,6 +598,11 @@
     justify-content: center;
     gap: 30px;
   }
+
+  .specialities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -448,11 +643,11 @@
   }
 
   .specialities-section {
-    padding: 80px 0;
+    padding: 40px 0;
   }
 
   .specialities-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
@@ -481,16 +676,6 @@
 
   .brand-scroll span {
     font-size: 14px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-text-content h1 {
-    font-size: 32px;
-  }
-
-  .specialities-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 

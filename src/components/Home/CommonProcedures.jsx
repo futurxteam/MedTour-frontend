@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getCommonProcedures } from '../../api/api';
 
 const CommonProcedures = () => {
+    const { t, i18n } = useTranslation();
     const [procedures, setProcedures] = useState([]);
 
     useEffect(() => {
@@ -14,14 +16,14 @@ const CommonProcedures = () => {
             }
         };
         fetchProcedures();
-    }, []);
+    }, [i18n.language]);
 
     return (
         <section className="home-expansion-section">
             <div className="container">
                 <div className="section-title-alt">
-                    <h2>Popular Treatments</h2>
-                    <p>Highly sought-after medical procedures performed by Kerala's most trusted hospitals.</p>
+                    <h2>{t('procedures.title')}</h2>
+                    <p>{t('procedures.subtitle')}</p>
                 </div>
                 <div className="procedures-grid">
                     {procedures.map(proc => (

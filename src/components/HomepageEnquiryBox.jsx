@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { getCountries, getCitiesByCountry, sendEnquiryOtp, verifyOtpAndCreateEnquiry } from "../api/api";
 import "./HomepageEnquiryBox.css";
 
 const HomepageEnquiryBox = () => {
+    const { t, i18n } = useTranslation();
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [loadingCities, setLoadingCities] = useState(false);
@@ -34,7 +36,7 @@ const HomepageEnquiryBox = () => {
             }
         };
         fetchCountries();
-    }, []);
+    }, [i18n.language]);
 
     const handleCountryChange = async (e) => {
         const countryName = e.target.value;
@@ -90,6 +92,11 @@ const HomepageEnquiryBox = () => {
             return;
         }
 
+        if (formData.phoneNumber.length < 8) {
+            alert("Please enter a valid phone number");
+            return;
+        }
+
         setLoading(true);
         try {
             const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
@@ -97,15 +104,15 @@ const HomepageEnquiryBox = () => {
             setOtpSent(true);
             setShowOtpModal(true);
         } catch (err) {
-            alert("Failed to send OTP");
+            alert(err.response?.data?.message || "Failed to send OTP");
         } finally {
             setLoading(false);
         }
     };
 
     const handleSubmitEnquiry = async () => {
-        if (otp !== "123") {
-            alert("Invalid OTP. Use 123");
+        if (!otp || otp.length < 4) {
+            alert("Please enter a valid OTP");
             return;
         }
 
@@ -116,7 +123,7 @@ const HomepageEnquiryBox = () => {
                 patientName: formData.patientName,
                 phone: fullPhone,
                 otp: otp,
-                contactMode: "call", // Default for homepage
+                contactMode: "call",
                 source: "homepage",
                 country: formData.country === "Other" ? formData.otherCountry : formData.country,
                 city: formData.city,
@@ -142,7 +149,7 @@ const HomepageEnquiryBox = () => {
                 ageOrDob: "",
             });
         } catch (err) {
-            alert("Failed to submit enquiry");
+            alert(err.response?.data?.message || "Failed to submit enquiry");
         } finally {
             setLoading(false);
         }
@@ -151,13 +158,13 @@ const HomepageEnquiryBox = () => {
     return (
         <div className="enquiry-box-container">
             <div className="enquiry-box">
-                <h3>Let Us Help You</h3>
+                <h3>{t('form.title')}</h3>
 
                 <form onSubmit={handleSendOtp}>
                     <div className="form-group">
                         <input
                             type="text"
-                            placeholder="Patient Name"
+                            placeholder={t('form.patient_name')}
                             required
                             value={formData.patientName}
                             onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
@@ -170,13 +177,13 @@ const HomepageEnquiryBox = () => {
                             value={formData.country}
                             onChange={handleCountryChange}
                         >
-                            <option value="">Select Country</option>
+                            <option value="">{t('form.select_country')}</option>
                             {countries.map((c) => (
                                 <option key={c.code} value={c.name}>
                                     {c.name}
                                 </option>
                             ))}
-                            <option value="Other">Other</option>
+                            <option value="Other">{t('common.other') || "Other"}</option>
                         </select>
                     </div>
 
@@ -193,18 +200,19 @@ const HomepageEnquiryBox = () => {
                     )}
 
                     <div className="form-group">
-                        <input
-                            list="cities-list"
-                            placeholder={loadingCities ? "Loading cities..." : "Select City"}
+                        <select
+                            required
                             value={formData.city}
                             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                             disabled={!formData.countryCode || (formData.countryCode && cities.length === 0)}
-                        />
-                        <datalist id="cities-list">
+                        >
+                            <option value="">{loadingCities ? t('homepage.loading') : t('form.select_city')}</option>
                             {cities.map((city, idx) => (
-                                <option key={idx} value={city.name} />
+                                <option key={idx} value={city.name}>
+                                    {city.name}
+                                </option>
                             ))}
-                        </datalist>
+                        </select>
                     </div>
 
                     <div className="form-group phone-group">
@@ -223,7 +231,7 @@ const HomepageEnquiryBox = () => {
                             <input
                                 className="phone-number"
                                 type="tel"
-                                placeholder="Your Phone number"
+                                placeholder={t('form.phone')}
                                 required
                                 value={formData.phoneNumber}
                                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
@@ -233,7 +241,7 @@ const HomepageEnquiryBox = () => {
 
                     <div className="form-group">
                         <textarea
-                            placeholder="Describe The Current Medical Problem (Optional) .."
+                            placeholder={t('form.medical_problem')}
                             value={formData.medicalProblem}
                             onChange={(e) => setFormData({ ...formData, medicalProblem: e.target.value })}
                         ></textarea>
@@ -242,7 +250,7 @@ const HomepageEnquiryBox = () => {
                     <div className="form-group">
                         <input
                             type="text"
-                            placeholder="Example: 30 Yrs or 29-05-1985"
+                            placeholder={t('form.age_example')}
                             required
                             value={formData.ageOrDob}
                             onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })}
@@ -250,12 +258,14 @@ const HomepageEnquiryBox = () => {
                     </div>
 
                     <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? "Processing..." : "Get FREE Quote"}
+                        {loading ? t('homepage.loading') : t('form.cta')}
                     </button>
                 </form>
 
                 <p className="privacy-text">
-                    By submitting the form I agree to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of MedTour Health.
+                    <Trans i18nKey="form.disclaimer">
+                        By submitting the form I agree to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of .MedTour Health
+                    </Trans>
                 </p>
             </div>
 
@@ -266,7 +276,7 @@ const HomepageEnquiryBox = () => {
                         <p>We've sent an OTP to your phone number for verification.</p>
                         <input
                             type="text"
-                            placeholder="Enter OTP (123)"
+                            placeholder="Enter 6-digit OTP"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
                         />

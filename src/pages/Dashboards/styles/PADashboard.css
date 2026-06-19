@@ -10,7 +10,6 @@
 
 .admin-enquiries-container {
   padding: 0;
-  /* Let dashboard-container handle padding */
 }
 
 .view-header {
@@ -18,16 +17,22 @@
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 32px;
-  padding-bottom: 16px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--border-soft);
 }
 
 .view-header h3 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--text-main);
   margin: 0;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
+}
+
+.view-header .subtitle {
+  margin: 8px 0 0 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
 /* Stats Pill Header */
@@ -37,14 +42,17 @@
 }
 
 .mini-stat {
-  padding: 6px 14px;
+  padding: 8px 18px;
   background: white;
   border: 1px solid var(--border-soft);
   border-radius: 100px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-muted);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .mini-stat strong {
@@ -54,27 +62,29 @@
 /* ========== CARD EVOLUTION ========== */
 .enquiries-group {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 24px;
   align-items: start;
 }
 
 .pa-enquiry-card {
   background: white;
-  padding: 24px !important;
+  padding: 28px !important;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-sm);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
 }
 
 .pa-enquiry-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(13, 148, 136, 0.3);
+  border-color: rgba(13, 148, 136, 0.2);
 }
 
 /* Card Patient Info */
@@ -88,92 +98,72 @@
 }
 
 .enquiry-patient-header b {
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--text-main);
+  letter-spacing: -0.02em;
 }
 
-/* Status Badges */
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.status-assigned {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.status-contacted {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status-closed {
-  background: #f1f5f9;
-  color: #475569;
-}
+/* Status Pill is already defined in Dashboard.css as global */
 
 /* Main Content */
 .enquiry-main {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  border-left: 3px solid var(--accent);
-  padding-left: 16px;
+  gap: 10px;
+  border-left: 4px solid var(--accent);
+  padding-left: 20px;
+  margin: 4px 0;
 }
 
 .enquiry-main p {
   margin: 0 !important;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.5;
 }
 
 .enquiry-main .phone {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-main);
+  font-size: 1.05rem;
 }
 
 .source-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 12px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--accent-dark);
-  background: var(--accent-light);
-  padding: 4px 10px;
+  padding: 6px 14px;
   border-radius: 100px;
 }
 
 /* Specialty/Surgery Box */
 .services-details,
 .homepage-details {
-  background: #f8fafc;
-  padding: 12px 16px;
+  background: var(--bg-main);
+  padding: 20px;
   border-radius: var(--radius-lg);
-  margin-top: 12px;
+  margin-top: 16px;
   border: 1px solid var(--border-soft);
 }
 
 .service-path {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-main);
+  margin-bottom: 12px;
 }
 
 /* ========== SERVICES: JOURNEY INFO ========== */
 .journey-summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 16px;
   background: var(--accent-light);
-  padding: 16px;
+  padding: 20px;
   border-radius: var(--radius-lg);
-  margin: 0 !important;
+  margin: 12px 0 0 0 !important;
   border: 1px solid rgba(13, 148, 136, 0.1);
 }
 
@@ -181,7 +171,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .summary-item span {
@@ -189,69 +179,156 @@
   font-weight: 700;
   color: var(--accent-dark);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
 }
 
 .summary-item strong {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--text-main);
+  font-weight: 800;
 }
 
 /* ========== ACTIONS ========== */
 .enquiry-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 4px !important;
-  padding-top: 20px !important;
+  gap: 16px;
+  margin-top: 8px !important;
+  padding-top: 24px !important;
   border-top: 1px solid var(--border-soft) !important;
 }
 
 .action-btn {
   width: 100%;
-  padding: 12px !important;
-  border-radius: 10px !important;
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
+  padding: 14px !important;
+  border-radius: 12px !important;
+  font-size: 0.9rem !important;
+  font-weight: 800 !important;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  border: none;
 }
 
 .call-btn {
   background: white !important;
   color: var(--accent-dark) !important;
-  border: 1.5px solid var(--accent-dark) !important;
+  border: 2px solid var(--accent-dark) !important;
 }
 
 .call-btn:hover {
   background: var(--accent-light) !important;
+  transform: translateY(-2px);
 }
 
 .manage-btn,
 .start-service-btn {
   background: var(--accent);
   color: white;
-  border: none;
-  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
 }
 
 .manage-btn:hover,
 .start-service-btn:hover {
   background: var(--accent-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.35);
 }
 
 /* ========== EMPTY STATES ========== */
-
 .empty-state {
   text-align: center;
-  padding: 60px 24px;
+  padding: 80px 40px;
   background: white;
   border: 2px dashed var(--border-soft);
   border-radius: var(--radius-xl);
   color: var(--text-muted);
+}
+
+.empty-state h4 {
+  color: var(--text-main);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expanded-content {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* ========== PA DASHBOARD MOBILE ========== */
+@media (max-width: 1024px) {
+  .enquiries-group {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .pa-enquiry-card {
+    padding: 20px !important;
+    gap: 20px;
+  }
+
+  .enquiry-patient-header b {
+    font-size: 1.1rem;
+  }
+
+  .enquiry-main {
+    padding-left: 16px;
+  }
+
+  .journey-summary-grid {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .summary-item strong {
+    font-size: 0.9rem;
+  }
+
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .stats-header {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .enquiry-actions {
+    gap: 12px;
+  }
+
+  .journey-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .summary-item {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
 }

@@ -37,7 +37,25 @@ const HospitalProfile = () => {
   };
 
   const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name.includes("_")) {
+      const [field, lang] = name.split("_");
+      setProfile({
+        ...profile,
+        [field]: {
+          ...(profile[field] || {}),
+          [lang]: value
+        }
+      });
+    } else {
+      setProfile({ ...profile, [name]: value });
+    }
+  };
+
+  const getVal = (field, lang = "en") => {
+    if (!profile[field]) return "";
+    if (typeof profile[field] === "string") return profile[field];
+    return profile[field][lang] || "";
   };
 
   const handleSpecialtyToggle = (specId) => {
@@ -108,14 +126,23 @@ const HospitalProfile = () => {
       </div>
 
       <div className="form-section">
-        <h4 style={{ marginBottom: '24px', color: 'var(--primary)' }}>Core Information</h4>
+        <h4 style={{ marginBottom: '24px', color: 'var(--accent)' }}>Core Information</h4>
         <div className="card-grid">
           <div className="form-group">
-            <label>Hospital Name</label>
+            <label>Hospital Name (English)</label>
             {editing ? (
-              <input className="form-control" name="hospitalName" value={profile.hospitalName || ""} onChange={handleChange} />
+              <input className="form-control" name="hospitalName_en" value={getVal("hospitalName", "en")} onChange={handleChange} />
             ) : (
-              <p className="form-control-static">{profile.hospitalName || "-"}</p>
+              <p className="form-control-static">{getVal("hospitalName", "en") || "-"}</p>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Hospital Name (Arabic)</label>
+            {editing ? (
+              <input className="form-control" name="hospitalName_ar" value={getVal("hospitalName", "ar")} onChange={handleChange} dir="rtl" />
+            ) : (
+              <p className="form-control-static" dir="rtl">{getVal("hospitalName", "ar") || "-"}</p>
             )}
           </div>
 
@@ -128,40 +155,68 @@ const HospitalProfile = () => {
             )}
           </div>
 
-          <div className="form-group">
-            <label>Country</label>
-            {editing ? (
-              <input className="form-control" name="country" value={profile.country || ""} onChange={handleChange} />
-            ) : (
-              <p className="form-control-static">{profile.country || "-"}</p>
-            )}
+          <div className="form-group" style={{ gridColumn: 'span 2' }}>
+            <label>City & Country (EN)</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {editing ? (
+                <>
+                  <input className="form-control" name="city_en" placeholder="City" value={getVal("city", "en")} onChange={handleChange} />
+                  <input className="form-control" name="country_en" placeholder="Country" value={getVal("country", "en")} onChange={handleChange} />
+                </>
+              ) : (
+                <p className="form-control-static" style={{ flex: 1 }}>{getVal("city", "en")}, {getVal("country", "en")}</p>
+              )}
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>City</label>
-            {editing ? (
-              <input className="form-control" name="city" value={profile.city || ""} onChange={handleChange} />
-            ) : (
-              <p className="form-control-static">{profile.city || "-"}</p>
-            )}
+          <div className="form-group" style={{ gridColumn: 'span 2' }}>
+            <label>City & Country (AR)</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {editing ? (
+                <>
+                  <input className="form-control" name="city_ar" placeholder="المدينة" value={getVal("city", "ar")} onChange={handleChange} dir="rtl" />
+                  <input className="form-control" name="country_ar" placeholder="الدولة" value={getVal("country", "ar")} onChange={handleChange} dir="rtl" />
+                </>
+              ) : (
+                <p className="form-control-static" style={{ flex: 1 }} dir="rtl">{getVal("city", "ar")}, {getVal("country", "ar")}</p>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="form-group">
-          <label>About Hospital (Description)</label>
+          <label>About Hospital (English)</label>
           {editing ? (
-            <textarea className="form-control" name="description" value={profile.description || ""} onChange={handleChange} />
+            <textarea className="form-control" name="description_en" value={getVal("description", "en")} onChange={handleChange} rows="4" />
           ) : (
-            <p className="form-control-static">{profile.description || "-"}</p>
+            <p className="form-control-static" style={{ whiteSpace: 'pre-wrap' }}>{getVal("description", "en") || "-"}</p>
           )}
         </div>
 
         <div className="form-group">
-          <label>Full Physical Address</label>
+          <label>About Hospital (Arabic)</label>
           {editing ? (
-            <textarea className="form-control" name="address" value={profile.address || ""} onChange={handleChange} />
+            <textarea className="form-control" name="description_ar" value={getVal("description", "ar")} onChange={handleChange} dir="rtl" rows="4" />
           ) : (
-            <p className="form-control-static">{profile.address || "-"}</p>
+            <p className="form-control-static" dir="rtl" style={{ whiteSpace: 'pre-wrap' }}>{getVal("description", "ar") || "-"}</p>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label>Full Physical Address (English)</label>
+          {editing ? (
+            <textarea className="form-control" name="address_en" value={getVal("address", "en")} onChange={handleChange} />
+          ) : (
+            <p className="form-control-static">{getVal("address", "en") || "-"}</p>
+          )}
+        </div>
+
+        <div className="form-group">
+          <label>Full Physical Address (Arabic)</label>
+          {editing ? (
+            <textarea className="form-control" name="address_ar" value={getVal("address", "ar")} onChange={handleChange} dir="rtl" />
+          ) : (
+            <p className="form-control-static" dir="rtl">{getVal("address", "ar") || "-"}</p>
           )}
         </div>
 
@@ -179,7 +234,7 @@ const HospitalProfile = () => {
                 style={{ cursor: editing ? 'pointer' : 'default', border: 'none', padding: '8px 16px' }}
                 onClick={() => editing && handleSpecialtyToggle(spec._id)}
               >
-                {spec.name} {isSelected && '✓'}
+                {typeof spec.name === "object" ? (spec.name.en || spec.name.ar) : spec.name} {isSelected && '✓'}
               </button>
             );
           })}
@@ -231,9 +286,9 @@ const HospitalProfile = () => {
               <div key={idx} className="doctor-mini-item">
                 <div className="avatar-circle">👨‍⚕️</div>
                 <div>
-                  <h5 style={{ margin: 0 }}>{doc.userId?.name || "Dr. name unavailable"}</h5>
+                  <h5 style={{ margin: 0 }}>{typeof doc.userId?.name === "object" ? (doc.userId.name.en || doc.userId.name.ar) : (doc.userId?.name || "Dr. name unavailable")}</h5>
                   <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-                    {doc.designation} • {doc.experience} years
+                    {(typeof doc.designation === "object" ? doc.designation.en : doc.designation) || "Specialist"} • {doc.experience} years
                   </p>
                 </div>
               </div>

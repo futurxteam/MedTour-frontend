@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { globalSearch } from "../api/api";
 import "./GlobalSearch.css";
 
 const GlobalSearch = () => {
+    const { t, i18n } = useTranslation();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState({ doctors: [], surgeries: [], hospitals: [] });
     const [showResults, setShowResults] = useState(false);
@@ -22,6 +24,7 @@ const GlobalSearch = () => {
         const timer = setTimeout(async () => {
             setLoading(true);
             try {
+                // Pass lang explicitly if needed, although interceptor handles it
                 const res = await globalSearch(query);
                 setResults(res.data);
                 setShowResults(true);
@@ -34,7 +37,7 @@ const GlobalSearch = () => {
         }, 300); // 300ms debounce
 
         return () => clearTimeout(timer);
-    }, [query]);
+    }, [query, i18n.language]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -70,6 +73,10 @@ const GlobalSearch = () => {
         setQuery("");
     };
 
+    const handleDoctorPhotoUrl = (doctorId) => {
+        return `${import.meta.env.VITE_API_BASE_URL}/api/public/doctor/${doctorId}/photo`;
+    };
+
     const handleHospitalClick = (hospital) => {
         navigate(`/hospital/${hospital._id}`);
         setShowResults(false);
@@ -96,7 +103,7 @@ const GlobalSearch = () => {
                 <input
                     type="text"
                     className="global-search-input"
-                    placeholder="Search doctors, surgeries, hospitals..."
+                    placeholder={t('search.placeholder')}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => query.trim().length >= 2 && setShowResults(true)}
@@ -108,7 +115,7 @@ const GlobalSearch = () => {
                 <div className="search-results-dropdown">
                     {totalResults === 0 ? (
                         <div className="search-no-results">
-                            <p>No results found for "{query}"</p>
+                            <p>{t('search.no_results', { query })}</p>
                         </div>
                     ) : (
                         <>

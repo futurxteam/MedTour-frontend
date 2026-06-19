@@ -43,11 +43,19 @@ export const experts = [
 ];
 
 export const comparisonData = [
-    { procedure: "Knee Replacement", usa: "$40,000", india: "$5,500", uk: "$18,000" },
-    { procedure: "Cardiac Bypass", usa: "$120,000", india: "$8,000", uk: "$35,000" },
-    { procedure: "IVF Treatment", usa: "$15,000", india: "$2,500", uk: "$8,000" },
-    { procedure: "Dental Implants", usa: "$5,000", india: "$900", uk: "$3,000" }
+    { procedure: "Knee Replacement", usa: 40000, india: 5500, uk: 18000, uae: 12500 },
+    { procedure: "Cardiac Bypass", usa: 120000, india: 8000, uk: 35000, uae: 28500 },
+    { procedure: "IVF Treatment", usa: 15000, india: 2500, uk: 8000, uae: 6800 },
+    { procedure: "Dental Implants", usa: 5000, india: 900, uk: 3000, uae: 2100 }
 ];
+
+export const exchangeRates = {
+    USD: { rate: 1, symbol: "$", label: "USA Dollars" },
+    GBP: { rate: 0.79, symbol: "£", label: "UK Pounds" },
+    AED: { rate: 3.67, symbol: "AED", label: "UAE Dirham" },
+    INR: { rate: 83.3, symbol: "₹", label: "Indian Rupee" },
+    SAR: { rate: 3.75, symbol: "SAR", label: "Saudi Riyal" }
+};
 
 export const kochiHospitals = [
     {

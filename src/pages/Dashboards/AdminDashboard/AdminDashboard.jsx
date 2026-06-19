@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import i18n from "i18next";
 import "../../styles/Dashboard.css";
 import { logout } from "../../../utils/auth";
 import { useNavigate } from "react-router-dom";
@@ -10,82 +11,40 @@ import AdminSpecialties from "./AdminSpecialties";
 import AdminServicePackages from "./AdminServicePackages";
 import AdminHospitalManagement from "./AdminHospitalManagement";
 
-
-
 export default function AdminDashboard() {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(null);
 
-  /* 🔥 REQUIRED STATE (MOVED INSIDE COMPONENT) */
-  const [pendingHospitals, setPendingHospitals] = useState([]);
-  const [approvedHospitals, setApprovedHospitals] = useState([]);
-  const [hospitals, setHospitals] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("pending");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [limit] = useState(5);
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  /* 🔥 DASHBOARD STATS STATE */
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalHospitals: 0,
+    pendingRequests: 0,
+    pendingHospitalsCount: 0
+  });
 
-  /* 🔥 REQUIRED FETCH (MOVED INSIDE COMPONENT) */
-  const fetchPendingHospitals = async () => {
-    const res = await api.get("/admin/pending-hospitals");
-    setPendingHospitals(res.data);
-  };
-  const fetchApprovedHospitals = async () => {
-    const res = await api.get("/admin/approved-hospitals");
-    setApprovedHospitals(res.data);
-  };
-  const fetchHospitals = async () => {
-    setLoading(true);
+  const fetchStats = async () => {
     try {
-      const res = await api.get(
-        `/admin/hospitals?status=${statusFilter}&search=${search}&page=${page}&limit=${limit}`
-      );
-      setHospitals(res.data.hospitals);
-      setTotalPages(res.data.pagination.totalPages);
+      const res = await api.get("/admin/dashboard-stats");
+      setStats(res.data);
     } catch (err) {
-      console.error("Error fetching hospitals:", err);
-    } finally {
-      setLoading(false);
+      console.error("Error fetching dashboard stats:", err);
     }
   };
 
-
-
-  /* 🔥 FETCH ONLY WHEN VIEW IS HOSPITALS */
+  /* 🔥 FETCH STATS WHEN OVERVIEW IS SHOWN */
   useEffect(() => {
-    if (view === "hospitals") {
-      fetchPendingHospitals();
-      fetchApprovedHospitals(); // 🔥 ADD
-      fetchHospitals();
-
+    if (!view) {
+      fetchStats();
     }
-  }, [view, statusFilter, search, page]);
+  }, [view]);
 
+  /* 🔥 ENSURE ADMIN IS ALWAYS ENGLISH */
+  useEffect(() => {
+    i18n.changeLanguage("en");
+  }, []);
 
-  const assignPA = (id, pa) => {
-    setRequests((prev) =>
-      prev.map((r) =>
-        r.id === id
-          ? { ...r, assignedPA: pa, status: "Assigned" }
-          : r
-      )
-    );
-  };
-
-  const approveHospital = async (id) => {
-    await api.patch(`/admin/approve-hospital/${id}`);
-    fetchHospitals();
-  };
-
-  const rejectHospital = async (id) => {
-    if (!window.confirm("Reject this hospital?")) return;
-    await api.patch(`/admin/reject-hospital/${id}`);
-    fetchHospitals();
-  };
-
+  const navigate = useNavigate();
 
   return (
     <div className="dashboard">
@@ -95,27 +54,29 @@ export default function AdminDashboard() {
           <button className="home-back-btn" onClick={() => navigate("/")} title="Go to Homepage">
             🏠 Home
           </button>
-          <h2>Admin Dashboard</h2>
+          <h2>MedTour Admin</h2>
         </div>
 
         <div className="profile-area" onClick={() => setOpen(!open)}>
-          <div className="profile-avatar-initial">A</div>
-          <span className="profile-name">Admin</span>
+          <div className="profile-avatar-initial" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>A</div>
+          <div className="profile-info" style={{ display: 'flex', flexDirection: 'column' }}>
+            <span className="profile-name">Administrator</span>
+            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Super Admin</span>
+          </div>
 
           {open && (
             <div className="profile-dropdown">
               <button onClick={() => { setOpen(false); navigate('/dashboard/admin'); }}>
-                Dashboard
+                ⚙️ Dashboard
               </button>
-              <button onClick={() => { setOpen(false); navigate('/profile'); }}>
-                Profile
-              </button>
-              <button>Settings</button>
+              <div style={{ borderTop: '1px solid var(--border-soft)', margin: '8px 0' }}></div>
+
               <button
                 className="logout-btn"
                 onClick={() => logout(navigate)}
+                style={{ color: '#ef4444' }}
               >
-                Logout
+                🚪 Logout
               </button>
             </div>
           )}
@@ -125,7 +86,9 @@ export default function AdminDashboard() {
       <div className="dashboard-layout">
         {/* Sidebar */}
         <aside className="dashboard-sidebar">
-          <h3 className="sidebar-title">Tasks</h3>
+          <div style={{ padding: '0 10px 20px 10px' }}>
+            <h3 className="sidebar-title" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>CORE MANAGEMENT</h3>
+          </div>
 
           <nav className="sidebar-nav">
             <button
@@ -149,25 +112,22 @@ export default function AdminDashboard() {
               🏥 Hospital Center
             </button>
 
-            <button
-              className={view === "analytics" ? "active" : ""}
-              onClick={() => setView("analytics")}
-            >
-              📊 Data Analytics
-            </button>
+            <div style={{ padding: '20px 10px 10px 10px' }}>
+              <h3 className="sidebar-title" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '1px' }}>CONTENT & SERVICES</h3>
+            </div>
 
             <button
               className={view === "requests" ? "active" : ""}
               onClick={() => setView("requests")}
             >
-              📑 Booking Requests
+              📑 Consultation Requests
             </button>
 
             <button
               className={view === "globalSurgeries" ? "active" : ""}
               onClick={() => setView("globalSurgeries")}
             >
-              🏥 Global Surgeries
+              🩺 Global Surgeries
             </button>
 
             <button
@@ -190,62 +150,61 @@ export default function AdminDashboard() {
         {/* Main content */}
         <main className="dashboard-container">
           {view === "users" && <UserManagement />}
-
           {view === "hospitals" && <AdminHospitalManagement />}
-
-
-
-
-          {view === "analytics" && <h3>System Analytics</h3>}
           {view === "globalSurgeries" && <AdminGlobalSurgeries />}
           {view === "specialties" && <AdminSpecialties />}
           {view === "servicePackages" && <AdminServicePackages />}
-
           {view === "requests" && <AdminEnquiries />}
 
           {!view && (
-            <div className="overview-grid">
+            <div className="overview-container">
               <div className="view-header">
                 <h3>General Overview</h3>
-                <span className="stats-header">
-                  <div className="mini-stat">Today: <strong>{new Date().toLocaleDateString()}</strong></div>
-                </span>
+                <div className="mini-stat">Today is <strong>{new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></div>
               </div>
 
-              <div className="enquiries-group">
+              <div className="enquiries-group" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '32px' }}>
                 <div className="dashboard-card status-card">
-                  <div className="card-icon">👥</div>
+                  <div className="card-icon" style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>👥</div>
                   <div className="card-details">
                     <span className="label">Managed Members</span>
-                    <strong className="value">124</strong>
-                    <span className="trend positive">↑ 12% from last month</span>
+                    <strong className="value">{stats.totalUsers}</strong>
+                    <span className="trend positive">↑ Live System Count</span>
                   </div>
                 </div>
 
                 <div className="dashboard-card status-card">
-                  <div className="card-icon">🏥</div>
+                  <div className="card-icon" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>🏥</div>
                   <div className="card-details">
                     <span className="label">Verified Centers</span>
-                    <strong className="value">42</strong>
-                    <span className="trend">Across 12 Countries</span>
+                    <strong className="value">{stats.totalHospitals}</strong>
+                    <span className="trend">Approved Facilities</span>
                   </div>
                 </div>
 
                 <div className="dashboard-card status-card">
-                  <div className="card-icon">📑</div>
+                  <div className="card-icon" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>📑</div>
                   <div className="card-details">
                     <span className="label">Pending Requests</span>
-                    <strong className="value">18</strong>
-                    <span className="trend urgent">Requires Attention</span>
+                    <strong className="value">{stats.pendingRequests}</strong>
+                    <span className="trend urgent">Requires Assistant Assignment</span>
                   </div>
                 </div>
               </div>
 
-              <div className="welcome-banner">
-                <div className="banner-content">
-                  <h4>Welcome back, Admin 👋</h4>
-                  <p>Your healthcare network is performing optimally. There are 5 new hospital verification requests waiting for your review.</p>
-                  <button className="dashboard-btn" onClick={() => setView("hospitals")}>Review Requests</button>
+              <div className="dashboard-card" style={{ padding: '40px', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white', borderRadius: '30px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <h4 style={{ fontSize: '1.75rem', marginBottom: '12px' }}>Welcome back, Admin 👋</h4>
+                  <p style={{ fontSize: '1.1rem', opacity: 0.9, maxWidth: '600px', lineHeight: '1.6', marginBottom: '24px' }}>
+                    Your healthcare network is performing optimally. There are {stats.pendingHospitalsCount} new hospital verification requests and {stats.pendingRequests} patient enquiries waiting for your review.
+                  </p>
+                  <div style={{ display: 'flex', gap: '16px' }}>
+                    <button className="dashboard-btn" style={{ background: 'white', color: '#0f172a', fontWeight: '800' }} onClick={() => setView("hospitals")}>Review Hospitals</button>
+                    <button className="dashboard-btn" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }} onClick={() => setView("requests")}>View Enquiries</button>
+                  </div>
+                </div>
+                <div style={{ position: 'absolute', right: '-50px', bottom: '-50px', fontSize: '20rem', opacity: 0.05, transform: 'rotate(-15deg)', pointerEvents: 'none' }}>
+                  🏥
                 </div>
               </div>
             </div>

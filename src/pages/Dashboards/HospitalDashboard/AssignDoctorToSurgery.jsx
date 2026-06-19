@@ -4,6 +4,7 @@ import {
     getHospitalSurgeries,
     updateDoctorSurgeries,
 } from "../../../api/api";
+import { adminLocalize } from "../../../utils/adminLocalize";
 import "../../styles/HospitalDashboard.css";
 
 export default function AssignDoctorToSurgery() {
@@ -62,10 +63,10 @@ export default function AssignDoctorToSurgery() {
 
         const doctorSpecs = selectedDoctor.specializations || [];
         // Normalize for comparison (just in case)
-        const normalizedSpecs = doctorSpecs.map(s => typeof s === 'string' ? s.toLowerCase() : s?.name?.toLowerCase());
+        const normalizedSpecs = doctorSpecs.map(s => adminLocalize(s).toLowerCase());
 
         const compatible = allSurgeries.filter(s => {
-            const specName = s.specialization?.name?.toLowerCase();
+            const specName = adminLocalize(s.specialization?.name).toLowerCase();
             if (!specName) return false;
             return normalizedSpecs.includes(specName);
         });
@@ -79,7 +80,7 @@ export default function AssignDoctorToSurgery() {
     }, [selectedDoctor, allSurgeries]);
 
     const filteredDoctors = doctors.filter((d) =>
-        d.name.toLowerCase().includes(doctorSearch.toLowerCase())
+        adminLocalize(d.name).toLowerCase().includes(doctorSearch.toLowerCase())
     );
 
     const toggleSurgery = (surgeryId) => {
@@ -145,11 +146,11 @@ export default function AssignDoctorToSurgery() {
                                         className="dropdown-item"
                                         onMouseDown={() => {
                                             setSelectedDoctor(doc);
-                                            setDoctorSearch(doc.name);
+                                            setDoctorSearch(adminLocalize(doc.name));
                                             setShowDrList(false);
                                         }}
                                     >
-                                        {doc.name}
+                                        {adminLocalize(doc.name)}
                                     </li>
                                 ))
                             )}
@@ -160,9 +161,9 @@ export default function AssignDoctorToSurgery() {
                 {selectedDoctor && (
                     <div className="alert-box" style={{ justifyContent: 'space-between', marginBottom: '20px' }}>
                         <div>
-                            <strong>Assigning to: {selectedDoctor.name}</strong>
+                            <strong>Assigning to: {adminLocalize(selectedDoctor.name)}</strong>
                             <div className="text-muted" style={{ fontSize: '13px' }}>
-                                Specializations: {selectedDoctor.specializations?.join(", ") || "None"}
+                                Specializations: {selectedDoctor.specializations?.map(s => adminLocalize(s)).join(", ") || "None"}
                             </div>
                         </div>
                         <button className="btn btn-secondary" onClick={() => {
@@ -194,9 +195,9 @@ export default function AssignDoctorToSurgery() {
                                             style={{ marginTop: '4px' }}
                                         />
                                         <div>
-                                            <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>{s.surgeryName}</div>
+                                            <div style={{ fontWeight: '600', fontSize: '14px', marginBottom: '2px' }}>{adminLocalize(s.surgeryName)}</div>
                                             <div className="text-muted" style={{ fontSize: '12px' }}>
-                                                {s.specialization?.name} • ₹{s.cost?.toLocaleString()}
+                                                {adminLocalize(s.specialization?.name)} • ₹{s.cost?.toLocaleString()}
                                             </div>
                                         </div>
                                     </label>
@@ -220,9 +221,9 @@ export default function AssignDoctorToSurgery() {
                     left: 0;
                     right: 0;
                     background: white;
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    border: 1px solid var(--border-soft);
+                    border-radius: var(--radius-lg);
+                    box-shadow: var(--shadow-md);
                     max-height: 250px;
                     overflow-y: auto;
                     z-index: 1000;
@@ -231,15 +232,15 @@ export default function AssignDoctorToSurgery() {
                     margin: 4px 0 0;
                 }
                 .dropdown-item {
-                    padding: 10px 16px;
+                    padding: 12px 18px;
                     cursor: pointer;
-                    transition: background 0.1s;
+                    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                     font-size: 14px;
-                    border-bottom: 1px solid #f9fafb;
+                    border-bottom: 1px solid var(--border-soft);
                 }
                 .dropdown-item:hover {
-                    background: #f0f9ff;
-                    color: var(--primary);
+                    background: var(--accent-light);
+                    color: var(--accent-dark);
                 }
                 .dropdown-item.empty {
                     color: var(--text-muted);
@@ -248,27 +249,33 @@ export default function AssignDoctorToSurgery() {
                 .checkbox-card {
                     display: flex;
                     gap: 12px;
-                    padding: 12px;
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
+                    padding: 14px;
+                    border: 1px solid var(--border-soft);
+                    border-radius: var(--radius-lg);
                     cursor: pointer;
-                    background: white;
-                    transition: all 0.2s;
+                    background: var(--bg-main);
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
                 }
                 .checkbox-card:hover {
-                    border-color: var(--primary);
-                    background: #f0f9ff;
+                    border-color: var(--accent);
+                    background: white;
+                    box-shadow: var(--shadow-sm);
                 }
                 .checkbox-card.active {
-                    background: #eff6ff;
-                    border-color: var(--primary);
+                    background: var(--accent-light);
+                    border-color: var(--accent);
+                }
+                .checkbox-card input {
+                    accent-color: var(--accent);
+                    width: 16px;
+                    height: 16px;
                 }
                 .empty-state-small {
                     padding: 30px;
                     text-align: center;
-                    background: #f9fafb;
-                    border-radius: var(--radius);
-                    border: 1px dashed var(--border);
+                    background: var(--bg-main);
+                    border-radius: var(--radius-lg);
+                    border: 1px dashed var(--border-soft);
                 }
             `}</style>
         </div>

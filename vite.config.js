@@ -8,6 +8,7 @@ export default defineConfig({
       jsxRuntime: "classic", // disables react compiler
     }),
   ],
+  assetsInclude: ["**/*.MP4", "**/*.mp4"],
 
   resolve: {
     alias: {

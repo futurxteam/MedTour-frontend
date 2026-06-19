@@ -1,28 +1,29 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "../pages/styles/Footer.css";
 
 const Footer = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
-        <p>© 2025 Medtour. All rights reserved.</p>
+        <p>© 2025 Medtour. {t('footer.rights')}</p>
 
         <div className="footer-links">
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Use</a>
-          <a href="/contact">Contact Us</a>
+          <a href="/privacy">{t('footer.privacy')}</a>
+          <a href="/terms">{t('footer.terms')}</a>
+          <a href="/contact">{t('footer.contact')}</a>
 
-          {/* Show Register as Hospital button only on homepage */}
           {location.pathname === "/" && (
             <button
               className="footer-cta"
               onClick={() => navigate("/register-hospital")}
             >
-              Register as Hospital
+              {t('footer.register_hosp')}
             </button>
           )}
         </div>

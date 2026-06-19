@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getPublicHospitals } from '../../api/api';
 
 const HospitalDemo = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [hospitals, setHospitals] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,8 +30,8 @@ const HospitalDemo = () => {
         <section className="home-expansion-section">
             <div className="container">
                 <div className="section-title-alt">
-                    <h2>Discovery: Top Rated Hospitals</h2>
-                    <p>Kerala's medical hub features infrastructure at par with Western standards. Explore our diamond-tier partners.</p>
+                    <h2>{t('hospitals.title')}</h2>
+                    <p>{t('hospitals.subtitle')}</p>
                 </div>
                 <div className="hospitals-grid">
                     {hospitals.map(hosp => {
@@ -43,7 +45,7 @@ const HospitalDemo = () => {
                                     <h3>{hosp.hospitalName}</h3>
                                     <div className="hosp-meta">
                                         <span>📍 {hosp.city || 'Kochi'}, {hosp.country || 'India'}</span>
-                                        <span>⭐ 4.9 Rating</span>
+                                        <span>⭐ 4.9 {t('hospitals.rating')}</span>
                                     </div>
                                     <div style={{ marginTop: "10px", marginBottom: "15px", display: "flex", gap: "5px", flexWrap: "wrap", overflow: "hidden", maxHeight: "25px" }}>
                                         {hosp.specialties?.slice(0, 3).map(s => (
@@ -56,13 +58,13 @@ const HospitalDemo = () => {
                                         )}
                                     </div>
                                     <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '20px' }}>
-                                        {hosp.description ? (hosp.description.substring(0, 100) + "...") : "Premier medical facility offering world-class healthcare services."}
+                                        {hosp.description ? (hosp.description.substring(0, 100) + "...") : t('hospitals.default_desc')}
                                     </p>
                                     <button
                                         className="view-hosp-btn"
                                         onClick={() => navigate(`/hospital/${hosp._id}`)}
                                     >
-                                        View Full Hospital Profile
+                                        {t('hospitals.view_btn')}
                                     </button>
                                 </div>
                             </div>
