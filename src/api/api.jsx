@@ -302,6 +302,9 @@ export const updateHospitalProfile = (data) =>
   API.put("/hospital/profile", data);
 
 // ── ADMIN: HOSPITAL MANAGEMENT ───────────────────────────
+export const adminAddHospital = (data) =>
+  API.post("/admin/hospitals", data);
+
 export const adminUpdateHospital = (userId, data) =>
   API.put(`/admin/hospitals/${userId}`, data);
 

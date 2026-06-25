@@ -34,7 +34,19 @@ const Header = () => {
     : null;
 
   const role = userData?.role;
-  const displayName = userData?.name || "User";
+  
+  let displayName = "User";
+  if (userData?.name) {
+    if (typeof userData.name === "object") {
+      displayName = userData.name[i18n.language] || userData.name.en || userData.name.ar || "User";
+    } else {
+      displayName = userData.name;
+    }
+  }
+  if (typeof displayName !== "string") {
+    displayName = String(displayName);
+  }
+
   const avatarUrl = userData?.profile?.avatar || userData?.photo || null; // fallback check
 
   const handleLogout = () => {
