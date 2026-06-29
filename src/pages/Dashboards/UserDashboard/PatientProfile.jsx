@@ -95,7 +95,7 @@ export default function PatientProfile() {
         setProfileData(res.data.user);
         
         setTimeout(() => {
-          window.location.replace("/dashboard/user");
+          navigate("/dashboard/user");
         }, 500);
       }
     } catch (err) {

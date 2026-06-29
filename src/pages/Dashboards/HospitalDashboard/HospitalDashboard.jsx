@@ -42,7 +42,7 @@ export default function HospitalDashboard() {
           <button
             onClick={() => {
               localStorage.removeItem("adminViewAsHospitalId");
-              window.location.href = "/dashboard/admin";
+              navigate("/dashboard/admin");
             }}
             style={{
               background: 'rgba(255,255,255,0.2)',

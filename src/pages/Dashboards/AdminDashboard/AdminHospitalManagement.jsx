@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../../api/api";
 import "../../styles/Dashboard.css";
 import { adminLocalize } from "../../../utils/adminLocalize";
 
 export default function AdminHospitalManagement() {
+    const navigate = useNavigate();
     const [hospitals, setHospitals] = useState([]);
     const [statusFilter, setStatusFilter] = useState("all");
     const [search, setSearch] = useState("");
@@ -596,7 +598,7 @@ export default function AdminHospitalManagement() {
                                         style={{ padding: '8px 16px', fontSize: '0.85rem', background: 'linear-gradient(135deg, var(--accent), var(--accent-dark))', color: 'white', border: 'none' }}
                                         onClick={() => {
                                             localStorage.setItem("adminViewAsHospitalId", h._id);
-                                            window.location.href = "/dashboard/hospital";
+                                            navigate("/dashboard/hospital");
                                         }}
                                     >
                                         🔑 Enter Dashboard

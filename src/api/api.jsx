@@ -1,11 +1,10 @@
 import axios from "axios";
 import i18n from "../i18n/i18n";
 
-//const API_BASE_URL = "http://localhost:5000";
+// Reads from .env (VITE_API_BASE_URL) with a local dev fallback.
+// In production (Vercel), set VITE_API_BASE_URL in the Vercel dashboard environment variables.
 const API_BASE_URL =
-  import.meta.env.MODE === "development"
-    ? "http://localhost:5000"
-    : "https://medtour-backend.onrender.com";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
 /* ===========================
    AXIOS INSTANCE
