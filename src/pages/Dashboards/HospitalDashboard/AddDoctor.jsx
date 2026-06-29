@@ -65,10 +65,23 @@ export default function AddDoctor() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
     setSuccess("");
 
+    if (!form.name.trim()) {
+      setError("Doctor Name is required.");
+      return;
+    }
+    if (!form.designation.trim()) {
+      setError("Designation is required.");
+      return;
+    }
+    if (!form.specializations || form.specializations.length === 0) {
+      setError("At least one Clinical Specialization is required.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const res = await api.post("/hospital/doctors", form);
       const doctorId = res.data.doctor.id;
@@ -122,7 +135,7 @@ export default function AddDoctor() {
 
             <div className="card-grid">
               <div className="form-group">
-                <label>Doctor Name</label>
+                <label>Doctor Name <span style={{ color: 'red' }}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -134,36 +147,35 @@ export default function AddDoctor() {
               </div>
 
               <div className="form-group">
-                <label>Email Address</label>
+                <label>Email Address <span style={{ color: 'var(--text-muted)', fontSize: '0.85em', fontWeight: 'normal' }}>(Optional - auto-generated if blank)</span></label>
                 <input
                   type="email"
                   className="form-control"
-                  placeholder="doctor@hospital.com"
+                  placeholder="doctor@hospital.com (Auto-generated if blank)"
                   value={form.email}
-                  required
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
-                <label>Temporary Password</label>
+                <label>Temporary Password <span style={{ color: 'var(--text-muted)', fontSize: '0.85em', fontWeight: 'normal' }}>(Optional - auto-generated if blank)</span></label>
                 <input
                   type="password"
                   className="form-control"
-                  placeholder="••••••••"
+                  placeholder="•••••••• (Auto-generated if blank)"
                   value={form.password}
-                  required
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
-                <label>Designation</label>
+                <label>Designation <span style={{ color: 'red' }}>*</span></label>
                 <input
                   type="text"
                   className="form-control"
                   placeholder="Senior Consultant"
                   value={form.designation}
+                  required
                   onChange={(e) => setForm({ ...form, designation: e.target.value })}
                 />
               </div>
@@ -260,7 +272,7 @@ export default function AddDoctor() {
             </div>
 
             <div className="form-group" style={{ marginTop: '24px' }}>
-              <label>Clinical Specializations</label>
+              <label>Clinical Specializations <span style={{ color: 'red' }}>*</span></label>
               <p className="text-muted" style={{ marginBottom: '12px' }}>Select all that apply for this doctor.</p>
               <div className="specializations-column">
                 {specializationsList.length === 0 ? (
