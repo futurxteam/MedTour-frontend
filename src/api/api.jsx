@@ -1,5 +1,9 @@
+
+
 import axios from "axios";
 import i18n from "../i18n/i18n";
+
+
 
 // Reads from .env (VITE_API_BASE_URL) with a local dev fallback.
 // In production (Vercel), set VITE_API_BASE_URL in the Vercel dashboard environment variables.
@@ -317,6 +321,9 @@ export const adminRemoveHospitalPhoto = (userId, publicId) =>
 
 export const getPublicDoctorById = (doctorId) =>
   API.get(`/public/doctors/${doctorId}`);
+
+export const getPublicDoctors = () =>
+  API.get("/public/doctors");
 
 /* ===========================
    EXPORT INSTANCE

@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { surgeryData } from "./data";
@@ -37,6 +37,23 @@ export default function Home() {
   const [menuData, setMenuData] = useState({});
   const [activeDept, setActiveDept] = useState(null);
   const [selectedDept, setSelectedDept] = useState(null); // Will store {name, img}
+  const [dropdownCoords, setDropdownCoords] = useState({ top: 0, left: 0 });
+  // Ref to debounce hover-close so the gap between label and dropdown doesn't dismiss it
+  const closeTimerRef = useRef(null);
+
+  const cancelClose = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimerRef.current = setTimeout(() => {
+      setActiveDept(null);
+    }, 120);
+  };
 
   const [scrolled, setScrolled] = useState(false);
 
@@ -53,10 +70,20 @@ export default function Home() {
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      setActiveDept(null);
     };
     window.addEventListener("scroll", handleScroll);
 
-    const closeDropdown = () => setActiveDept(null);
+    const closeDropdown = (e) => {
+      // Only close when the click is outside the department bar area
+      if (
+        e.target.closest(".dept-wrapper") ||
+        e.target.closest(".dept-dropdown")
+      ) {
+        return;
+      }
+      setActiveDept(null);
+    };
     document.addEventListener("click", closeDropdown);
     return () => {
       document.removeEventListener("click", closeDropdown);
@@ -66,6 +93,15 @@ export default function Home() {
 
   const translateDept = (name) => {
     return t(`depts.${name}`, name);
+  };
+
+  const handleShowDropdown = (e, deptName) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDropdownCoords({
+      top: rect.bottom,
+      left: rect.left,
+    });
+    setActiveDept(deptName);
   };
 
   return (
@@ -79,16 +115,23 @@ export default function Home() {
             <div
               key={deptName}
               className={`dept-wrapper ${activeDept === deptName ? 'active' : ''}`}
-              onMouseEnter={() => {
-                if (window.innerWidth > 768) setActiveDept(deptName);
+              onMouseEnter={(e) => {
+                if (window.innerWidth > 768) {
+                  cancelClose();
+                  handleShowDropdown(e, deptName);
+                }
               }}
               onMouseLeave={() => {
-                if (window.innerWidth > 768) setActiveDept(null);
+                if (window.innerWidth > 768) scheduleClose();
               }}
               onClick={(e) => {
                 if (window.innerWidth <= 768) {
                   e.stopPropagation();
-                  setActiveDept(activeDept === deptName ? null : deptName);
+                  if (activeDept === deptName) {
+                    setActiveDept(null);
+                  } else {
+                    handleShowDropdown(e, deptName);
+                  }
                 }
               }}
             >
@@ -98,12 +141,24 @@ export default function Home() {
               </span>
 
               {activeDept === deptName && menuData[deptName]?.surgeries && (
-                <div className="dept-dropdown" onClick={(e) => e.stopPropagation()}>
+                <div
+                  className="dept-dropdown"
+                  onMouseEnter={cancelClose}
+                  onMouseLeave={scheduleClose}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    position: "fixed",
+                    top: `${dropdownCoords.top}px`,
+                    left: `${dropdownCoords.left}px`,
+                    marginTop: "8px"
+                  }}
+                >
                   {menuData[deptName].surgeries.map((surgery) => (
                     <div
                       key={surgery.id}
                       className="dept-item-child"
                       onClick={() => {
+                        cancelClose();
                         setActiveDept(null);
                         navigate("/services", {
                           state: {

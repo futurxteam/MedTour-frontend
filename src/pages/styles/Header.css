@@ -163,7 +163,8 @@
   background: transparent;
   border: none;
   transition: all 0.3s ease;
-  overflow: visible; /* CRITICAL: Allows dropdowns to show */
+  overflow: visible;
+  /* CRITICAL: Allows dropdowns to show */
 }
 
 .department-bar::before {
@@ -177,32 +178,30 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   z-index: -1;
-  
+
   /* Blending effect only on the blur background - shifted 10px lower to hide edge behind search bar */
-  mask-image: linear-gradient(to bottom, 
-    transparent 10px, 
-    black 35px, 
-    black 65%, 
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(to bottom, 
-    transparent 10px, 
-    black 35px, 
-    black 65%, 
-    transparent 100%
-  );
+  mask-image: linear-gradient(to bottom,
+      transparent 10px,
+      black 35px,
+      black 65%,
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 10px,
+      black 35px,
+      black 65%,
+      transparent 100%);
 }
 
-.site-header.scrolled + .department-bar,
+.site-header.scrolled+.department-bar,
 .department-bar.scrolled {
   top: 60px;
   border: none;
 }
 
-.site-header.scrolled + .department-bar::before,
+.site-header.scrolled+.department-bar::before,
 .department-bar.scrolled::before {
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
   mask-image: none;
   -webkit-mask-image: none;
 }
@@ -212,11 +211,29 @@
   width: 92%;
   margin: 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 30px;
-  padding: 12px 0; /* Reduced to tighten layout */
-  overflow: visible;
+  padding: 12px 0;
+  /* Reduced to tighten layout */
+  overflow-x: auto;
   white-space: nowrap;
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for IE/Edge */
+}
+
+.department-scroll::-webkit-scrollbar {
+  display: none;
+  /* Hide scrollbar for Chrome/Safari */
+}
+
+@media (min-width: 1200px) {
+  .department-scroll {
+    justify-content: flex-start;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 .dept-wrapper {
@@ -234,7 +251,7 @@
   gap: 4px;
 }
 
-.site-header.scrolled + .department-bar .dept-item {
+.site-header.scrolled+.department-bar .dept-item {
   color: #475569;
 }
 
@@ -243,31 +260,48 @@
   color: #ffffff;
 }
 
-.site-header.scrolled + .department-bar .dept-item:hover,
-.site-header.scrolled + .department-bar .dept-wrapper.active .dept-item {
+.site-header.scrolled+.department-bar .dept-item:hover,
+.site-header.scrolled+.department-bar .dept-wrapper.active .dept-item {
   color: #14b8a6;
 }
 
 /* ================= DROPDOWN (Matched to Hero Style) ================= */
 .dept-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
+  position: fixed;
   min-width: 240px;
-  background: rgba(8, 25, 40, 0.9);
+  max-height: 350px;
+  overflow-y: auto;
+  background: rgba(8, 25, 40, 0.95);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   padding: 12px 0;
   z-index: 9999;
-  margin-top: 15px;
   animation: dropdownFade 0.3s ease;
 }
 
+/* Bridging pseudo-element to prevent dropdown from closing when cursor is in the gap */
+.dept-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: transparent;
+}
+
 @keyframes dropdownFade {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dept-item-child {
@@ -348,7 +382,7 @@
   width: 200px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   z-index: 100;
 }
@@ -372,10 +406,12 @@
 
 /* ================= RESPONSIVE ================= */
 @media (max-width: 1024px) {
-  .nav-items, .global-search-container {
+
+  .nav-items,
+  .global-search-container {
     display: none;
   }
-  
+
   .department-scroll {
     overflow-x: auto;
     justify-content: flex-start;
@@ -387,8 +423,9 @@
   .user-name {
     display: none;
   }
-  
-  .header-btn, .header-btn-outline {
+
+  .header-btn,
+  .header-btn-outline {
     padding: 8px 16px;
     font-size: 13px;
   }

@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Contact from "./pages/Contact";
+import Doctors from "./pages/Doctors";
 
 import ServiceDetails from "./pages/serviceDetails";
 import DoctorDetails from "./pages/doctorDetails";
@@ -54,6 +55,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
+        <Route path="/doctors" element={<Doctors />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/doctor/:doctorId" element={<DoctorDetails />} />
         <Route path="/surgery/:id" element={<ServiceDetails />} />
