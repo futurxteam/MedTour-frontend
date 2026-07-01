@@ -81,6 +81,7 @@ const Header = () => {
           <Link to="/services">{t('nav.treatments')}</Link>
           <Link to="/hospitals">{t('nav.hospitals')}</Link>
           <Link to="/doctors">{t('nav.doctors', 'Doctors')}</Link>
+          <Link to="/travel-packages">{t('nav.travel_packages', 'Travel Packages')}</Link>
           <Link to="/about">{t('nav.about')}</Link>
           <Link to="/contact">{t('nav.contact')}</Link>
         </nav>
