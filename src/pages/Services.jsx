@@ -346,7 +346,7 @@ export default function Services() {
                   <div className="surgery-meta">
                     <p className="surgery-duration">⏱ {surgery.duration}</p>
                     <p className="starting-price">
-                      Starting from <span>₹{surgery.globalSurgeryId?.minimumCost?.toLocaleString() || surgery.cost?.toLocaleString()}</span>
+                      Starting from <span>₹{(surgery.minimumCost ?? surgery.cost)?.toLocaleString()}</span>
                     </p>
                   </div>
                   <p className="surgery-description">{surgery.description}</p>

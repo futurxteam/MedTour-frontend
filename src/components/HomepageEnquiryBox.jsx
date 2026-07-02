@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { getCountries, getCitiesByCountry, sendEnquiryOtp, verifyOtpAndCreateEnquiry } from "../api/api";
+import OtpModal from "./OtpModal";
 import "./HomepageEnquiryBox.css";
 
 const HomepageEnquiryBox = () => {
@@ -8,9 +9,11 @@ const HomepageEnquiryBox = () => {
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [loadingCities, setLoadingCities] = useState(false);
-    const [otpSent, setOtpSent] = useState(false);
     const [showOtpModal, setShowOtpModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [otpError, setOtpError] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState({});
 
     const [formData, setFormData] = useState({
         patientName: "",
@@ -23,8 +26,6 @@ const HomepageEnquiryBox = () => {
         medicalProblem: "",
         ageOrDob: "",
     });
-
-    const [otp, setOtp] = useState("");
 
     useEffect(() => {
         const fetchCountries = async () => {
@@ -40,21 +41,15 @@ const HomepageEnquiryBox = () => {
 
     const handleCountryChange = async (e) => {
         const countryName = e.target.value;
+        setFieldErrors((prev) => ({ ...prev, country: "" }));
 
         if (countryName === "Other") {
-            setFormData({
-                ...formData,
-                country: "Other",
-                countryCode: "OTHER",
-                city: "",
-                phoneCode: "+",
-            });
+            setFormData({ ...formData, country: "Other", countryCode: "OTHER", city: "", phoneCode: "+" });
             setCities([]);
             return;
         }
 
         const country = countries.find((c) => c.name === countryName);
-
         if (!country) {
             setFormData({ ...formData, country: "", countryCode: "", city: "" });
             setCities([]);
@@ -74,8 +69,7 @@ const HomepageEnquiryBox = () => {
             try {
                 const res = await getCitiesByCountry(country.code);
                 setCities(res.data.cities || []);
-            } catch (err) {
-                console.error("Failed to fetch cities", err);
+            } catch {
                 setCities([]);
             } finally {
                 setLoadingCities(false);
@@ -85,15 +79,24 @@ const HomepageEnquiryBox = () => {
         }
     };
 
+    /* ── Validation ───────────────────────────────────────── */
+    const validate = () => {
+        const errors = {};
+        if (!formData.patientName.trim()) errors.patientName = "Patient name is required.";
+        if (!formData.country) errors.country = "Please select your country.";
+        if (!formData.phoneNumber || formData.phoneNumber.length < 8) errors.phoneNumber = "Please enter a valid phone number.";
+        if (!formData.ageOrDob.trim()) errors.ageOrDob = "Age or Date of Birth is required.";
+        return errors;
+    };
+
+    /* ── Send OTP ─────────────────────────────────────────── */
     const handleSendOtp = async (e) => {
         e.preventDefault();
-        if (!formData.patientName || !formData.country || !formData.phoneNumber || !formData.ageOrDob) {
-            alert("Please fill all required fields");
-            return;
-        }
+        setFieldErrors({});
 
-        if (formData.phoneNumber.length < 8) {
-            alert("Please enter a valid phone number");
+        const errors = validate();
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
             return;
         }
 
@@ -101,28 +104,26 @@ const HomepageEnquiryBox = () => {
         try {
             const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
             await sendEnquiryOtp({ phone: fullPhone });
-            setOtpSent(true);
+            setOtpError("");
             setShowOtpModal(true);
         } catch (err) {
-            alert(err.response?.data?.message || "Failed to send OTP");
+            const msg = err.response?.data?.message || "Failed to send OTP. Please try again.";
+            setFieldErrors({ phoneNumber: msg });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSubmitEnquiry = async () => {
-        if (!otp || otp.length < 4) {
-            alert("Please enter a valid OTP");
-            return;
-        }
-
+    /* ── Verify OTP → Create Enquiry ─────────────────────── */
+    const handleVerifyOtp = async (otp) => {
+        setOtpError("");
         setLoading(true);
         try {
             const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
             await verifyOtpAndCreateEnquiry({
                 patientName: formData.patientName,
                 phone: fullPhone,
-                otp: otp,
+                otp,
                 contactMode: "call",
                 source: "homepage",
                 country: formData.country === "Other" ? formData.otherCountry : formData.country,
@@ -134,13 +135,15 @@ const HomepageEnquiryBox = () => {
                 doctorId: null,
             });
 
-            alert("Thank you! Our assistant will contact you shortly.");
+            // Success
             setShowOtpModal(false);
-            setOtpSent(false);
-            setOtp("");
+            setSubmitted(true);
+
+            // Reset form
             setFormData({
                 patientName: "",
                 country: "",
+                otherCountry: "",
                 countryCode: "",
                 city: "",
                 phoneCode: "+91",
@@ -148,73 +151,110 @@ const HomepageEnquiryBox = () => {
                 medicalProblem: "",
                 ageOrDob: "",
             });
+            setCities([]);
         } catch (err) {
-            alert(err.response?.data?.message || "Failed to submit enquiry");
+            const msg = err.response?.data?.message || "Failed to submit enquiry. Please try again.";
+            setOtpError(msg);
         } finally {
             setLoading(false);
         }
     };
 
+    /* ── Resend OTP ───────────────────────────────────────── */
+    const handleResendOtp = async () => {
+        const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
+        await sendEnquiryOtp({ phone: fullPhone });
+    };
+
+    /* ── Success Screen ──────────────────────────────────── */
+    if (submitted) {
+        return (
+            <div className="enquiry-box-container">
+                <div className="enquiry-box enquiry-success">
+                    <div className="enquiry-success-icon">✓</div>
+                    <h3>Enquiry Received!</h3>
+                    <p>Your enquiry has been received successfully.</p>
+                    <p className="enquiry-success-sub">Our medical coordinator will contact you shortly.</p>
+                    <button
+                        className="submit-btn"
+                        style={{ marginTop: "16px" }}
+                        onClick={() => setSubmitted(false)}
+                    >
+                        Submit Another Enquiry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    /* ── Main Form ───────────────────────────────────────── */
     return (
         <div className="enquiry-box-container">
             <div className="enquiry-box">
-                <h3>{t('form.title')}</h3>
+                <h3>{t("form.title")}</h3>
 
-                <form onSubmit={handleSendOtp}>
+                <form onSubmit={handleSendOtp} noValidate>
+                    {/* Patient Name */}
                     <div className="form-group">
                         <input
+                            id="enq-patient-name"
                             type="text"
-                            placeholder={t('form.patient_name')}
-                            required
+                            placeholder={t("form.patient_name")}
                             value={formData.patientName}
-                            onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
+                            onChange={(e) => {
+                                setFormData({ ...formData, patientName: e.target.value });
+                                setFieldErrors((p) => ({ ...p, patientName: "" }));
+                            }}
                         />
+                        {fieldErrors.patientName && <span className="field-error">{fieldErrors.patientName}</span>}
                     </div>
 
+                    {/* Country */}
                     <div className="form-group">
                         <select
-                            required
+                            id="enq-country"
                             value={formData.country}
                             onChange={handleCountryChange}
                         >
-                            <option value="">{t('form.select_country')}</option>
+                            <option value="">{t("form.select_country")}</option>
                             {countries.map((c) => (
-                                <option key={c.code} value={c.name}>
-                                    {c.name}
-                                </option>
+                                <option key={c.code} value={c.name}>{c.name}</option>
                             ))}
-                            <option value="Other">{t('common.other') || "Other"}</option>
+                            <option value="Other">{t("common.other") || "Other"}</option>
                         </select>
+                        {fieldErrors.country && <span className="field-error">{fieldErrors.country}</span>}
                     </div>
 
+                    {/* Other country text input */}
                     {formData.country === "Other" && (
                         <div className="form-group">
                             <input
                                 type="text"
                                 placeholder="Enter Your Country"
-                                required
                                 value={formData.otherCountry}
                                 onChange={(e) => setFormData({ ...formData, otherCountry: e.target.value })}
                             />
                         </div>
                     )}
 
+                    {/* City */}
                     <div className="form-group">
                         <select
-                            required
+                            id="enq-city"
                             value={formData.city}
                             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                            disabled={!formData.countryCode || (formData.countryCode && cities.length === 0)}
+                            disabled={!formData.countryCode || cities.length === 0}
                         >
-                            <option value="">{loadingCities ? t('homepage.loading') : t('form.select_city')}</option>
+                            <option value="">
+                                {loadingCities ? t("homepage.loading") : t("form.select_city")}
+                            </option>
                             {cities.map((city, idx) => (
-                                <option key={idx} value={city.name}>
-                                    {city.name}
-                                </option>
+                                <option key={idx} value={city.name}>{city.name}</option>
                             ))}
                         </select>
                     </div>
 
+                    {/* Phone */}
                     <div className="form-group phone-group">
                         <div className="phone-input-group">
                             {formData.country === "Other" ? (
@@ -229,67 +269,68 @@ const HomepageEnquiryBox = () => {
                                 <div className="country-code-display">{formData.phoneCode}</div>
                             )}
                             <input
+                                id="enq-phone"
                                 className="phone-number"
                                 type="tel"
-                                placeholder={t('form.phone')}
-                                required
+                                placeholder={t("form.phone")}
                                 value={formData.phoneNumber}
-                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, phoneNumber: e.target.value });
+                                    setFieldErrors((p) => ({ ...p, phoneNumber: "" }));
+                                }}
                             />
                         </div>
+                        {fieldErrors.phoneNumber && <span className="field-error">{fieldErrors.phoneNumber}</span>}
                     </div>
 
+                    {/* Medical Problem */}
                     <div className="form-group">
                         <textarea
-                            placeholder={t('form.medical_problem')}
+                            id="enq-problem"
+                            placeholder={t("form.medical_problem")}
                             value={formData.medicalProblem}
                             onChange={(e) => setFormData({ ...formData, medicalProblem: e.target.value })}
-                        ></textarea>
-                    </div>
-
-                    <div className="form-group">
-                        <input
-                            type="text"
-                            placeholder={t('form.age_example')}
-                            required
-                            value={formData.ageOrDob}
-                            onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })}
                         />
                     </div>
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
-                        {loading ? t('homepage.loading') : t('form.cta')}
+                    {/* Age / DOB */}
+                    <div className="form-group">
+                        <input
+                            id="enq-age"
+                            type="text"
+                            placeholder={t("form.age_example")}
+                            value={formData.ageOrDob}
+                            onChange={(e) => {
+                                setFormData({ ...formData, ageOrDob: e.target.value });
+                                setFieldErrors((p) => ({ ...p, ageOrDob: "" }));
+                            }}
+                        />
+                        {fieldErrors.ageOrDob && <span className="field-error">{fieldErrors.ageOrDob}</span>}
+                    </div>
+
+                    <button id="enq-submit-btn" type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? t("homepage.loading") : t("form.cta")}
                     </button>
                 </form>
 
                 <p className="privacy-text">
                     <Trans i18nKey="form.disclaimer">
-                        By submitting the form I agree to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a> of .MedTour Health
+                        By submitting the form I agree to the <a href="#">Terms of Use</a> and{" "}
+                        <a href="#">Privacy Policy</a> of MedTour Health
                     </Trans>
                 </p>
             </div>
 
+            {/* ── Shared OTP Modal ── */}
             {showOtpModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <h3>Verify Phone Number</h3>
-                        <p>We've sent an OTP to your phone number for verification.</p>
-                        <input
-                            type="text"
-                            placeholder="Enter 6-digit OTP"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                        />
-                        <div className="modal-actions">
-                            <button onClick={handleSubmitEnquiry} disabled={loading}>
-                                {loading ? "Verifying..." : "Verify & Submit"}
-                            </button>
-                            <button className="close-btn" onClick={() => setShowOtpModal(false)}>
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <OtpModal
+                    phone={`${formData.phoneCode}${formData.phoneNumber}`}
+                    onVerify={handleVerifyOtp}
+                    onResend={handleResendOtp}
+                    onClose={() => setShowOtpModal(false)}
+                    loading={loading}
+                    error={otpError}
+                />
             )}
         </div>
     );

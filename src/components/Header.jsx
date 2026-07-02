@@ -34,7 +34,7 @@ const Header = () => {
     : null;
 
   const role = userData?.role;
-  
+
   let displayName = "User";
   if (userData?.name) {
     if (typeof userData.name === "object") {
@@ -56,16 +56,18 @@ const Header = () => {
     navigate("/");
   };
 
+  const isHome = location.pathname === "/";
+
   return (
-    <header className={`site-header ${scrolled ? "scrolled" : ""}`}>
+    <header className={`site-header ${scrolled || !isHome ? "scrolled" : ""}`}>
       <div className="header-inner">
 
         {/* LOGO */}
         <div className="logo-container" onClick={() => navigate("/")}>
-          <div className="site-logo-text" style={{ 
-            fontSize: '28px', 
-            fontWeight: '800', 
-            color: scrolled ? '#1e293b' : '#ffffff',
+          <div className="site-logo-text" style={{
+            fontSize: '28px',
+            fontWeight: '800',
+            color: (scrolled || !isHome) ? '#1e293b' : '#ffffff',
             letterSpacing: '-1.5px',
             fontFamily: "'Outfit', sans-serif"
           }}>

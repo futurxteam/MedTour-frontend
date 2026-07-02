@@ -28,6 +28,16 @@ import orthoImg from "../components/Home/images/ortho.jpg";
 import pmrImg from "../components/Home/images/PMR.jpg";
 import urologyImg from "../components/Home/images/urology.png";
 import headNeckImg from "../components/Home/images/head_and_neck.png";
+import pediatricsImg from "../components/Home/images/Pediatrics.jpg";
+import generalMedicineImg from "../components/Home/images/generalmedicine.jpg";
+import gynecologyImg from "../components/Home/images/gynecology.jpg";
+import nephrologyImg from "../components/Home/images/nephrology.jpg";
+import ophthalmologyImg from "../components/Home/images/ophthalmology.jpg";
+import orthospineImg from "../components/Home/images/orthospine.jpg";
+import plasticSurgeryImg from "../components/Home/images/plasticsurgery.jpg";
+import radiationImg from "../components/Home/images/radiation.jpg";
+import radiologyImg from "../components/Home/images/radiology.jpg";
+import hematologyImg from "../components/Home/images/heametology.jpg";
 
 // Specialty Images replaced with local high-quality professional photos
 
@@ -277,10 +287,52 @@ url(https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2000&aut
                 "Head and Neck": headNeckImg,
                 "Head & Neck": headNeckImg,
                 "Head and neck": headNeckImg,
-                "Pediatrics": "https://images.unsplash.com/photo-1622907409477-742a12a514d2?auto=format&fit=crop&w=600&q=80",
+                "Pediatrics": pediatricsImg,
+                "Ophthalmology": ophthalmologyImg,
+                "General Medicine": generalMedicineImg,
+                "Nephrology": nephrologyImg,
+                "Orthospine": orthospineImg,
+                // Robotic Gynecology - all variants
+                "Robotic gynecology": gynecologyImg,
+                "Robotic Gynecology": gynecologyImg,
+                "robotic gynecology": gynecologyImg,
+                "Gynecology": gynecologyImg,
+                "Gynaecology": gynecologyImg,
+                "Robotic Gynaecology": gynecologyImg,
+                "Robotic gynaecology": gynecologyImg,
+                // Plastic Surgery
+                "Plastic Surgery": plasticSurgeryImg,
+                "Plastic surgery": plasticSurgeryImg,
+                // Radiation / Radiation Oncology - all variants
+                "Radiation Oncology": radiationImg,
+                "Radiation oncology": radiationImg,
+                "Radiation": radiationImg,
+                "radiation": radiationImg,
+                // Interventional Radiology / Radiology - all variants
+                "Radiology": radiologyImg,
+                "radiology": radiologyImg,
+                "Interventional Radiology": radiologyImg,
+                "Interventional radiology": radiologyImg,
+                "interventional radiology": radiologyImg,
+                // Haematology - all variants
+                "Hematology": hematologyImg,
+                "Haematology": hematologyImg,
+                "haematology": hematologyImg,
+                "Haemato Oncology": hematologyImg,
+                "Haematology and Haemato Oncology": hematologyImg,
+                "Haematology and Haemato oncology": hematologyImg,
+                "Haematology & Haemato Oncology": hematologyImg,
+                "Haemato-Oncology": hematologyImg,
               };
-
-              const imgUrl = specialtyImages[deptName] || "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80";
+              // First try exact match, then case-insensitive partial match
+              const exactMatch = specialtyImages[deptName];
+              const looseMatch = !exactMatch
+                ? Object.entries(specialtyImages).find(([key]) =>
+                    deptName.toLowerCase().includes(key.toLowerCase()) ||
+                    key.toLowerCase().includes(deptName.toLowerCase())
+                  )?.[1]
+                : null;
+              const imgUrl = exactMatch || looseMatch || "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80";
 
               return (
                 <div
