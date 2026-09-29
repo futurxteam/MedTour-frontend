@@ -10,8 +10,7 @@ import {
   getPublicSurgeriesMenu,
   getPublicSurgeriesBySpecialty,
   getPublicDoctorsBySurgery,
-  sendEnquiryOtp,
-  verifyOtpAndCreateEnquiry,
+  createPublicEnquiry,
   getCountries,
   getCitiesByCountry,
   getDoctorPhotoUrl,
@@ -37,10 +36,9 @@ export default function Services() {
   const [selectedPart, setSelectedPart] = useState(null);
 
   /* ===========================
-     ENQUIRY / OTP STATE
+     ENQUIRY STATE
   =========================== */
   const [showQuoteModal, setShowQuoteModal] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   const [enquiryForm, setEnquiryForm] = useState({
@@ -51,7 +49,6 @@ export default function Services() {
     phoneNumber: "",
     medicalProblem: "",
     ageOrDob: "",
-    otp: "",
   });
 
   const [countries, setCountries] = useState([]);
@@ -60,7 +57,7 @@ export default function Services() {
   const [viewingDoctor, setViewingDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [currentViewMonth, setCurrentViewMonth] = useState(new Date());
-  const [bookingStep, setBookingStep] = useState(1); // 1: Details/Calendar, 2: Form/OTP
+  const [bookingStep, setBookingStep] = useState(1); // 1: Details/Calendar, 2: Patient Form
 
   /* ===========================
      FETCH SPECIALTIES (PUBLIC)
@@ -205,30 +202,18 @@ export default function Services() {
       medicalProblem: "",
       ageOrDob: "",
     });
-    setOtpSent(false);
   };
 
-  const handleSendOtp = async () => {
+  const handleSubmitEnquiry = async () => {
     if (!enquiryForm.patientName || !enquiryForm.country || !enquiryForm.phoneNumber || !enquiryForm.ageOrDob) {
       alert("Please fill all required fields");
       return;
     }
-    const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
-    await sendEnquiryOtp({ phone: fullPhone });
-    setOtpSent(true);
-  };
-
-  const handleSubmitEnquiry = async () => {
-    if (enquiryForm.otp !== "123") {
-      alert("Invalid OTP. Use 123");
-      return;
-    }
 
     const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
-    await verifyOtpAndCreateEnquiry({
+    await createPublicEnquiry({
       patientName: enquiryForm.patientName,
       phone: fullPhone,
-      otp: enquiryForm.otp,
       country: enquiryForm.country === "Other" ? enquiryForm.otherCountry : enquiryForm.country,
       city: enquiryForm.city,
       medicalProblem: enquiryForm.medicalProblem,
@@ -398,7 +383,6 @@ export default function Services() {
               countries={countries}
               cities={cities}
               loadingCities={loadingCities}
-              onSendOtp={handleSendOtp}
               onSubmit={handleSubmitEnquiry}
             />
           )}

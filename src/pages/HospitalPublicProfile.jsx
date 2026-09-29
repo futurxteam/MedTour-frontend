@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { getPublicHospitalById, getCountries, getCitiesByCountry, sendEnquiryOtp, verifyOtpAndCreateEnquiry } from '../api/api';
+import { getPublicHospitalById, getCountries, getCitiesByCountry, createPublicEnquiry } from '../api/api';
 import './styles/HomeExpansion.css';
 
 const HospitalPublicProfile = () => {
@@ -13,12 +13,10 @@ const HospitalPublicProfile = () => {
 
     /* ── Enquiry Modal State ────────────────────────── */
     const [showEnquiryModal, setShowEnquiryModal] = useState(false);
-    const [showOtpModal, setShowOtpModal] = useState(false);
     const [enquiryLoading, setEnquiryLoading] = useState(false);
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [loadingCities, setLoadingCities] = useState(false);
-    const [otp, setOtp] = useState("");
 
     const [formData, setFormData] = useState({
         patientName: "",
@@ -97,34 +95,19 @@ const HospitalPublicProfile = () => {
         }
     };
 
-    const handleSendOtp = async (e) => {
-        e.preventDefault();
+    const handleSubmitEnquiry = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
         if (!formData.patientName || !formData.country || !formData.phoneNumber || !formData.ageOrDob) {
             alert("Please fill all required fields");
             return;
         }
-        setEnquiryLoading(true);
-        try {
-            const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
-            await sendEnquiryOtp({ phone: fullPhone });
-            setShowOtpModal(true);
-        } catch (err) {
-            alert("Failed to send OTP");
-        } finally {
-            setEnquiryLoading(false);
-        }
-    };
-
-    const handleSubmitEnquiry = async () => {
-        if (otp !== "123") { alert("Invalid OTP. Use 123"); return; }
 
         setEnquiryLoading(true);
         try {
             const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
-            await verifyOtpAndCreateEnquiry({
+            await createPublicEnquiry({
                 patientName: formData.patientName,
                 phone: fullPhone,
-                otp,
                 contactMode: "call",
                 source: "hospital_enquiry",
                 hospitalProfileId: hospital._id,
@@ -134,13 +117,11 @@ const HospitalPublicProfile = () => {
                 ageOrDob: formData.ageOrDob,
             });
 
-            alert("Thank you! Our assistant will contact you shortly.");
-            setShowOtpModal(false);
+            alert("Thank you! Your enquiry has been submitted. Our team will contact you shortly.");
             setShowEnquiryModal(false);
-            setOtp("");
             setFormData({ patientName: "", country: "", otherCountry: "", countryCode: "", city: "", phoneCode: "+91", phoneNumber: "", medicalProblem: "", ageOrDob: "" });
         } catch (err) {
-            alert("Failed to submit enquiry");
+            alert(err.response?.data?.message || "Failed to submit enquiry. Please try again.");
         } finally {
             setEnquiryLoading(false);
         }
@@ -374,7 +355,7 @@ const HospitalPublicProfile = () => {
                     }}>
                         {/* Close button */}
                         <button
-                            onClick={() => { setShowEnquiryModal(false); setShowOtpModal(false); setOtp(""); }}
+                            onClick={() => setShowEnquiryModal(false)}
                             style={{
                                 position: 'absolute', top: '16px', right: '16px',
                                 background: '#f1f5f9', border: 'none', borderRadius: '50%',
@@ -403,8 +384,7 @@ const HospitalPublicProfile = () => {
                             Fill in your details and our medical assistant will contact you with all the information you need.
                         </p>
 
-                        {!showOtpModal ? (
-                            <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <form onSubmit={handleSubmitEnquiry} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 <div>
                                     <label style={{ display: 'block', fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Patient Name *</label>
                                     <input
@@ -522,62 +502,13 @@ const HospitalPublicProfile = () => {
                                         transition: 'all 0.2s'
                                     }}
                                 >
-                                    {enquiryLoading ? "Processing..." : "📩 Submit & Verify Phone"}
+                                    {enquiryLoading ? "Processing..." : "📩 Submit Enquiry"}
                                 </button>
 
                                 <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px', lineHeight: 1.4 }}>
                                     By submitting, you agree to our Terms of Use and Privacy Policy.
                                 </p>
                             </form>
-                        ) : (
-                            /* ── OTP Verification Step ── */
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                <div style={{
-                                    padding: '20px', borderRadius: '16px',
-                                    background: '#fffbeb', border: '1px solid #fde68a', textAlign: 'center'
-                                }}>
-                                    <p style={{ margin: 0, fontWeight: 700, color: '#92400e', fontSize: '1rem' }}>📱 OTP Sent!</p>
-                                    <p style={{ margin: '6px 0 0 0', color: '#a16207', fontSize: '0.85rem' }}>We've sent a verification code to your phone.</p>
-                                </div>
-
-                                <div>
-                                    <label style={{ display: 'block', fontWeight: 700, fontSize: '0.8rem', color: '#334155', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Enter OTP</label>
-                                    <input
-                                        type="text" placeholder="Enter OTP (123)"
-                                        value={otp}
-                                        onChange={(e) => setOtp(e.target.value)}
-                                        style={{ width: '100%', padding: '16px', border: '2px solid #e2e8f0', borderRadius: '14px', fontSize: '1.25rem', textAlign: 'center', letterSpacing: '8px', fontWeight: 800, outline: 'none', boxSizing: 'border-box' }}
-                                        onFocus={(e) => e.target.style.borderColor = '#0d9488'}
-                                        onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
-                                    />
-                                </div>
-
-                                <div style={{ display: 'flex', gap: '12px' }}>
-                                    <button
-                                        onClick={() => setShowOtpModal(false)}
-                                        style={{
-                                            flex: 1, padding: '14px', background: '#f1f5f9',
-                                            border: '1px solid #e2e8f0', borderRadius: '14px',
-                                            fontSize: '1rem', fontWeight: 700, cursor: 'pointer', color: '#475569'
-                                        }}
-                                    >← Back</button>
-
-                                    <button
-                                        onClick={handleSubmitEnquiry}
-                                        disabled={enquiryLoading}
-                                        style={{
-                                            flex: 2, padding: '14px',
-                                            background: 'linear-gradient(135deg, #0d9488, #0f766e)',
-                                            color: 'white', border: 'none', borderRadius: '14px',
-                                            fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
-                                            opacity: enquiryLoading ? 0.7 : 1
-                                        }}
-                                    >
-                                        {enquiryLoading ? "Verifying..." : "✅ Verify & Submit"}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             )}

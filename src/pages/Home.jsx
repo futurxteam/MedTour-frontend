@@ -268,6 +268,7 @@ url(https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2000&aut
           <div className="specialities-grid">
             {Object.entries(menuData || {}).map(([deptName, deptData], index) => {
               const specialtyImages = {
+                // English keys
                 "Ayurveda": ayurvedaImg,
                 "Cardiology": cardiologyImg,
                 "Gastrology": gastrologyImg,
@@ -292,7 +293,6 @@ url(https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2000&aut
                 "General Medicine": generalMedicineImg,
                 "Nephrology": nephrologyImg,
                 "Orthospine": orthospineImg,
-                // Robotic Gynecology - all variants
                 "Robotic gynecology": gynecologyImg,
                 "Robotic Gynecology": gynecologyImg,
                 "robotic gynecology": gynecologyImg,
@@ -300,39 +300,70 @@ url(https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2000&aut
                 "Gynaecology": gynecologyImg,
                 "Robotic Gynaecology": gynecologyImg,
                 "Robotic gynaecology": gynecologyImg,
-                // Plastic Surgery
                 "Plastic Surgery": plasticSurgeryImg,
                 "Plastic surgery": plasticSurgeryImg,
-                // Radiation / Radiation Oncology - all variants
                 "Radiation Oncology": radiationImg,
                 "Radiation oncology": radiationImg,
                 "Radiation": radiationImg,
-                "radiation": radiationImg,
-                // Interventional Radiology / Radiology - all variants
-                "Radiology": radiologyImg,
                 "radiology": radiologyImg,
+                "Radiology": radiologyImg,
                 "Interventional Radiology": radiologyImg,
                 "Interventional radiology": radiologyImg,
                 "interventional radiology": radiologyImg,
-                // Haematology - all variants
                 "Hematology": hematologyImg,
                 "Haematology": hematologyImg,
                 "haematology": hematologyImg,
                 "Haemato Oncology": hematologyImg,
                 "Haematology and Haemato Oncology": hematologyImg,
                 "Haematology and Haemato oncology": hematologyImg,
-                "Haematology & Haemato Oncology": hematologyImg,
-                "Haemato-Oncology": hematologyImg,
+
+                // Arabic keys
+                "الأيورفيدا": ayurvedaImg,
+                "أطباء القلب": cardiologyImg,
+                "أمراض القلب": cardiologyImg,
+                "أمراض الجهاز الهضمي": gastrologyImg,
+                "جراحة الأعصاب": "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=600&q=80",
+                "الأعصاب": "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=600&q=80",
+                "الأورام": oncologyImg,
+                "جراحة العظام": orthoImg,
+                "العظام": orthoImg,
+                "الطب الفيزيائي وإعادة التأهيل": pmrImg,
+                "الطب الفيزيائي": pmrImg,
+                "العلاج الطبيعي": pmrImg,
+                "الطب الطبيعي": pmrImg,
+                "جراحة المسالك البولية": urologyImg,
+                "المسالك البولية": urologyImg,
+                "العافية": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80",
+                "جراحة الرأس والرقبة": headNeckImg,
+                "الرأس والرقبة": headNeckImg,
+                "الأذن والأنف والحنجرة": headNeckImg,
+                "طب الأطفال": pediatricsImg,
+                "طب العيون": ophthalmologyImg,
+                "الطب العام": generalMedicineImg,
+                "أمراض الكلى": nephrologyImg,
+                "جراحة عظام العمود الفقري": orthospineImg,
+                "جراحة النساء الروبوتية": gynecologyImg,
+                "أمراض النساء والتوليد": gynecologyImg,
+                "جراحة التجميل": plasticSurgeryImg,
+                "العلاج الإشعاعي للأورام": radiationImg,
+                "العلاج الإشعاعي": radiationImg,
+                "الأشعة التدخلية": radiologyImg,
+                "الأشعة": radiologyImg,
+                "أمراض الدم وأورام الدم": hematologyImg,
+                "أمراض الدم": hematologyImg,
               };
-              // First try exact match, then case-insensitive partial match
-              const exactMatch = specialtyImages[deptName];
-              const looseMatch = !exactMatch
-                ? Object.entries(specialtyImages).find(([key]) =>
-                    deptName.toLowerCase().includes(key.toLowerCase()) ||
-                    key.toLowerCase().includes(deptName.toLowerCase())
-                  )?.[1]
-                : null;
-              const imgUrl = exactMatch || looseMatch || "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80";
+
+              const defaultFallbackImg = "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=600&q=80";
+
+              let imgUrl = specialtyImages[deptName];
+
+              if (!imgUrl) {
+                const lowerDept = deptName.toLowerCase();
+                const matchedEntry = Object.entries(specialtyImages).find(([key]) =>
+                  lowerDept.includes(key.toLowerCase()) || key.toLowerCase().includes(lowerDept)
+                );
+                imgUrl = matchedEntry ? matchedEntry[1] : defaultFallbackImg;
+              }
 
               return (
                 <div

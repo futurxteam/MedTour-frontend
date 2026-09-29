@@ -124,7 +124,7 @@ const GlobalSearch = () => {
                                 <div className="search-result-group">
                                     <div className="search-group-header">
                                         <span className="search-group-icon">🩺</span>
-                                        <span className="search-group-title">Surgeries</span>
+                                        <span className="search-group-title">{t('nav.surgeries', 'Surgeries')}</span>
                                         <span className="search-group-count">{results.surgeries.length}</span>
                                     </div>
                                     {results.surgeries.map((surgery) => (
@@ -149,7 +149,7 @@ const GlobalSearch = () => {
                                 <div className="search-result-group">
                                     <div className="search-group-header">
                                         <span className="search-group-icon">👨‍⚕️</span>
-                                        <span className="search-group-title">Doctors</span>
+                                        <span className="search-group-title">{t('nav.doctors', 'Doctors')}</span>
                                         <span className="search-group-count">{results.doctors.length}</span>
                                     </div>
                                     {results.doctors.map((doctor) => (
@@ -161,7 +161,7 @@ const GlobalSearch = () => {
                                             <div className="search-item-main">
                                                 <div className="search-item-title">{doctor.name}</div>
                                                 <div className="search-item-subtitle">
-                                                    {doctor.hospitalName || "Medical Professional"}
+                                                    {doctor.hospitalName || t('common.medical_professional', 'Medical Professional')}
                                                 </div>
                                             </div>
                                         </div>
@@ -174,7 +174,7 @@ const GlobalSearch = () => {
                                 <div className="search-result-group">
                                     <div className="search-group-header">
                                         <span className="search-group-icon">🏥</span>
-                                        <span className="search-group-title">Hospitals</span>
+                                        <span className="search-group-title">{t('nav.hospitals', 'Hospitals')}</span>
                                         <span className="search-group-count">{results.hospitals.length}</span>
                                     </div>
                                     {results.hospitals.map((hospital) => (
@@ -188,7 +188,7 @@ const GlobalSearch = () => {
                                                 <div className="search-item-subtitle">
                                                     {hospital.city && hospital.state
                                                         ? `${hospital.city}, ${hospital.state}`
-                                                        : "Healthcare Facility"}
+                                                        : t('common.healthcare_facility', 'Healthcare Facility')}
                                                 </div>
                                             </div>
                                         </div>

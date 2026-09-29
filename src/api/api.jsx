@@ -96,11 +96,7 @@ export const googleAuth = async (payload) => {
   return data;
 };
 
-export const sendAuthOtp = (data) =>
-  API.post("/auth/send-otp", data);
 
-export const verifyAuthOtp = (data) =>
-  API.post("/auth/verify-otp", data);
 
 /* ===========================
    ADMIN – USER MANAGEMENT
@@ -148,7 +144,7 @@ export const getHospitalSpecializations = () =>
   API.get("/hospital/specializations");
 
 export const getPublicSurgeriesMenu = () =>
-  axios.get(`${API_BASE_URL}/api/public/surgeries-menu`);
+  API.get("/public/surgeries-menu");
 
 export const getHospitalDoctors = () =>
   API.get("/hospital/doctors");
@@ -192,11 +188,8 @@ export const getLowestQuotes = () =>
 export const getCommonProcedures = () =>
   API.get("/public/common-procedures");
 
-export const sendEnquiryOtp = (data) =>
-  API.post("/public/enquiry/send-otp", data);
-
-export const verifyOtpAndCreateEnquiry = (data) =>
-  API.post("/public/enquiry/verify-otp", data);
+export const createPublicEnquiry = (data) =>
+  API.post("/public/enquiry", data);
 
 export const getAllEnquiries = () =>
   API.get("/admin/enquiries");

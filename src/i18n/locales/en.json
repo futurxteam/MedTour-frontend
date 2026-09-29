@@ -4,6 +4,8 @@
       "treatments": "Treatments",
       "hospitals": "Hospitals",
       "doctors": "Doctors",
+      "surgeries": "Surgeries",
+      "travel_packages": "Travel Packages",
       "experience": "Experience",
       "contact": "Contact",
       "about": "About Us",
@@ -35,12 +37,16 @@
       "title": "Let Us Help You",
       "patient_name": "Patient Name",
       "select_country": "Select Country",
+      "enter_country": "Enter Your Country",
       "select_city": "Select City",
       "phone": "Your Phone number",
       "medical_problem": ".. Describe The Current Medical Problem (Optional)",
       "age_example": "Example: 30 Yrs or 29-05-1985",
       "cta": "Get FREE Quote",
-      "disclaimer": "By submitting the form I agree to the <1>Terms of Use</1> and <2>Privacy Policy</2> of .MedTour Health"
+      "disclaimer": "By submitting the form I agree to the <1>Terms of Use</1> and <2>Privacy Policy</2> of .MedTour Health",
+      "success_title": "Enquiry Received!",
+      "success_desc": "Thank you! Your enquiry has been submitted. Our team will contact you shortly.",
+      "submit_another": "Submit Another Enquiry"
     },
     "common": {
       "other": "Other",
@@ -50,6 +56,16 @@
       "jci": "JCI ACCREDITED",
       "iso": "ISO CERTIFIED",
       "tourism": "KERALA TOURISM"
+    },
+    "modal": {
+      "overview_title": "Brief History & Overview",
+      "overview_desc": "Combining modern treatment with holistic recovery approaches to ensure long-term healing and restored mobility.",
+      "procedures_title": "Common Procedures",
+      "outcomes_title": "Expected Outcomes",
+      "outcomes_desc": "Significant improvement in quality of life, reduced recurring symptoms, and restored physical independence.",
+      "recovery_title": "Recovery Time",
+      "recovery_desc": "3–5 days in hospital, 2–6 weeks of physical recovery and lifestyle adaptation.",
+      "plan_btn": "Plan this treatment"
     },
     "experts": {
       "title": "Expert Perspectives",
@@ -128,12 +144,14 @@
     "procedures": {
       "title": "Common Procedures & Costs",
       "subtitle": "High-quality treatments at a fraction of the cost in UAE or Western nations.",
-      "starting_from": "Starting from"
+      "starting_from": "Starting from",
+      "empty": "No procedures listed yet."
     },
     "quotes": {
       "title": "Live Lowest Quotes",
       "subtitle": "Real-time pricing from our partner hospitals.",
-      "get_quote": "Get Quote"
+      "get_quote": "Get Quote",
+      "loading": "Loading price registry..."
     },
     "newsletter": {
       "title": "Join Our Healthcare Community",
@@ -183,9 +201,34 @@
       "PMR": "PMR",
       "Physiotherapy": "Physiotherapy",
       "Urology": "Urology",
+      "urology": "Urology",
       "Wellness": "Wellness",
       "ENT": "ENT",
-      "Pediatrics": "Pediatrics"
+      "Pediatrics": "Pediatrics",
+      "Nephrology": "Nephrology",
+      "Interventional Radiology": "Interventional Radiology",
+      "Interventional radiology": "Interventional Radiology",
+      "Radiology": "Radiology",
+      "radiology": "Radiology",
+      "Head and Neck": "Head & Neck",
+      "Head & Neck": "Head & Neck",
+      "Head and neck": "Head & Neck",
+      "Haematology and Haemato oncology": "Haematology & Haemato Oncology",
+      "Haematology and Haemato Oncology": "Haematology & Haemato Oncology",
+      "Hematology": "Hematology",
+      "Haematology": "Haematology",
+      "Robotic gynecology": "Robotic Gynecology",
+      "Robotic Gynecology": "Robotic Gynecology",
+      "Gynecology": "Gynecology",
+      "Gynaecology": "Gynaecology",
+      "Plastic Surgery": "Plastic Surgery",
+      "Plastic surgery": "Plastic Surgery",
+      "General Medicine": "General Medicine",
+      "Ophthalmology": "Ophthalmology",
+      "Orthospine": "Orthospine",
+      "Radiation Oncology": "Radiation Oncology",
+      "Radiation oncology": "Radiation Oncology",
+      "Radiation": "Radiation"
     }
   }
 }

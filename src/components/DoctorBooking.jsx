@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
     getDoctorPhotoUrl,
-    sendEnquiryOtp,
-    verifyOtpAndCreateEnquiry,
+    createPublicEnquiry,
     getPublicDoctorById,
 } from "../api/api";
-import OtpModal from "./OtpModal";
 
 export default function DoctorBooking({ doctor: doctorProp }) {
     const { doctorId } = useParams();
@@ -21,9 +19,7 @@ export default function DoctorBooking({ doctor: doctorProp }) {
     const [selectedDate, setSelectedDate] = useState("");
     const [currentViewMonth, setCurrentViewMonth] = useState(new Date());
 
-    const [otpSent, setOtpSent] = useState(false);
-    const [loadingOtp, setLoadingOtp] = useState(false);
-    const [otpError, setOtpError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const [enquiryForm, setEnquiryForm] = useState({
         patientName: "",
@@ -62,8 +58,8 @@ export default function DoctorBooking({ doctor: doctorProp }) {
     /* =========================
        HANDLERS
     ========================= */
-    /* ── Send OTP ─────────────────────────────────────────── */
-    const handleSendOtp = async () => {
+    /* ── Direct Booking Submission ─────────────────────── */
+    const handleSubmit = async () => {
         if (!enquiryForm.patientName || !enquiryForm.phoneNumber || !enquiryForm.ageOrDob) {
             alert("Please fill in Name, Phone and Age/DOB.");
             return;
@@ -73,30 +69,13 @@ export default function DoctorBooking({ doctor: doctorProp }) {
             return;
         }
 
-        setLoadingOtp(true);
-        try {
-            const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
-            await sendEnquiryOtp({ phone: fullPhone });
-            setOtpError("");
-            setOtpSent(true);
-        } catch (err) {
-            alert(err.response?.data?.message || "Failed to send OTP. Please try again.");
-        } finally {
-            setLoadingOtp(false);
-        }
-    };
-
-    /* ── Verify OTP → Create Booking Enquiry ─────────────── */
-    const handleSubmit = async (otp) => {
-        setOtpError("");
-        setLoadingOtp(true);
+        setSubmitting(true);
         try {
             const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
 
-            await verifyOtpAndCreateEnquiry({
+            await createPublicEnquiry({
                 patientName: enquiryForm.patientName,
                 phone: fullPhone,
-                otp,
                 doctorId: doctor._id,
                 consultationDate: selectedDate,
                 medicalProblem: enquiryForm.medicalProblem,
@@ -105,13 +84,12 @@ export default function DoctorBooking({ doctor: doctorProp }) {
             });
 
             // Success — advance to confirmation screen
-            setOtpSent(false);
             setBookingStep(3);
         } catch (err) {
             const msg = err.response?.data?.message || "Booking could not be created. Please try again.";
-            setOtpError(msg);
+            alert(msg);
         } finally {
-            setLoadingOtp(false);
+            setSubmitting(false);
         }
     };
 
@@ -311,35 +289,18 @@ export default function DoctorBooking({ doctor: doctorProp }) {
                                     />
                                 </div>
 
-                                {!otpSent ? (
-                                    <button
-                                        onClick={handleSendOtp}
-                                        className="btn btn-primary hero-btn"
-                                        disabled={loadingOtp}
-                                    >
-                                        {loadingOtp ? "Sending OTP…" : "Verify & Confirm"}
-                                    </button>
-                                ) : null}
+                                <button
+                                    onClick={handleSubmit}
+                                    className="btn btn-primary hero-btn"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? "Submitting…" : "Confirm Booking"}
+                                </button>
                             </div>
                         </div>
                     )}
                 </div>
             </div>
-
-            {/* ── Shared OTP Modal ── */}
-            {otpSent && (
-                <OtpModal
-                    phone={`${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`}
-                    onVerify={handleSubmit}
-                    onResend={async () => {
-                        const fullPhone = `${enquiryForm.phoneCode}${enquiryForm.phoneNumber}`;
-                        await sendEnquiryOtp({ phone: fullPhone });
-                    }}
-                    onClose={() => setOtpSent(false)}
-                    loading={loadingOtp}
-                    error={otpError}
-                />
-            )}
 
             <style>{`
                 .doctor-booking-wrapper {

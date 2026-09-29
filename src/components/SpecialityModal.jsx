@@ -1,9 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./styles/SpecialityModal.css";
 import { specialityContent } from "../config/specialityContent";
 import { useNavigate } from "react-router-dom";
 
 export default function SpecialityModal({ deptName, deptData, imgUrl, onClose }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     if (!deptData) return null;
@@ -13,6 +15,8 @@ export default function SpecialityModal({ deptName, deptData, imgUrl, onClose })
         specialityContent[deptName] ||
         specialityContent[deptName?.toLowerCase()] ||
         {};
+
+    const translatedDeptName = t(`depts.${deptName}`, deptName);
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -24,7 +28,7 @@ export default function SpecialityModal({ deptName, deptData, imgUrl, onClose })
                         <div className="dept-icon">
                             <i className="medical-icon">⚕️</i>
                         </div>
-                        <h2>{deptName}</h2>
+                        <h2>{translatedDeptName}</h2>
                     </div>
                     <button className="close-x" onClick={onClose}>✕</button>
                 </div>
@@ -39,15 +43,15 @@ export default function SpecialityModal({ deptName, deptData, imgUrl, onClose })
                                 <section className="info-section">
                                     <div className="section-title">
                                         <span className="icon">🕒</span>
-                                        <h4>Brief History & Overview</h4>
+                                        <h4>{t('modal.overview_title')}</h4>
                                     </div>
-                                    <p>{content.overview || "Combining modern treatment with holistic recovery approaches to ensure long-term healing and restored mobility."}</p>
+                                    <p>{content.overview || t('modal.overview_desc')}</p>
                                 </section>
 
                                 <section className="info-section">
                                     <div className="section-title">
                                         <span className="icon">🧬</span>
-                                        <h4>Common Procedures</h4>
+                                        <h4>{t('modal.procedures_title')}</h4>
                                     </div>
                                     <ul className="procedure-list">
                                         {deptData.surgeries?.slice(0, 6).map((s) => (
@@ -64,18 +68,18 @@ export default function SpecialityModal({ deptName, deptData, imgUrl, onClose })
                                 <section className="info-section">
                                     <div className="section-title">
                                         <span className="icon">✨</span>
-                                        <h4>Expected Outcomes</h4>
+                                        <h4>{t('modal.outcomes_title')}</h4>
                                     </div>
-                                    <p>{content.outcomes || "Significant improvement in quality of life, reduced recurring symptoms, and restored physical independence."}</p>
+                                    <p>{content.outcomes || t('modal.outcomes_desc')}</p>
                                 </section>
 
                                 <section className="info-section">
                                     <div className="section-title">
                                         <span className="icon">⌛</span>
-                                        <h4>Recovery Time</h4>
+                                        <h4>{t('modal.recovery_title')}</h4>
                                     </div>
                                     <div className="recovery-time-box">
-                                        {content.recovery || "3–5 days in hospital, 2–6 weeks of physical recovery and lifestyle adaptation."}
+                                        {content.recovery || t('modal.recovery_desc')}
                                     </div>
                                 </section>
                             </div>
@@ -97,7 +101,7 @@ export default function SpecialityModal({ deptName, deptData, imgUrl, onClose })
                             });
                         }}
                     >
-                        Plan this treatment
+                        {t('modal.plan_btn')}
                     </button>
                 </div>
             </div>

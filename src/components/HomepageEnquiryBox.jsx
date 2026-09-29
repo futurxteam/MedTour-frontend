@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { getCountries, getCitiesByCountry, sendEnquiryOtp, verifyOtpAndCreateEnquiry } from "../api/api";
-import OtpModal from "./OtpModal";
+import { getCountries, getCitiesByCountry, createPublicEnquiry } from "../api/api";
 import "./HomepageEnquiryBox.css";
 
 const HomepageEnquiryBox = () => {
@@ -9,9 +8,7 @@ const HomepageEnquiryBox = () => {
     const [countries, setCountries] = useState([]);
     const [cities, setCities] = useState([]);
     const [loadingCities, setLoadingCities] = useState(false);
-    const [showOtpModal, setShowOtpModal] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [otpError, setOtpError] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
 
@@ -89,9 +86,9 @@ const HomepageEnquiryBox = () => {
         return errors;
     };
 
-    /* ── Send OTP ─────────────────────────────────────────── */
-    const handleSendOtp = async (e) => {
-        e.preventDefault();
+    /* ── Submit Form Directly ────────────────────────────── */
+    const handleSubmit = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
         setFieldErrors({});
 
         const errors = validate();
@@ -103,40 +100,18 @@ const HomepageEnquiryBox = () => {
         setLoading(true);
         try {
             const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
-            await sendEnquiryOtp({ phone: fullPhone });
-            setOtpError("");
-            setShowOtpModal(true);
-        } catch (err) {
-            const msg = err.response?.data?.message || "Failed to send OTP. Please try again.";
-            setFieldErrors({ phoneNumber: msg });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    /* ── Verify OTP → Create Enquiry ─────────────────────── */
-    const handleVerifyOtp = async (otp) => {
-        setOtpError("");
-        setLoading(true);
-        try {
-            const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
-            await verifyOtpAndCreateEnquiry({
+            await createPublicEnquiry({
                 patientName: formData.patientName,
                 phone: fullPhone,
-                otp,
                 contactMode: "call",
                 source: "homepage",
                 country: formData.country === "Other" ? formData.otherCountry : formData.country,
                 city: formData.city,
                 medicalProblem: formData.medicalProblem,
                 ageOrDob: formData.ageOrDob,
-                specialtyId: null,
-                surgeryId: null,
-                doctorId: null,
             });
 
             // Success
-            setShowOtpModal(false);
             setSubmitted(true);
 
             // Reset form
@@ -154,16 +129,10 @@ const HomepageEnquiryBox = () => {
             setCities([]);
         } catch (err) {
             const msg = err.response?.data?.message || "Failed to submit enquiry. Please try again.";
-            setOtpError(msg);
+            setFieldErrors({ phoneNumber: msg });
         } finally {
             setLoading(false);
         }
-    };
-
-    /* ── Resend OTP ───────────────────────────────────────── */
-    const handleResendOtp = async () => {
-        const fullPhone = `${formData.phoneCode}${formData.phoneNumber}`;
-        await sendEnquiryOtp({ phone: fullPhone });
     };
 
     /* ── Success Screen ──────────────────────────────────── */
@@ -172,15 +141,14 @@ const HomepageEnquiryBox = () => {
             <div className="enquiry-box-container">
                 <div className="enquiry-box enquiry-success">
                     <div className="enquiry-success-icon">✓</div>
-                    <h3>Enquiry Received!</h3>
-                    <p>Your enquiry has been received successfully.</p>
-                    <p className="enquiry-success-sub">Our medical coordinator will contact you shortly.</p>
+                    <h3>{t("form.success_title")}</h3>
+                    <p>{t("form.success_desc")}</p>
                     <button
                         className="submit-btn"
                         style={{ marginTop: "16px" }}
                         onClick={() => setSubmitted(false)}
                     >
-                        Submit Another Enquiry
+                        {t("form.submit_another")}
                     </button>
                 </div>
             </div>
@@ -193,7 +161,7 @@ const HomepageEnquiryBox = () => {
             <div className="enquiry-box">
                 <h3>{t("form.title")}</h3>
 
-                <form onSubmit={handleSendOtp} noValidate>
+                <form onSubmit={handleSubmit} noValidate>
                     {/* Patient Name */}
                     <div className="form-group">
                         <input
@@ -230,7 +198,7 @@ const HomepageEnquiryBox = () => {
                         <div className="form-group">
                             <input
                                 type="text"
-                                placeholder="Enter Your Country"
+                                placeholder={t("form.enter_country")}
                                 value={formData.otherCountry}
                                 onChange={(e) => setFormData({ ...formData, otherCountry: e.target.value })}
                             />
@@ -320,18 +288,6 @@ const HomepageEnquiryBox = () => {
                     </Trans>
                 </p>
             </div>
-
-            {/* ── Shared OTP Modal ── */}
-            {showOtpModal && (
-                <OtpModal
-                    phone={`${formData.phoneCode}${formData.phoneNumber}`}
-                    onVerify={handleVerifyOtp}
-                    onResend={handleResendOtp}
-                    onClose={() => setShowOtpModal(false)}
-                    loading={loading}
-                    error={otpError}
-                />
-            )}
         </div>
     );
 };
