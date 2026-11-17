@@ -97,40 +97,44 @@
       "subtitle": "Experience the journey of hope and healing through the lives we've touched.",
       "list": {
         "1": {
-          "name": "James",
-          "country": "United Kingdom",
-          "surgery": "Hip Replacement",
-          "review": "Everything from the initial consultation to the recovery was handled with extreme professionalism. I saved over 60% compared to UK prices."
+          "name": "Abu Assan and Family",
+          "location": "Oman",
+          "hospital": "Aster Medcity, Kochi",
+          "category": "Medical Health Check-up",
+          "quote": "Bringing my family to Aster Medcity for our comprehensive check-up was the best decision. The MedTour team welcomed us warmly and guided us through every step with incredible care.",
+          "description": "Bringing my family to Aster Medcity for our comprehensive check-up was the best decision. The MedTour team welcomed us warmly and guided us through every step with incredible care."
         },
         "2": {
-          "name": "Abdel",
-          "country": "UAE",
-          "surgery": "Cardiac Bypass",
-          "review": "The medical care in Kerala is world-class. My doctor was very patient and explained everything clearly. Highly recommended!"
+          "name": "Salalah Guests",
+          "location": "Oman",
+          "hospital": "Aster Medcity, Kochi",
+          "category": "Medical Check-up",
+          "quote": "Traveling from Salalah was effortless with MedTour. Aster Medcity’s advanced facilities and attentive doctors exceeded our expectations, and the hospitality in Kochi was heartwarming.",
+          "description": "Traveling from Salalah was effortless with MedTour. Aster Medcity’s advanced facilities and attentive doctors exceeded our expectations, and the hospitality in Kochi was heartwarming."
         },
         "3": {
-          "name": "Sarah",
-          "country": "USA",
-          "surgery": "Dental Implants",
-          "review": "I combined my treatment with a vacation in Munnar. It was the most relaxing recovery ever. MedTour assistants are amazing."
+          "name": "Hafedh",
+          "location": "Oman",
+          "hospital": "Aster Medcity, Kochi",
+          "category": "Medical Health Check-up",
+          "quote": "From the moment we arrived in Kochi to our medical health check-up at Aster Medcity, everything was organized to perfection. The professionalism and personal attention were exceptional.",
+          "description": "From the moment we arrived in Kochi to our medical health check-up at Aster Medcity, everything was organized to perfection. The professionalism and personal attention were exceptional."
         },
         "4": {
-          "name": "Elena",
-          "country": "Canada",
-          "surgery": "Hip Revision",
-          "review": "The surgical team was incredible. I felt safe and cared for every step of the way."
+          "name": "Nawaf and Family",
+          "location": "Salalah, Oman",
+          "hospital": "Aster Medcity, Kochi",
+          "category": "Medical Check-up",
+          "quote": "Visiting Aster Medcity with my family from Salalah felt completely comfortable and stress-free. MedTour's dedicated guidance made our medical journey smooth and pleasant.",
+          "description": "Visiting Aster Medcity with my family from Salalah felt completely comfortable and stress-free. MedTour's dedicated guidance made our medical journey smooth and pleasant."
         },
         "5": {
-          "name": "Omar",
-          "country": "Oman",
-          "surgery": "Ophthalmology",
-          "review": "Crystal clear vision now. The facility in Kochi felt like a 5-star hotel."
-        },
-        "6": {
-          "name": "Marcus",
-          "country": "Australia",
-          "surgery": "Spine Surgery",
-          "review": "MedTour handled all logistics. I could focus entirely on my recovery."
+          "name": "Said Al Qalbani",
+          "location": "Oman",
+          "hospital": "Aster Medcity, Kochi",
+          "category": "Medical Check-up",
+          "quote": "The medical standards and compassionate care at Aster Medcity are truly world-class. MedTour handled all the coordination flawlessly, allowing me to focus entirely on my health.",
+          "description": "The medical standards and compassionate care at Aster Medcity are truly world-class. MedTour handled all the coordination flawlessly, allowing me to focus entirely on my health."
         }
       }
     },
